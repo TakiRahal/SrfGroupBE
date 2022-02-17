@@ -6,6 +6,9 @@ import com.takirahal.srfgroup.dto.RegisterDTO;
 import com.takirahal.srfgroup.exceptions.InvalidPasswordException;
 import com.takirahal.srfgroup.security.JwtAuthenticationFilter;
 import com.takirahal.srfgroup.security.JwtTokenProvider;
+import com.takirahal.srfgroup.services.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,12 +29,16 @@ import javax.validation.Valid;
 @RequestMapping("/api/user")
 public class UserController {
 
+    private final Logger log = LoggerFactory.getLogger(UserController.class);
+
     @Autowired
     AuthenticationManager authenticationManager;
 
     @Autowired
     JwtTokenProvider tokenProvider;
 
+    @Autowired
+    UserService userService;
 
     /**
      *
@@ -40,6 +47,7 @@ public class UserController {
      */
     @PostMapping("/public/signin")
     public ResponseEntity<JWTToken> signin(@Valid @RequestBody LoginDTO loginDTO) {
+        log.debug("REST request to signin : {} ", loginDTO);
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDTO.getEmail(),
@@ -58,10 +66,14 @@ public class UserController {
      * @param registerDTO
      */
     @PostMapping("/public/signup")
-    public void signup(@Valid @RequestBody RegisterDTO registerDTO) {
+    public ResponseEntity<String> signup(@RequestBody RegisterDTO registerDTO) {
+        log.debug("REST request to signup : {} ", registerDTO);
         if (isPasswordLengthInvalid(registerDTO.getPassword())) {
             throw new InvalidPasswordException("Incorrect password");
         }
+
+        userService.registerUser(registerDTO);
+        return new ResponseEntity<>("", HttpStatus.OK);
     }
 
     private static boolean isPasswordLengthInvalid(String password) {
