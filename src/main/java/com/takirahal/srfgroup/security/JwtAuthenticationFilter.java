@@ -17,6 +17,8 @@ import java.io.IOException;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    public static final String AUTHORIZATION_HEADER = "Authorization";
+
     @Autowired
     private JwtTokenProvider tokenProvider;
 
