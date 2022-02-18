@@ -5,12 +5,15 @@ import com.takirahal.srfgroup.entities.audit.DateAudit;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,7 +29,7 @@ import java.util.Set;
                 "email"
         })
 })
-public class User extends DateAudit {
+public class User extends DateAudit  implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -83,10 +86,14 @@ public class User extends DateAudit {
     @Size(max = 100)
     private String password;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+            name = "user_authority",
+            joinColumns = { @JoinColumn(name = "user_id", referencedColumnName = "id") },
+            inverseJoinColumns = { @JoinColumn(name = "authority_name", referencedColumnName = "name") }
+    )
+    @BatchSize(size = 20)
+    private Set<Authority> authorities = new HashSet<>();
 
 }

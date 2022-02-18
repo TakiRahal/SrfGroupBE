@@ -1,11 +1,11 @@
 package com.takirahal.srfgroup.services.impl;
 
+import com.takirahal.srfgroup.constants.AuthoritiesConstants;
 import com.takirahal.srfgroup.dto.RegisterDTO;
-import com.takirahal.srfgroup.entities.Role;
+import com.takirahal.srfgroup.entities.Authority;
 import com.takirahal.srfgroup.entities.User;
-import com.takirahal.srfgroup.enums.RoleName;
 import com.takirahal.srfgroup.exceptions.EmailAlreadyUsedException;
-import com.takirahal.srfgroup.repositories.RoleRepository;
+import com.takirahal.srfgroup.repositories.AuthorityRepository;
 import com.takirahal.srfgroup.repositories.UserRepository;
 import com.takirahal.srfgroup.services.UserService;
 import com.takirahal.srfgroup.utils.RandomUtil;
@@ -14,9 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.charset.Charset;
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 
 @Service
@@ -30,7 +28,7 @@ public class UserServiceImpl implements UserService {
     PasswordEncoder passwordEncoder;
 
     @Autowired
-    RoleRepository roleRepository;
+    AuthorityRepository authorityRepository;
 
     @Autowired
     MailService mailService;
@@ -54,9 +52,9 @@ public class UserServiceImpl implements UserService {
         newUser.setActivated(false);
         newUser.setActivationKey(RandomUtil.generateActivationKey());
 
-        Set<Role> authorities = new HashSet<>();
-        // roleRepository.findById(RoleName.ROLE_USER).ifPresent(authorities::add);
-        newUser.setRoles(authorities);
+        Set<Authority> authorities = new HashSet<>();
+        authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
+        newUser.setAuthorities(authorities);
         // userRepository.save(newUser);
 
         mailService.sendActivationEmail(newUser);

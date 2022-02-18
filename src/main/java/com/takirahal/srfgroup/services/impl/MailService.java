@@ -67,12 +67,12 @@ public class MailService {
             log.debug("Email doesn't exist for user '{}'", user.getEmail());
             return;
         }
-        Locale locale = Locale.forLanguageTag("Fr");
+        Locale locale = Locale.forLanguageTag("en");
         Context context = new Context(locale);
         context.setVariable(USER, user);
-        context.setVariable(BASE_URL, "");
+        context.setVariable(BASE_URL, "mail");
         String content = templateEngine.process(templateName, context);
-        String subject = messageSource.getMessage(titleKey, null, locale);
+        String subject = "email.activation.title"; // messageSource.getMessage(titleKey, null, locale);
         sendEmail(user.getEmail(), subject, content, false, true);
     }
 
