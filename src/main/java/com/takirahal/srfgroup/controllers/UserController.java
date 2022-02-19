@@ -3,6 +3,8 @@ package com.takirahal.srfgroup.controllers;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.takirahal.srfgroup.dto.LoginDTO;
 import com.takirahal.srfgroup.dto.RegisterDTO;
+import com.takirahal.srfgroup.entities.User;
+import com.takirahal.srfgroup.exceptions.AccountResourceException;
 import com.takirahal.srfgroup.exceptions.InvalidPasswordException;
 import com.takirahal.srfgroup.security.JwtAuthenticationFilter;
 import com.takirahal.srfgroup.security.JwtTokenProvider;
@@ -18,12 +20,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/user")
@@ -46,7 +46,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/public/signin")
-    public ResponseEntity<JWTToken> signin(@Valid @RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<JWTToken> signin(@RequestBody LoginDTO loginDTO) {
         log.debug("REST request to signin : {} ", loginDTO);
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -73,7 +73,16 @@ public class UserController {
         }
 
         userService.registerUser(registerDTO);
-        return new ResponseEntity<>("", HttpStatus.OK);
+        return new ResponseEntity<String>("true", HttpStatus.OK);
+    }
+
+    @GetMapping("/public/activate-account")
+    public void activateAccount(@RequestParam(value = "key") String key) {
+        log.debug("Activating user for activation key {}", key);
+        Optional<User> user = userService.activateRegistration(key);
+        if (!user.isPresent()) {
+            throw new AccountResourceException("No user was found for this activation key");
+        }
     }
 
     private static boolean isPasswordLengthInvalid(String password) {

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.DoubleStream;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -22,4 +23,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Boolean existsByEmail(String email);
 
     Optional<User> findOneByEmailIgnoreCase(String email);
+
+    Optional<User> findOneByActivationKey(String activationKey);
+
+    Optional<User> findOneWithAuthoritiesByEmailIgnoreCase(String usernameOrEmail);
 }

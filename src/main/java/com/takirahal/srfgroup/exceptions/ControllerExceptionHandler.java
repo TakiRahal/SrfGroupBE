@@ -16,14 +16,39 @@ public class ControllerExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(ControllerExceptionHandler.class);
 
     @ExceptionHandler(InvalidPasswordException.class)
-    public ResponseEntity<ErrorMessage> resourceNotFoundException(InvalidPasswordException ex, WebRequest request) {
-        log.error("An exception have been occurred please see logging error");
+    public ResponseEntity<ErrorMessage> handeleInvalidPasswordException(InvalidPasswordException ex, WebRequest request) {
+        log.error("An exception have been occurred please see logging error", ex.getMessage());
+        ErrorMessage message = new ErrorMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false));
+
+        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+    }
+
+
+    @ExceptionHandler(EmailAlreadyUsedException.class)
+    public ResponseEntity<ErrorMessage> handeleEmailAlreadyUsedException(EmailAlreadyUsedException ex, WebRequest request) {
+        log.error("An exception have been occurred please see logging error", ex.getMessage());
+        ErrorMessage message = new ErrorMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false));
+
+        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AccountResourceException.class)
+    public ResponseEntity<ErrorMessage> handeleAccountResourceException(AccountResourceException ex, WebRequest request) {
+        log.error("An exception have been occurred please see logging error", ex.getMessage());
         ErrorMessage message = new ErrorMessage(
                 HttpStatus.NOT_FOUND.value(),
                 new Date(),
                 ex.getMessage(),
                 request.getDescription(false));
 
-        return new ResponseEntity<ErrorMessage>(message, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
     }
 }

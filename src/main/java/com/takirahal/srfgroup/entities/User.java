@@ -43,7 +43,7 @@ public class User extends DateAudit  implements Serializable {
     private String lastName;
 
     @NotBlank
-    @Size(max = 15)
+    @Size(max = 40)
     private String username;
 
     @NaturalId

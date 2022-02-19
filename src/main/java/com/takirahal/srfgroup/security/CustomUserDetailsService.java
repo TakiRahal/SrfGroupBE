@@ -3,11 +3,16 @@ package com.takirahal.srfgroup.security;
 import com.takirahal.srfgroup.entities.User;
 import com.takirahal.srfgroup.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -19,22 +24,36 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Transactional
     public UserDetails loadUserByUsername(String usernameOrEmail)
             throws UsernameNotFoundException {
-        // Let people login with either username or email
-        User user = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
-                .orElseThrow(() ->
-                        new UsernameNotFoundException("User not found with username or email : " + usernameOrEmail)
-                );
 
+        return userRepository
+                // .findOneByEmailIgnoreCase(login)
+                .findOneWithAuthoritiesByEmailIgnoreCase(usernameOrEmail)
+                .map(user -> createSpringSecurityUser(usernameOrEmail, user))
+                .orElseThrow(() -> new UsernameNotFoundException("User with email " + usernameOrEmail + " was not found in the database"));
+
+        // Let people login with either username or email
+//        User user = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
+//                .orElseThrow(() ->
+//                        new UsernameNotFoundException("User not found with username or email : " + usernameOrEmail)
+//                );
+//
+//        return UserPrincipal.create(user);
+    }
+
+    private UserPrincipal createSpringSecurityUser(String lowercaseLogin, User user) {
+        if (!user.isActivated()) {
+            throw new UserNotActivatedException("User " + lowercaseLogin + " was not activated");
+        }
         return UserPrincipal.create(user);
     }
 
     // This method is used by JWTAuthenticationFilter
-    @Transactional
-    public UserDetails loadUserById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(
-                () -> new UsernameNotFoundException("User not found with id : " + id)
-        );
-
-        return UserPrincipal.create(user);
-    }
+//    @Transactional
+//    public UserDetails loadUserById(Long id) {
+//        User user = userRepository.findById(id).orElseThrow(
+//                () -> new UsernameNotFoundException("User not found with id : " + id)
+//        );
+//
+//        return UserPrincipal.create(user);
+//    }
 }
