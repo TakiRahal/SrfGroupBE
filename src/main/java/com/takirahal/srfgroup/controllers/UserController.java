@@ -3,12 +3,16 @@ package com.takirahal.srfgroup.controllers;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.takirahal.srfgroup.dto.LoginDTO;
 import com.takirahal.srfgroup.dto.RegisterDTO;
+import com.takirahal.srfgroup.dto.UserDTO;
 import com.takirahal.srfgroup.entities.User;
 import com.takirahal.srfgroup.exceptions.AccountResourceException;
 import com.takirahal.srfgroup.exceptions.InvalidPasswordException;
+import com.takirahal.srfgroup.mapper.IUserMapper;
 import com.takirahal.srfgroup.security.JwtAuthenticationFilter;
 import com.takirahal.srfgroup.security.JwtTokenProvider;
+import com.takirahal.srfgroup.security.UserPrincipal;
 import com.takirahal.srfgroup.services.UserService;
+import com.takirahal.srfgroup.utils.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +23,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,6 +44,9 @@ public class UserController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    IUserMapper iUserMapper;
 
     /**
      *
@@ -73,7 +81,7 @@ public class UserController {
         }
 
         userService.registerUser(registerDTO);
-        return new ResponseEntity<String>("true", HttpStatus.OK);
+        return new ResponseEntity<String>("true", HttpStatus.CREATED);
     }
 
     @GetMapping("/public/activate-account")
@@ -83,6 +91,17 @@ public class UserController {
         if (!user.isPresent()) {
             throw new AccountResourceException("No user was found for this activation key");
         }
+    }
+
+
+    @GetMapping("/current-user")
+    public ResponseEntity<UserDTO> getCurrentUser() {
+        log.debug("Get infos for current user {}");
+        UserDTO user = SecurityUtils.getCurrentUser()
+                .map(userP -> iUserMapper.toCurrentUser(userP))
+                .orElseThrow(() -> new AccountResourceException("User could not be found"));;
+        System.out.println("user "+user.getEmail());
+        return new ResponseEntity<UserDTO>(user, HttpStatus.OK);
     }
 
     private static boolean isPasswordLengthInvalid(String password) {

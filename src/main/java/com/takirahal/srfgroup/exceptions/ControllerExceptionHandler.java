@@ -51,4 +51,16 @@ public class ControllerExceptionHandler {
 
         return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(UserNotActivatedException.class)
+    public ResponseEntity<ErrorMessage> handeleUserNotActivatedException(UserNotActivatedException ex, WebRequest request) {
+        log.error("An exception have been occurred please see logging error", ex.getMessage());
+        ErrorMessage message = new ErrorMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false));
+
+        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+    }
 }

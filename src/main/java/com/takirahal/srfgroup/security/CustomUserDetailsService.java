@@ -1,6 +1,7 @@
 package com.takirahal.srfgroup.security;
 
 import com.takirahal.srfgroup.entities.User;
+import com.takirahal.srfgroup.exceptions.UserNotActivatedException;
 import com.takirahal.srfgroup.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;

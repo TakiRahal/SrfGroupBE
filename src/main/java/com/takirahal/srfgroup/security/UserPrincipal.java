@@ -13,24 +13,40 @@ import java.util.stream.Collectors;
 
 public class UserPrincipal implements UserDetails {
     private Long id;
-
     private String firstName;
-
+    private String lastName;
     private String username;
-
-    @JsonIgnore
     private String email;
+    private String imageUrl;
+    private String phone;
+    private String sourceProvider;
+    private String idOneSignal;
 
     @JsonIgnore
     private String password;
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserPrincipal(Long id, String firstName, String username, String email, String password, Collection<? extends GrantedAuthority> authorities) {
+    public UserPrincipal(Long id,
+                         String firstName,
+                         String lastName,
+                         String username,
+                         String email,
+                         String imageUrl,
+                         String phone,
+                         String sourceProvider,
+                         String idOneSignal,
+                         String password,
+                         Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.firstName = firstName;
+        this.lastName = lastName;
         this.username = username;
         this.email = email;
+        this.imageUrl = imageUrl;
+        this.phone = phone;
+        this.sourceProvider = sourceProvider;
+        this.idOneSignal = idOneSignal;
         this.password = password;
         this.authorities = authorities;
     }
@@ -43,8 +59,13 @@ public class UserPrincipal implements UserDetails {
         return new UserPrincipal(
                 user.getId(),
                 user.getFirstName(),
+                user.getLastName(),
                 user.getUsername(),
                 user.getEmail(),
+                user.getImageUrl(),
+                user.getPhone(),
+                user.getSourceRegister(),
+                user.getIdOneSignal(),
                 user.getPassword(),
                 authorities
         );
@@ -58,13 +79,33 @@ public class UserPrincipal implements UserDetails {
         return firstName;
     }
 
-    public String getEmail() {
-        return email;
+    public String getLastName() {
+        return lastName;
     }
 
     @Override
     public String getUsername() {
         return username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getSourceProvider() {
+        return sourceProvider;
+    }
+
+    public String getIdOneSignal() {
+        return idOneSignal;
     }
 
     @Override
