@@ -93,14 +93,12 @@ public class UserController {
         }
     }
 
-
     @GetMapping("/current-user")
     public ResponseEntity<UserDTO> getCurrentUser() {
         log.debug("Get infos for current user {}");
         UserDTO user = SecurityUtils.getCurrentUser()
                 .map(userP -> iUserMapper.toCurrentUser(userP))
                 .orElseThrow(() -> new AccountResourceException("User could not be found"));;
-        System.out.println("user "+user.getEmail());
         return new ResponseEntity<UserDTO>(user, HttpStatus.OK);
     }
 
@@ -132,5 +130,5 @@ public class UserController {
             this.idToken = idToken;
         }
     }
-    
+
 }
