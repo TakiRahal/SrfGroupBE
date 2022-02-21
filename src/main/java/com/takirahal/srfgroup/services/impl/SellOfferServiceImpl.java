@@ -1,9 +1,11 @@
 package com.takirahal.srfgroup.services.impl;
 
+import com.takirahal.srfgroup.dto.OfferImagesDTO;
 import com.takirahal.srfgroup.dto.SellOfferDTO;
 import com.takirahal.srfgroup.entities.SellOffer;
 import com.takirahal.srfgroup.mapper.SellOfferMapper;
 import com.takirahal.srfgroup.repositories.SellOfferRepository;
+import com.takirahal.srfgroup.services.OfferImagesService;
 import com.takirahal.srfgroup.services.SellOfferService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,11 +23,21 @@ public class SellOfferServiceImpl implements SellOfferService {
     @Autowired
     SellOfferRepository sellOfferRepository;
 
+    @Autowired
+    OfferImagesService offerImagesService;
+
     @Override
     public SellOfferDTO save(SellOfferDTO sellOfferDTO) {
         log.debug("Request to save SellOffer : {}", sellOfferDTO);
         SellOffer sellOffer = sellOfferMapper.toEntity(sellOfferDTO);
         // sellOffer = sellOfferRepository.save(sellOffer);
+
+        for (OfferImagesDTO offerImagesDTO : sellOfferDTO.getOfferImages()) {
+            offerImagesDTO.setOffer(sellOfferDTO);
+            offerImagesDTO.setUser(sellOfferDTO.getUser());
+            offerImagesService.save(offerImagesDTO);
+        }
+
         return sellOfferMapper.toDto(sellOffer);
     }
 }

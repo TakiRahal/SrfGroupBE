@@ -42,12 +42,6 @@ public class SellOfferController {
         }
         SellOfferDTO result = sellOfferService.save(sellOfferDTO);
 
-//        for (OfferImagesDTO offerImagesDTO : sellOfferDTO.getOfferImages()) {
-//            offerImagesDTO.setOffer(result);
-//            offerImagesDTO.setUser(result.getUser());
-//            offerImagesService.save(offerImagesDTO);
-//        }
-
         return ResponseEntity
                 .created(new URI("/api/sell-offers/" + result.getId()))
                 // .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
