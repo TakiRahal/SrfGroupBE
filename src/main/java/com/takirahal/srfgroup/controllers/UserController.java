@@ -7,10 +7,9 @@ import com.takirahal.srfgroup.dto.UserDTO;
 import com.takirahal.srfgroup.entities.User;
 import com.takirahal.srfgroup.exceptions.AccountResourceException;
 import com.takirahal.srfgroup.exceptions.InvalidPasswordException;
-import com.takirahal.srfgroup.mapper.IUserMapper;
+import com.takirahal.srfgroup.mapper.UserMapper;
 import com.takirahal.srfgroup.security.JwtAuthenticationFilter;
 import com.takirahal.srfgroup.security.JwtTokenProvider;
-import com.takirahal.srfgroup.security.UserPrincipal;
 import com.takirahal.srfgroup.services.UserService;
 import com.takirahal.srfgroup.utils.SecurityUtils;
 import org.slf4j.Logger;
@@ -23,15 +22,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/user/")
 public class UserController {
 
     private final Logger log = LoggerFactory.getLogger(UserController.class);
@@ -46,14 +43,14 @@ public class UserController {
     UserService userService;
 
     @Autowired
-    IUserMapper iUserMapper;
+    UserMapper userMapper;
 
     /**
      *
      * @param loginDTO
      * @return
      */
-    @PostMapping("/public/signin")
+    @PostMapping("public/signin")
     public ResponseEntity<JWTToken> signin(@RequestBody LoginDTO loginDTO) {
         log.debug("REST request to signin : {} ", loginDTO);
         Authentication authentication = authenticationManager.authenticate(
@@ -73,7 +70,7 @@ public class UserController {
      *
      * @param registerDTO
      */
-    @PostMapping("/public/signup")
+    @PostMapping("public/signup")
     public ResponseEntity<String> signup(@RequestBody RegisterDTO registerDTO) {
         log.debug("REST request to signup : {} ", registerDTO);
         if (isPasswordLengthInvalid(registerDTO.getPassword())) {
@@ -84,7 +81,7 @@ public class UserController {
         return new ResponseEntity<String>("true", HttpStatus.CREATED);
     }
 
-    @GetMapping("/public/activate-account")
+    @GetMapping("public/activate-account")
     public void activateAccount(@RequestParam(value = "key") String key) {
         log.debug("Activating user for activation key {}", key);
         Optional<User> user = userService.activateRegistration(key);
@@ -93,11 +90,11 @@ public class UserController {
         }
     }
 
-    @GetMapping("/current-user")
+    @GetMapping("current-user")
     public ResponseEntity<UserDTO> getCurrentUser() {
         log.debug("Get infos for current user {}");
         UserDTO user = SecurityUtils.getCurrentUser()
-                .map(userP -> iUserMapper.toCurrentUser(userP))
+                .map(userP -> userMapper.toCurrentUser(userP))
                 .orElseThrow(() -> new AccountResourceException("User could not be found"));;
         return new ResponseEntity<UserDTO>(user, HttpStatus.OK);
     }

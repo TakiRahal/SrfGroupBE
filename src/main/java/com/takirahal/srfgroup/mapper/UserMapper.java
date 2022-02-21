@@ -9,7 +9,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring", uses = {})
-public interface IUserMapper extends EntityMapper<UserDTO, User> {
+public interface UserMapper extends EntityMapper<UserDTO, User> {
 
     @Named("currentUser")
     @BeanMapping(ignoreByDefault = true)
