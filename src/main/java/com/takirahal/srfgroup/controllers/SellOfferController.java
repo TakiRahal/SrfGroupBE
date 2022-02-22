@@ -41,7 +41,7 @@ public class SellOfferController {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new sellOfferDTO, or with status {@code 400 (Bad Request)} if the sellOffer has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("/public/sell-offers")
+    @PostMapping("create")
     public ResponseEntity<SellOfferDTO> createSellOffer(@RequestBody SellOfferDTO sellOfferDTO) throws URISyntaxException {
         log.debug("REST request to save SellOffer : {}", sellOfferDTO);
         if (sellOfferDTO.getId() != null) {

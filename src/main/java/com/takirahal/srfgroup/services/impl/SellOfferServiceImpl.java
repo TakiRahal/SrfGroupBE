@@ -30,7 +30,7 @@ public class SellOfferServiceImpl implements SellOfferService {
     public SellOfferDTO save(SellOfferDTO sellOfferDTO) {
         log.debug("Request to save SellOffer : {}", sellOfferDTO);
         SellOffer sellOffer = sellOfferMapper.toEntity(sellOfferDTO);
-        // sellOffer = sellOfferRepository.save(sellOffer);
+        sellOffer = sellOfferRepository.save(sellOffer);
 
         for (OfferImagesDTO offerImagesDTO : sellOfferDTO.getOfferImages()) {
             offerImagesDTO.setOffer(sellOfferDTO);

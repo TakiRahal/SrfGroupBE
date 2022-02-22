@@ -13,6 +13,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
 @Service
 public class OfferServiceImpl implements OfferService {
@@ -24,10 +30,36 @@ public class OfferServiceImpl implements OfferService {
 
     CustomOfferMapper customOfferMapper;
 
+    @Autowired
+    StorageService storageService;
+
+    @Autowired
+    ResizeImage resizeImage;
+
     @Override
     public Page<OfferDTO> findByCriteria(OfferFilter offerFilter, Pageable page) {
         log.debug("find offers by criteria : {}, page: {}", page);
         return offerRepository.findAll(createSpecification(offerFilter), page).map(customOfferMapper::toDto);
+    }
+
+    @Override
+    public void uploadImages(List<MultipartFile> multipartFiles, @RequestParam("offerId") Long offerId) {
+        log.debug("uploadImages : {}", offerId);
+        String pathAddProduct = storageService.getBaseStorageProductImages() + offerId;
+        if (storageService.existPath(pathAddProduct)) { // Already exixit path
+            storeImages(multipartFiles, pathAddProduct);
+        } else { // Create  new path
+            storageService.init(pathAddProduct);
+            storeImages(multipartFiles, pathAddProduct);
+        }
+    }
+
+    private void storeImages(List<MultipartFile> multipartFiles, String pathAddProduct){
+        Path rootLocation = Paths.get(pathAddProduct);
+        for(MultipartFile file : multipartFiles) {
+            storageService.store(file, rootLocation);
+            resizeImage.resizeImageOffer(pathAddProduct + "/" + file.getOriginalFilename());
+        }
     }
 
     protected Specification<Offer> createSpecification(OfferFilter offerFilter) {

@@ -11,11 +11,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -40,4 +41,14 @@ public class OfferController {
         Page<OfferDTO> page = offerService.findByCriteria(offerFilter, pageable);
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
+
+
+    // Define a method to upload files
+    @PostMapping("upload-images")
+    public ResponseEntity<Boolean> uploadFiles(@RequestParam("files")List<MultipartFile> multipartFiles, @RequestParam("offerId") Long offerId) {
+        log.debug("REST request to upload images offer : {}");
+        offerService.uploadImages(multipartFiles, offerId);
+        return ResponseEntity.ok().body(true);
+    }
+
 }
