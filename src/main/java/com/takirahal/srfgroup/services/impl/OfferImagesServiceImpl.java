@@ -1,6 +1,8 @@
 package com.takirahal.srfgroup.services.impl;
 
 import com.takirahal.srfgroup.dto.OfferImagesDTO;
+import com.takirahal.srfgroup.entities.OfferImages;
+import com.takirahal.srfgroup.mapper.OfferImagesMapper;
 import com.takirahal.srfgroup.repositories.OfferImagesRepository;
 import com.takirahal.srfgroup.services.OfferImagesService;
 import org.slf4j.Logger;
@@ -16,8 +18,14 @@ public class OfferImagesServiceImpl implements OfferImagesService {
     @Autowired
     OfferImagesRepository offerImagesRepository;
 
+    @Autowired
+    OfferImagesMapper offerImagesMapper;
+
     @Override
     public OfferImagesDTO save(OfferImagesDTO offerImagesDTO) {
-        return null;
+        log.debug("Request to save OfferImages : {}", offerImagesDTO);
+        OfferImages offerImages = offerImagesMapper.toEntity(offerImagesDTO);
+        offerImages = offerImagesRepository.save(offerImages);
+        return offerImagesMapper.toDto(offerImages);
     }
 }

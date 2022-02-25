@@ -15,7 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "category")
+@Table(name = "sg_category")
 public class Category implements Serializable {
     private static final long serialVersionUID = 1L;
 

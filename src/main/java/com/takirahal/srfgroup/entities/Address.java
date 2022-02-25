@@ -15,7 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "address")
+@Table(name = "sg_address")
 public class Address  implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -52,7 +52,7 @@ public class Address  implements Serializable {
     @Column(name = "population_proper")
     private String population_proper;
 
-    @OneToMany(mappedBy = "address")
-    @JsonIgnoreProperties(value = { "user", "offerImages", "address", "category" }, allowSetters = true)
-    private Set<Offer> offers = new HashSet<>();
+//    @OneToMany(mappedBy = "address")
+//    @JsonIgnoreProperties(value = { "user", "offerImages", "address", "category" }, allowSetters = true)
+//    private Set<Offer> offers = new HashSet<>();
 }

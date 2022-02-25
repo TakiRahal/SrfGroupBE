@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -17,7 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "offer")
+@Table(name = "sg_offer")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type_offer", length = 255)
 public class Offer implements Serializable {
@@ -47,8 +46,7 @@ public class Offer implements Serializable {
     private User user;
 
     @OneToMany(mappedBy = "offer", orphanRemoval = true)
-    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "offer", "user" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "offer" }, allowSetters = true)
     private Set<OfferImages> offerImages = new HashSet<>();
 
     @ManyToOne

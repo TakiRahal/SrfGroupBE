@@ -1,17 +1,21 @@
-package com.takirahal.srfgroup.entities;
+package com.takirahal.srfgroup.offer.entities;
 
+import com.takirahal.srfgroup.entities.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.Instant;
+
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "sg_find_offer")
-public class FindOffer extends Offer  {
+@Table(name = "favorite_user")
+public class FavoriteUser {
+
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -19,6 +23,12 @@ public class FindOffer extends Offer  {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @Column(name = "amount")
-    private Double amount;
+    @Column(name = "favorite_date")
+    private Instant favoriteDate;
+
+    @ManyToOne
+    private User currentUser;
+
+    @ManyToOne
+    private User favoriteUser;
 }

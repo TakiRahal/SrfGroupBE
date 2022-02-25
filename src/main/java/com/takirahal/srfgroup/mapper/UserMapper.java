@@ -23,5 +23,17 @@ public interface UserMapper extends EntityMapper<UserDTO, User> {
     @Mapping(target = "sourceProvider", source = "sourceProvider")
     @Mapping(target = "idOneSignal", source = "idOneSignal")
     @Mapping(target = "authorities", source = "authorities")
-    public UserDTO toCurrentUser(UserPrincipal user);
+    UserDTO toCurrentUser(UserPrincipal user);
+
+    @Named("username")
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "username", source = "username")
+    UserDTO toDtoIdUsername(User user);
+
+    @Named("currentUserToEntity")
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "username", source = "username")
+    @Mapping(target = "email", source = "email")
+    User currentUserToEntity(UserPrincipal user);
 }

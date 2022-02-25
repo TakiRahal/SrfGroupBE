@@ -1,6 +1,7 @@
 package com.takirahal.srfgroup.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.takirahal.srfgroup.entities.audit.AbstractAuditingEntity;
 import com.takirahal.srfgroup.entities.audit.DateAudit;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,15 +22,8 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {
-                "username"
-        }),
-        @UniqueConstraint(columnNames = {
-                "email"
-        })
-})
-public class User extends DateAudit  implements Serializable {
+@Table(name = "sg_user")
+public class User /*extends AbstractAuditingEntity*/ implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

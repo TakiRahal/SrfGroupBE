@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/sell-offers/")
+@RequestMapping("/api/sell-offer/")
 public class SellOfferController {
 
 
@@ -50,7 +50,7 @@ public class SellOfferController {
         SellOfferDTO result = sellOfferService.save(sellOfferDTO);
 
         return ResponseEntity
-                .created(new URI("/api/sell-offers/" + result.getId()))
+                .created(new URI("/api/sell-offer/" + result.getId()))
                 // .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
                 .body(result);
     }

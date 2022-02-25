@@ -7,10 +7,11 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = { UserMapper.class, OfferImagesMapper.class })
 public interface RentOfferMapper extends EntityMapper<RentOfferDTO, RentOffer> {
-//    @Mapping(target = "user", source = "user", qualifiedByName = "login")
-//    @Mapping(target = "offerImages", source = "offerImages", qualifiedByName = "idSet")
-//    RentOfferDTO toDto(RentOffer rentOffer);
-//
-//    @Mapping(target = "removeOfferImages", ignore = true)
-//    RentOffer toEntity(RentOfferDTO rentOfferDTO);
+
+    @Mapping(target = "user", source = "user", qualifiedByName = "username")
+    @Mapping(target = "offerImages", source = "offerImages", qualifiedByName = "idSet")
+    RentOfferDTO toDto(RentOffer rentOffer);
+
+    @Mapping(target = "offerImages", ignore = true)
+    RentOffer toEntity(RentOfferDTO rentOfferDTO);
 }

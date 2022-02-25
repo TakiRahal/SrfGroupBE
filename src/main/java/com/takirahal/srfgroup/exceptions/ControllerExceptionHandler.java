@@ -15,6 +15,21 @@ public class ControllerExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(ControllerExceptionHandler.class);
 
+    @ExceptionHandler(ResouorceNotFoundException.class)
+    public ResponseEntity<ErrorMessage> handeleResouorceNotFoundException(ResouorceNotFoundException ex, WebRequest request) {
+        log.error("An exception have been occurred please see logging error", ex.getMessage());
+        ErrorMessage message = new ErrorMessage(
+                HttpStatus.NOT_FOUND.value(),
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false));
+
+        return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+    }
+
+
+
+
     @ExceptionHandler(InvalidPasswordException.class)
     public ResponseEntity<ErrorMessage> handeleInvalidPasswordException(InvalidPasswordException ex, WebRequest request) {
         log.error("An exception have been occurred please see logging error", ex.getMessage());

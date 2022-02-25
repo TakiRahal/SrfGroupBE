@@ -6,14 +6,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.Instant;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "offer_images")
-public class OfferImages {
+@Table(name = "sg_offer_images")
+public class OfferImages implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -32,6 +33,6 @@ public class OfferImages {
     @JsonIgnoreProperties(value = { "user", "offerImages" }, allowSetters = true)
     private Offer offer;
 
-    @ManyToOne
-    private User user;
+//    @ManyToOne
+//    private User user;
 }
