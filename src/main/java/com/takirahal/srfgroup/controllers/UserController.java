@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -44,6 +45,9 @@ public class UserController {
 
     @Autowired
     UserMapper userMapper;
+
+//    @Autowired
+//    SimpUserRegistry userRegistry;
 
     /**
      *
@@ -98,6 +102,14 @@ public class UserController {
                 .orElseThrow(() -> new AccountResourceException("User could not be found"));;
         return new ResponseEntity<UserDTO>(user, HttpStatus.OK);
     }
+
+//    @GetMapping("/websocket/users")
+//    public ResponseEntity<Boolean> getAllUsers() {
+//        log.debug("REST request to getAllUsers: {}");
+//
+//        this.userRegistry.getUsers();
+//        return ResponseEntity.ok().body(true);
+//    }
 
     private static boolean isPasswordLengthInvalid(String password) {
         return (

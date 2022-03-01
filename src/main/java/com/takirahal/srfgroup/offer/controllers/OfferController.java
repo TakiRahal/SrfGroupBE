@@ -1,4 +1,4 @@
-package com.takirahal.srfgroup.controllers;
+package com.takirahal.srfgroup.offer.controllers;
 
 import com.takirahal.srfgroup.dto.OfferDTO;
 import com.takirahal.srfgroup.dto.filter.OfferFilter;
@@ -17,12 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
