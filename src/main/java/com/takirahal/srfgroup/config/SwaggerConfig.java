@@ -38,7 +38,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .globalOperationParameters(getParameters())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.takirahal.srfgroup.controllers"))
+                .apis(RequestHandlerSelectors.basePackage("com.takirahal.srfgroup"))
                 .paths(regex("/api.*"))
                 .build()
                 .apiInfo(apiEndPointsInfo());
