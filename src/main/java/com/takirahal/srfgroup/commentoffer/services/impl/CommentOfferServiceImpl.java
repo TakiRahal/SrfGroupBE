@@ -37,4 +37,6 @@ public class CommentOfferServiceImpl implements CommentOfferService {
         log.debug("find offers by criteria : {}, page: {}", pageable);
         return commentOfferRepository.findAll(pageable).map(commentOfferMapper::toDto);
     }
+
+
 }

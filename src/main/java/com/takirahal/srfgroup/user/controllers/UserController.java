@@ -1,4 +1,4 @@
-package com.takirahal.srfgroup.controllers;
+package com.takirahal.srfgroup.user.controllers;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.takirahal.srfgroup.dto.LoginDTO;
@@ -7,7 +7,9 @@ import com.takirahal.srfgroup.dto.UserDTO;
 import com.takirahal.srfgroup.entities.User;
 import com.takirahal.srfgroup.exceptions.AccountResourceException;
 import com.takirahal.srfgroup.exceptions.InvalidPasswordException;
+import com.takirahal.srfgroup.exceptions.ResouorceNotFoundException;
 import com.takirahal.srfgroup.mapper.UserMapper;
+import com.takirahal.srfgroup.repositories.UserRepository;
 import com.takirahal.srfgroup.security.JwtAuthenticationFilter;
 import com.takirahal.srfgroup.security.JwtTokenProvider;
 import com.takirahal.srfgroup.services.UserService;
@@ -18,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -45,6 +46,9 @@ public class UserController {
 
     @Autowired
     UserMapper userMapper;
+
+    @Autowired
+    UserRepository userRepository;
 
 //    @Autowired
 //    SimpUserRegistry userRegistry;
@@ -94,13 +98,29 @@ public class UserController {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @GetMapping("current-user")
     public ResponseEntity<UserDTO> getCurrentUser() {
         log.debug("Get infos for current user {}");
         UserDTO user = SecurityUtils.getCurrentUser()
                 .map(userP -> userMapper.toCurrentUser(userP))
                 .orElseThrow(() -> new AccountResourceException("User could not be found"));;
-        return new ResponseEntity<UserDTO>(user, HttpStatus.OK);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    /**
+     * {@code GET /admin/users/:login} : get the "login" user.
+     *
+     * @param id the login of the user to find.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the "login" user, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("public/profile/{id}")
+    public ResponseEntity<UserDTO> getProfile(@PathVariable Long id) {
+        log.debug("REST request to get User : {}", id);
+        return new ResponseEntity<>(userService.findById(id), HttpStatus.OK);
     }
 
 //    @GetMapping("/websocket/users")

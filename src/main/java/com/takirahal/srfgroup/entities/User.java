@@ -69,7 +69,7 @@ public class User /*extends AbstractAuditingEntity*/ implements Serializable {
     private String phone;
 
     @Size(max = 30)
-    @Column(name = "source_provider", length = 20)
+    @Column(name = "source_register", length = 20)
     private String sourceRegister;
 
     @Size(max = 30)

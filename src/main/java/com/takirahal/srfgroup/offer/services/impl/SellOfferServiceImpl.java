@@ -1,12 +1,12 @@
-package com.takirahal.srfgroup.services.impl;
+package com.takirahal.srfgroup.offer.services.impl;
 
 import com.takirahal.srfgroup.dto.OfferImagesDTO;
 import com.takirahal.srfgroup.dto.SellOfferDTO;
 import com.takirahal.srfgroup.entities.SellOffer;
-import com.takirahal.srfgroup.mapper.SellOfferMapper;
+import com.takirahal.srfgroup.offer.mapper.SellOfferMapper;
 import com.takirahal.srfgroup.repositories.SellOfferRepository;
 import com.takirahal.srfgroup.services.OfferImagesService;
-import com.takirahal.srfgroup.services.SellOfferService;
+import com.takirahal.srfgroup.offer.services.SellOfferService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,11 +1,13 @@
-package com.takirahal.srfgroup.services.impl;
+package com.takirahal.srfgroup.offer.services.impl;
 
-import com.takirahal.srfgroup.dto.OfferDTO;
-import com.takirahal.srfgroup.dto.filter.OfferFilter;
-import com.takirahal.srfgroup.entities.Offer;
-import com.takirahal.srfgroup.mapper.CustomOfferMapper;
-import com.takirahal.srfgroup.repositories.OfferRepository;
-import com.takirahal.srfgroup.services.OfferService;
+import com.takirahal.srfgroup.offer.dto.OfferDTO;
+import com.takirahal.srfgroup.offer.dto.filter.OfferFilter;
+import com.takirahal.srfgroup.offer.entities.Offer;
+import com.takirahal.srfgroup.offer.mapper.CustomOfferMapper;
+import com.takirahal.srfgroup.offer.repositories.OfferRepository;
+import com.takirahal.srfgroup.offer.services.OfferService;
+import com.takirahal.srfgroup.services.impl.ResizeImage;
+import com.takirahal.srfgroup.services.impl.StorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +71,7 @@ public class OfferServiceImpl implements OfferService {
     @Override
     public Optional<OfferDTO> findOne(Long id) {
         log.debug("Request to get Offer : {}", id);
-        return offerRepository.findById(id).map(customOfferMapper::toDto);
+        return offerRepository.findById(id).map(customOfferMapper::toDtoDetailsOffer);
     }
 
 

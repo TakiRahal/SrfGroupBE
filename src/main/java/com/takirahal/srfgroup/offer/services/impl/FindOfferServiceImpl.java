@@ -1,11 +1,11 @@
-package com.takirahal.srfgroup.services.impl;
+package com.takirahal.srfgroup.offer.services.impl;
 
 import com.takirahal.srfgroup.dto.FindOfferDTO;
 import com.takirahal.srfgroup.dto.OfferImagesDTO;
 import com.takirahal.srfgroup.entities.FindOffer;
-import com.takirahal.srfgroup.mapper.FindOfferMapper;
+import com.takirahal.srfgroup.offer.mapper.FindOfferMapper;
 import com.takirahal.srfgroup.repositories.FindOfferRepository;
-import com.takirahal.srfgroup.services.FindOfferService;
+import com.takirahal.srfgroup.offer.services.FindOfferService;
 import com.takirahal.srfgroup.services.OfferImagesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

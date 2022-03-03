@@ -1,6 +1,6 @@
 package com.takirahal.srfgroup.offer.services.impl;
 
-import com.takirahal.srfgroup.dto.OfferDTO;
+import com.takirahal.srfgroup.offer.dto.OfferDTO;
 import com.takirahal.srfgroup.dto.UserDTO;
 import com.takirahal.srfgroup.entities.User;
 import com.takirahal.srfgroup.mapper.UserMapper;

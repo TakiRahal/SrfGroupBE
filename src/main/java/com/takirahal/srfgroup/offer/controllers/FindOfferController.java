@@ -1,8 +1,8 @@
-package com.takirahal.srfgroup.controllers;
+package com.takirahal.srfgroup.offer.controllers;
 
 import com.takirahal.srfgroup.dto.FindOfferDTO;
 import com.takirahal.srfgroup.exceptions.BadRequestAlertException;
-import com.takirahal.srfgroup.services.FindOfferService;
+import com.takirahal.srfgroup.offer.services.FindOfferService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

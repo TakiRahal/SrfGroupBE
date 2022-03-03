@@ -1,6 +1,7 @@
 package com.takirahal.srfgroup.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.takirahal.srfgroup.offer.entities.Offer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

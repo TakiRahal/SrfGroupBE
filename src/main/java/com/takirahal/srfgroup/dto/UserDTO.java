@@ -27,7 +27,7 @@ public class UserDTO  implements Serializable {
 
     private String phone;
 
-    private String sourceProvider;
+    private String sourceRegister;
 
     private String idOneSignal;
 

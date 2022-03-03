@@ -1,6 +1,6 @@
-package com.takirahal.srfgroup.repositories;
+package com.takirahal.srfgroup.offer.repositories;
 
-import com.takirahal.srfgroup.entities.Offer;
+import com.takirahal.srfgroup.offer.entities.Offer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;

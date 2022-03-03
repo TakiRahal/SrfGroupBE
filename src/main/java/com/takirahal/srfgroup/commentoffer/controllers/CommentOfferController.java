@@ -3,6 +3,11 @@ package com.takirahal.srfgroup.commentoffer.controllers;
 import com.takirahal.srfgroup.commentoffer.dto.CommentOfferDTO;
 import com.takirahal.srfgroup.commentoffer.dto.filter.CommentOfferFilter;
 import com.takirahal.srfgroup.commentoffer.services.CommentOfferService;
+import com.takirahal.srfgroup.dto.UserDTO;
+import com.takirahal.srfgroup.exceptions.AccountResourceException;
+import com.takirahal.srfgroup.exceptions.BadRequestAlertException;
+import com.takirahal.srfgroup.utils.SecurityUtils;
+import org.apache.tomcat.util.http.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +16,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 /**
@@ -46,4 +50,42 @@ public class CommentOfferController {
         Page<CommentOfferDTO> page = commentOfferService.findByCriteria(criteria, pageable);
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
+
+
+    /**
+     * {@code POST  /comment-offers} : Create a new commentOffer.
+     *
+     * @param commentOfferDTO the commentOfferDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new commentOfferDTO, or with status {@code 400 (Bad Request)} if the commentOffer has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     */
+    @PostMapping("create")
+    public ResponseEntity<CommentOfferDTO> createCommentOfferByCurrentUser(@RequestBody CommentOfferDTO commentOfferDTO) {
+        log.debug("REST request to save CommentOffer : {}", commentOfferDTO);
+        if (commentOfferDTO.getId() != null) {
+            throw new BadRequestAlertException("A new commentOffer cannot already have an ID idexists");
+        }
+
+        Long userId = SecurityUtils.getCurrentUserId().orElseThrow(() -> new AccountResourceException("Current user login not found"));
+
+        UserDTO currentUserDTO = new UserDTO();
+        currentUserDTO.setId(userId);
+        commentOfferDTO.setUser(currentUserDTO);
+        CommentOfferDTO result = commentOfferService.save(commentOfferDTO);
+
+//        if (commentOfferDTO.getOffer().getUser().getId().equals(userId) == false) {
+//            NotificationDTO notificationDTO = new NotificationDTO();
+//            notificationDTO.setDateCreated(Instant.now());
+//            notificationDTO.setContent("Test comment offer");
+//            notificationDTO.setModule(ModuleNotification.CommentOffer.toString());
+//            notificationDTO.setIsRead(Boolean.FALSE);
+//            notificationDTO.setUser(commentOfferDTO.getOffer().getUser());
+//            notificationService.saveCommentOffer(notificationDTO);
+//        }
+
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
+    }
+
+
+
 }

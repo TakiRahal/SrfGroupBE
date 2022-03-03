@@ -1,5 +1,6 @@
 package com.takirahal.srfgroup.entities;
 
+import com.takirahal.srfgroup.offer.entities.Offer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Entity
 @Table(name = "sg_find_offer")
-public class FindOffer extends Offer  {
+public class FindOffer extends Offer {
     private static final long serialVersionUID = 1L;
 
     @Id

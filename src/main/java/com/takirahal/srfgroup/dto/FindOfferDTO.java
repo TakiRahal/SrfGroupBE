@@ -1,5 +1,6 @@
 package com.takirahal.srfgroup.dto;
 
+import com.takirahal.srfgroup.offer.dto.OfferDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,6 +8,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FindOfferDTO extends OfferDTO  {
+public class FindOfferDTO extends OfferDTO {
     private Double amount;
 }

@@ -15,5 +15,11 @@ public interface CommentOfferService {
      */
     CommentOfferDTO save(CommentOfferDTO commentOfferDTO);
 
+    /**
+     *
+     * @param criteria
+     * @param pageable
+     * @return
+     */
     Page<CommentOfferDTO> findByCriteria(CommentOfferFilter criteria, Pageable pageable);
 }

@@ -1,13 +1,12 @@
-package com.takirahal.srfgroup.services;
+package com.takirahal.srfgroup.offer.services;
 
-import com.takirahal.srfgroup.dto.OfferDTO;
-import com.takirahal.srfgroup.dto.filter.OfferFilter;
+import com.takirahal.srfgroup.offer.dto.OfferDTO;
+import com.takirahal.srfgroup.offer.dto.filter.OfferFilter;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 

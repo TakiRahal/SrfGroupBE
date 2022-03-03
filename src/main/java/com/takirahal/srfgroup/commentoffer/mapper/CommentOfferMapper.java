@@ -3,7 +3,7 @@ package com.takirahal.srfgroup.commentoffer.mapper;
 import com.takirahal.srfgroup.commentoffer.dto.CommentOfferDTO;
 import com.takirahal.srfgroup.commentoffer.entities.CommentOffer;
 import com.takirahal.srfgroup.mapper.EntityMapper;
-import com.takirahal.srfgroup.mapper.OfferMapper;
+import com.takirahal.srfgroup.offer.mapper.OfferMapper;
 import com.takirahal.srfgroup.mapper.UserMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

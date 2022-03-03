@@ -1,11 +1,11 @@
 package com.takirahal.srfgroup.offer.controllers;
 
-import com.takirahal.srfgroup.dto.OfferDTO;
-import com.takirahal.srfgroup.dto.filter.OfferFilter;
+import com.takirahal.srfgroup.offer.dto.OfferDTO;
+import com.takirahal.srfgroup.offer.dto.filter.OfferFilter;
 import com.takirahal.srfgroup.exceptions.ResouorceNotFoundException;
 import com.takirahal.srfgroup.offer.dto.OfferWithMyFavoriteUserDTO;
 import com.takirahal.srfgroup.offer.services.FavoriteUserService;
-import com.takirahal.srfgroup.services.OfferService;
+import com.takirahal.srfgroup.offer.services.OfferService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

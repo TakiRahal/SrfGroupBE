@@ -1,5 +1,6 @@
 package com.takirahal.srfgroup.entities;
 
+import com.takirahal.srfgroup.offer.entities.Offer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,7 @@ import java.time.Instant;
 @AllArgsConstructor
 @Entity
 @DiscriminatorValue("RentOffer")
-public class RentOffer extends Offer  {
+public class RentOffer extends Offer {
     private static final long serialVersionUID = 1L;
 
     @Column(name = "amount")

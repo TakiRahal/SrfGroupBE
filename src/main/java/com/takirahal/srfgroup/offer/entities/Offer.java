@@ -1,6 +1,10 @@
-package com.takirahal.srfgroup.entities;
+package com.takirahal.srfgroup.offer.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.takirahal.srfgroup.entities.Address;
+import com.takirahal.srfgroup.entities.Category;
+import com.takirahal.srfgroup.entities.OfferImages;
+import com.takirahal.srfgroup.entities.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

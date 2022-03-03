@@ -1,11 +1,13 @@
 package com.takirahal.srfgroup.services.impl;
 
 import com.takirahal.srfgroup.constants.AuthoritiesConstants;
-import com.takirahal.srfgroup.controllers.UserController;
 import com.takirahal.srfgroup.dto.RegisterDTO;
+import com.takirahal.srfgroup.dto.UserDTO;
 import com.takirahal.srfgroup.entities.Authority;
 import com.takirahal.srfgroup.entities.User;
 import com.takirahal.srfgroup.exceptions.EmailAlreadyUsedException;
+import com.takirahal.srfgroup.exceptions.ResouorceNotFoundException;
+import com.takirahal.srfgroup.mapper.UserMapper;
 import com.takirahal.srfgroup.repositories.AuthorityRepository;
 import com.takirahal.srfgroup.repositories.UserRepository;
 import com.takirahal.srfgroup.services.UserService;
@@ -38,6 +40,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     MailService mailService;
+
+    @Autowired
+    UserMapper userMapper;
 
     @Override
     public User registerUser(RegisterDTO registerDTO) {
@@ -82,5 +87,12 @@ public class UserServiceImpl implements UserService {
                             return user;
                         }
                 );
+    }
+
+    @Override
+    public UserDTO findById(Long id) {
+        return userRepository.findById(id)
+                .map(user -> userMapper.toDtoPublicUser(user))
+                .orElseThrow(() -> new ResouorceNotFoundException("Not found user with id "+id));
     }
 }

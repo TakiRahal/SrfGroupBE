@@ -1,4 +1,4 @@
-package com.takirahal.srfgroup.services;
+package com.takirahal.srfgroup.offer.services;
 
 import com.takirahal.srfgroup.dto.FindOfferDTO;
 

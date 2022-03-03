@@ -1,7 +1,7 @@
 package com.takirahal.srfgroup.commentoffer.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.takirahal.srfgroup.entities.Offer;
+import com.takirahal.srfgroup.offer.entities.Offer;
 import com.takirahal.srfgroup.entities.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;

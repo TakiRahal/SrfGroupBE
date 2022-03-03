@@ -40,20 +40,20 @@ public final class SecurityUtils {
         return null;
     }
 
-//    public static Optional<Long> getCurrentUserId() {
-//        SecurityContext securityContext = SecurityContextHolder.getContext();
-//        return Optional.ofNullable(extractPrincipalId(securityContext.getAuthentication()));
-//    }
-//
-//    private static Long extractPrincipalId(Authentication authentication) {
-//        if (authentication == null) {
-//            return null;
-//        } else if (authentication.getPrincipal() instanceof UserPrinciple) {
-//            UserPrinciple springSecurityUser = (UserPrinciple) authentication.getPrincipal();
-//            return springSecurityUser.getId();
-//        }
-//        return null;
-//    }
+    public static Optional<Long> getCurrentUserId() {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        return Optional.ofNullable(extractPrincipalId(securityContext.getAuthentication()));
+    }
+
+    private static Long extractPrincipalId(Authentication authentication) {
+        if (authentication == null) {
+            return null;
+        } else if (authentication.getPrincipal() instanceof UserPrincipal) {
+            UserPrincipal springSecurityUser = (UserPrincipal) authentication.getPrincipal();
+            return springSecurityUser.getId();
+        }
+        return null;
+    }
 
     public static Optional<UserPrincipal> getCurrentUser() {
         SecurityContext securityContext = SecurityContextHolder.getContext();

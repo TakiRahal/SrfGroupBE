@@ -19,7 +19,7 @@ public class UserPrincipal implements UserDetails {
     private String email;
     private String imageUrl;
     private String phone;
-    private String sourceProvider;
+    private String sourceRegister;
     private String idOneSignal;
 
     @JsonIgnore
@@ -34,7 +34,7 @@ public class UserPrincipal implements UserDetails {
                          String email,
                          String imageUrl,
                          String phone,
-                         String sourceProvider,
+                         String sourceRegister,
                          String idOneSignal,
                          String password,
                          Collection<? extends GrantedAuthority> authorities) {
@@ -45,7 +45,7 @@ public class UserPrincipal implements UserDetails {
         this.email = email;
         this.imageUrl = imageUrl;
         this.phone = phone;
-        this.sourceProvider = sourceProvider;
+        this.sourceRegister = sourceRegister;
         this.idOneSignal = idOneSignal;
         this.password = password;
         this.authorities = authorities;
@@ -100,8 +100,8 @@ public class UserPrincipal implements UserDetails {
         return phone;
     }
 
-    public String getSourceProvider() {
-        return sourceProvider;
+    public String getSourceRegister() {
+        return sourceRegister;
     }
 
     public String getIdOneSignal() {

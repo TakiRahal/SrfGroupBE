@@ -1,8 +1,8 @@
-package com.takirahal.srfgroup.controllers;
+package com.takirahal.srfgroup.offer.controllers;
 
 import com.takirahal.srfgroup.dto.SellOfferDTO;
 import com.takirahal.srfgroup.exceptions.BadRequestAlertException;
-import com.takirahal.srfgroup.services.SellOfferService;
+import com.takirahal.srfgroup.offer.services.SellOfferService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.*;
@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/sell-offer/")
