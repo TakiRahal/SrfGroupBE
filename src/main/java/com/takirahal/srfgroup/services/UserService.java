@@ -13,4 +13,6 @@ public interface UserService {
     Optional<User> activateRegistration(String key);
 
     UserDTO findById(Long id);
+
+    UserDTO getCurrentUser();
 }

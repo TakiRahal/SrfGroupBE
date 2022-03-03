@@ -99,19 +99,6 @@ public class UserController {
     }
 
     /**
-     *
-     * @return
-     */
-    @GetMapping("current-user")
-    public ResponseEntity<UserDTO> getCurrentUser() {
-        log.debug("Get infos for current user {}");
-        UserDTO user = SecurityUtils.getCurrentUser()
-                .map(userP -> userMapper.toCurrentUser(userP))
-                .orElseThrow(() -> new AccountResourceException("User could not be found"));;
-        return new ResponseEntity<>(user, HttpStatus.OK);
-    }
-
-    /**
      * {@code GET /admin/users/:login} : get the "login" user.
      *
      * @param id the login of the user to find.
@@ -121,6 +108,19 @@ public class UserController {
     public ResponseEntity<UserDTO> getProfile(@PathVariable Long id) {
         log.debug("REST request to get User : {}", id);
         return new ResponseEntity<>(userService.findById(id), HttpStatus.OK);
+    }
+
+
+    /**
+     * {@code GET  /account} : get the current user.
+     *
+     * @return the current user.
+     * @throws RuntimeException {@code 500 (Internal Server Error)} if the user couldn't be returned.
+     */
+    @GetMapping("/current-user")
+    public ResponseEntity<UserDTO> getAccountUser() {
+        log.debug("REST request to get Current User : {}");
+        return new ResponseEntity<>(userService.getCurrentUser(), HttpStatus.OK);
     }
 
 //    @GetMapping("/websocket/users")

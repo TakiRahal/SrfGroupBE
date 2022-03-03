@@ -5,13 +5,16 @@ import com.takirahal.srfgroup.dto.RegisterDTO;
 import com.takirahal.srfgroup.dto.UserDTO;
 import com.takirahal.srfgroup.entities.Authority;
 import com.takirahal.srfgroup.entities.User;
+import com.takirahal.srfgroup.exceptions.AccountResourceException;
 import com.takirahal.srfgroup.exceptions.EmailAlreadyUsedException;
 import com.takirahal.srfgroup.exceptions.ResouorceNotFoundException;
 import com.takirahal.srfgroup.mapper.UserMapper;
 import com.takirahal.srfgroup.repositories.AuthorityRepository;
 import com.takirahal.srfgroup.repositories.UserRepository;
+import com.takirahal.srfgroup.security.UserPrincipal;
 import com.takirahal.srfgroup.services.UserService;
 import com.takirahal.srfgroup.utils.RandomUtil;
+import com.takirahal.srfgroup.utils.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,5 +97,14 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(id)
                 .map(user -> userMapper.toDtoPublicUser(user))
                 .orElseThrow(() -> new ResouorceNotFoundException("Not found user with id "+id));
+    }
+
+    @Override
+    public UserDTO getCurrentUser() {
+        UserPrincipal currentUser = SecurityUtils
+                .getCurrentUser()
+                .orElseThrow(() -> new AccountResourceException("Current user login not found"));
+
+        return userMapper.toCurrentUser(currentUser);
     }
 }
