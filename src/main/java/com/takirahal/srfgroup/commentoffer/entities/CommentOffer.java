@@ -2,7 +2,7 @@ package com.takirahal.srfgroup.commentoffer.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.takirahal.srfgroup.offer.entities.Offer;
-import com.takirahal.srfgroup.entities.User;
+import com.takirahal.srfgroup.user.entities.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +16,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "comment_offer")
+@Table(name = "sg_comment_offer")
 public class CommentOffer implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -2,6 +2,7 @@ package com.takirahal.srfgroup.utils;
 
 import com.takirahal.srfgroup.constants.AuthoritiesConstants;
 import com.takirahal.srfgroup.security.UserPrincipal;
+import com.takirahal.srfgroup.user.entities.Authority;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
@@ -9,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 /**
@@ -23,7 +25,7 @@ public final class SecurityUtils {
      *
      * @return the login of the current user.
      */
-    public static Optional<String> getCurrentUserByUsername() {
+    public static Optional<String> getUsernameByCurrentUser() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         return Optional.ofNullable(extractPrincipal(securityContext.getAuthentication()));
     }
@@ -40,7 +42,7 @@ public final class SecurityUtils {
         return null;
     }
 
-    public static Optional<Long> getCurrentUserId() {
+    public static Optional<Long> getIdByCurrentUser() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         return Optional.ofNullable(extractPrincipalId(securityContext.getAuthentication()));
     }
@@ -73,7 +75,7 @@ public final class SecurityUtils {
      *
      * @return the JWT of the current user.
      */
-    public static Optional<String> getCurrentUserJWT() {
+    public static Optional<String> getJWTCurrentUser() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         return Optional
             .ofNullable(securityContext.getAuthentication())
@@ -104,5 +106,9 @@ public final class SecurityUtils {
 
     private static Stream<String> getAuthorities(Authentication authentication) {
         return authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority);
+    }
+
+    public static boolean hasUserThisAuthority(Set<Authority> authorities, String authority) {
+        return authorities.stream().anyMatch((e) -> (e.getName().equals(authority)));
     }
 }

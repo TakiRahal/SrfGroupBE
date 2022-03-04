@@ -1,4 +1,4 @@
-package com.takirahal.srfgroup.dto.filter;
+package com.takirahal.srfgroup.user.dto.filter;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

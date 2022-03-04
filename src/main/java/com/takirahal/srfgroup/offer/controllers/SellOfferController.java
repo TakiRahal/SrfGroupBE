@@ -26,12 +26,6 @@ public class SellOfferController {
     @Autowired
     SellOfferService sellOfferService;
 
-    @Autowired
-    private JobLauncher jobLauncher;
-
-    @Autowired
-    private Job job;
-
     /**
      * {@code POST  /sell-offers} : Create a new sellOffer.
      *

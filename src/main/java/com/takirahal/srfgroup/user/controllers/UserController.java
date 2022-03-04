@@ -3,17 +3,15 @@ package com.takirahal.srfgroup.user.controllers;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.takirahal.srfgroup.dto.LoginDTO;
 import com.takirahal.srfgroup.dto.RegisterDTO;
-import com.takirahal.srfgroup.dto.UserDTO;
-import com.takirahal.srfgroup.entities.User;
+import com.takirahal.srfgroup.user.dto.UserDTO;
+import com.takirahal.srfgroup.user.entities.User;
 import com.takirahal.srfgroup.exceptions.AccountResourceException;
 import com.takirahal.srfgroup.exceptions.InvalidPasswordException;
-import com.takirahal.srfgroup.exceptions.ResouorceNotFoundException;
 import com.takirahal.srfgroup.mapper.UserMapper;
 import com.takirahal.srfgroup.repositories.UserRepository;
 import com.takirahal.srfgroup.security.JwtAuthenticationFilter;
 import com.takirahal.srfgroup.security.JwtTokenProvider;
 import com.takirahal.srfgroup.services.UserService;
-import com.takirahal.srfgroup.utils.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +67,21 @@ public class UserController {
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = tokenProvider.generateToken(authentication);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(JwtAuthenticationFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
+        return new ResponseEntity<>(new JWTToken(jwt), httpHeaders, HttpStatus.OK);
+    }
+
+
+    /**
+     *
+     * @param loginDTO
+     * @return
+     */
+    @PostMapping("public/signin-admin")
+    public ResponseEntity<JWTToken> signinAdmin(@RequestBody LoginDTO loginDTO) {
+        log.debug("REST request to signin : {} ", loginDTO);
+        String jwt = userService.signInAdmin(loginDTO);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtAuthenticationFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
         return new ResponseEntity<>(new JWTToken(jwt), httpHeaders, HttpStatus.OK);

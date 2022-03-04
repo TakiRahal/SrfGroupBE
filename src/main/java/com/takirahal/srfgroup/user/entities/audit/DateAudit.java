@@ -1,4 +1,4 @@
-package com.takirahal.srfgroup.entities.audit;
+package com.takirahal.srfgroup.user.entities.audit;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.CreatedDate;

@@ -1,6 +1,6 @@
-package com.takirahal.srfgroup.dto;
+package com.takirahal.srfgroup.user.dto;
 
-import com.takirahal.srfgroup.entities.Authority;
+import com.takirahal.srfgroup.user.entities.Authority;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

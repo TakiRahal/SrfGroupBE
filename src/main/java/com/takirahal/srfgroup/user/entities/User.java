@@ -1,13 +1,10 @@
-package com.takirahal.srfgroup.entities;
+package com.takirahal.srfgroup.user.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.takirahal.srfgroup.entities.audit.AbstractAuditingEntity;
-import com.takirahal.srfgroup.entities.audit.DateAudit;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
 import javax.persistence.*;
 import javax.validation.constraints.Email;

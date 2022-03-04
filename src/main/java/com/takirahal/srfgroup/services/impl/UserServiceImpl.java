@@ -1,10 +1,13 @@
 package com.takirahal.srfgroup.services.impl;
 
 import com.takirahal.srfgroup.constants.AuthoritiesConstants;
+import com.takirahal.srfgroup.dto.LoginDTO;
 import com.takirahal.srfgroup.dto.RegisterDTO;
-import com.takirahal.srfgroup.dto.UserDTO;
-import com.takirahal.srfgroup.entities.Authority;
-import com.takirahal.srfgroup.entities.User;
+import com.takirahal.srfgroup.exceptions.BadRequestAlertException;
+import com.takirahal.srfgroup.security.JwtTokenProvider;
+import com.takirahal.srfgroup.user.dto.UserDTO;
+import com.takirahal.srfgroup.user.entities.Authority;
+import com.takirahal.srfgroup.user.entities.User;
 import com.takirahal.srfgroup.exceptions.AccountResourceException;
 import com.takirahal.srfgroup.exceptions.EmailAlreadyUsedException;
 import com.takirahal.srfgroup.exceptions.ResouorceNotFoundException;
@@ -18,6 +21,10 @@ import com.takirahal.srfgroup.utils.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,6 +53,12 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     UserMapper userMapper;
+
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+    @Autowired
+    JwtTokenProvider tokenProvider;
 
     @Override
     public User registerUser(RegisterDTO registerDTO) {
@@ -106,5 +119,28 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new AccountResourceException("Current user login not found"));
 
         return userMapper.toCurrentUser(currentUser);
+    }
+
+    @Override
+    public String signInAdmin(LoginDTO loginDTO) {
+        log.debug("REST request to signin admin: {} ", loginDTO);
+        Optional<User> existingUser = userRepository.findOneByEmailIgnoreCase(loginDTO.getEmail());
+        if( !existingUser.isPresent() ){
+            throw new AccountResourceException("Not found user with email");
+        }
+
+        if( !SecurityUtils.hasUserThisAuthority(existingUser.get().getAuthorities(), AuthoritiesConstants.ADMIN) ){
+            throw new BadRequestAlertException("Not admin");
+        }
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginDTO.getEmail(),
+                        loginDTO.getPassword()
+                )
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        return tokenProvider.generateToken(authentication);
     }
 }

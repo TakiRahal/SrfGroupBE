@@ -1,6 +1,6 @@
 package com.takirahal.srfgroup.config;
 
-import com.takirahal.srfgroup.entities.Address;
+import com.takirahal.srfgroup.user.entities.User;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -19,12 +19,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.Resource;
 
 @Configuration
 @EnableBatchProcessing
-public class SpringBatchConfig {
+public class SpringBatchConfigUser {
 
     @Autowired
     private JobBuilderFactory jobBuilderFactory;
@@ -33,57 +32,57 @@ public class SpringBatchConfig {
     private StepBuilderFactory stepBuilderFactory;
 
     @Autowired
-    private ItemReader<Address> addressItemReader;
+    private ItemReader<User> userItemReader;
 
     @Autowired
-    private ItemWriter<Address> addressItemWriter;
+    private ItemWriter<User> userItemWriter;
 
     @Autowired
-    private ItemProcessor<Address, Address> addressItemProcess;
+    private ItemProcessor<User, User> userItemProcess;
 
     @Bean
-    @Qualifier("addressBeanJob")
-    public Job addressJob(){
-        Step step0 = stepBuilderFactory.get("address-step-load-data")
-                .<Address, Address>chunk(100)
-                .reader(addressItemReader)
-                .processor(addressItemProcess)
-                .writer(addressItemWriter)
+    @Qualifier("userBeanJob")
+    public Job userJob(){
+        Step step0 = stepBuilderFactory.get("user-step-load-data")
+                .<User, User>chunk(100)
+                .reader(userItemReader)
+                .processor(userItemProcess)
+                .writer(userItemWriter)
                 .build();
-        return jobBuilderFactory.get("address-data-loader-job")
+        return jobBuilderFactory.get("user-data-loader-job")
                 .start(step0)
                 .build();
     }
 
     @Bean
-    public FlatFileItemReader<Address> addressBeanFlatFileItemReader(@Value("${inputFile}") Resource inputFile){
-        FlatFileItemReader<Address> fileItemReader = new FlatFileItemReader<>();
+    public FlatFileItemReader<User> userBeanFlatFileItemReader(@Value("${inputFileUser}") Resource inputFile){
+        FlatFileItemReader<User> fileItemReader = new FlatFileItemReader<>();
         fileItemReader.setName("FFIR1");
         fileItemReader.setLinesToSkip(1);
         fileItemReader.setResource(inputFile);
-        fileItemReader.setLineMapper(addressBeanLineMapper());
+        fileItemReader.setLineMapper(userBeanLineMapper());
         return fileItemReader;
     }
 
     @Bean
-    public LineMapper<Address> addressBeanLineMapper() {
-        DefaultLineMapper<Address> bankTransactionLineMapper = new DefaultLineMapper<>();
+    public LineMapper<User> userBeanLineMapper() {
+        DefaultLineMapper<User> bankTransactionLineMapper = new DefaultLineMapper<>();
         DelimitedLineTokenizer delimitedLineTokenizer = new DelimitedLineTokenizer();
         delimitedLineTokenizer.setDelimiter(";");
         delimitedLineTokenizer.setStrict(false);
-        delimitedLineTokenizer.setNames("id", "city", "lat", "lng", "country", "iso2", "admin_name", "capital", "population", "population_proper");
+        delimitedLineTokenizer.setNames("id", "firstName", "lastName", "username", "email", "activated", "imageUrl", "activationKey", "resetKey", "phone", "sourceRegister", "idOneSignal", "password");
         bankTransactionLineMapper.setLineTokenizer(delimitedLineTokenizer);
         BeanWrapperFieldSetMapper fieldSetMapper = new BeanWrapperFieldSetMapper();
-        fieldSetMapper.setTargetType(Address.class);
+        fieldSetMapper.setTargetType(User.class);
         bankTransactionLineMapper.setFieldSetMapper(fieldSetMapper);
         return bankTransactionLineMapper;
     }
 
     @Bean
-    public ItemProcessor<Address, Address> addressBeanItemProcessor(){
-        return new ItemProcessor<Address, Address>() {
+    public ItemProcessor<User, User> userBeanItemProcessor(){
+        return new ItemProcessor<User, User>() {
             @Override
-            public Address process(Address address) throws Exception {
+            public User process(User address) throws Exception {
 
                 return null;
             }

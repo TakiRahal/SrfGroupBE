@@ -1,19 +1,14 @@
 package com.takirahal.srfgroup.security;
 
-import com.takirahal.srfgroup.entities.User;
+import com.takirahal.srfgroup.user.entities.User;
 import com.takirahal.srfgroup.exceptions.UserNotActivatedException;
 import com.takirahal.srfgroup.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {

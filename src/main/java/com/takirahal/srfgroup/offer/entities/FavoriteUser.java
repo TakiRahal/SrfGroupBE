@@ -1,6 +1,6 @@
 package com.takirahal.srfgroup.offer.entities;
 
-import com.takirahal.srfgroup.entities.User;
+import com.takirahal.srfgroup.user.entities.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +13,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "favorite_user")
+@Table(name = "sg_favorite_user")
 public class FavoriteUser {
 
     private static final long serialVersionUID = 1L;

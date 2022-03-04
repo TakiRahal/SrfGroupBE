@@ -3,25 +3,20 @@ package com.takirahal.srfgroup.commentoffer.controllers;
 import com.takirahal.srfgroup.commentoffer.dto.CommentOfferDTO;
 import com.takirahal.srfgroup.commentoffer.dto.filter.CommentOfferFilter;
 import com.takirahal.srfgroup.commentoffer.services.CommentOfferService;
-import com.takirahal.srfgroup.dto.UserDTO;
+import com.takirahal.srfgroup.user.dto.UserDTO;
 import com.takirahal.srfgroup.exceptions.AccountResourceException;
 import com.takirahal.srfgroup.exceptions.BadRequestAlertException;
 import com.takirahal.srfgroup.utils.SecurityUtils;
-import org.apache.tomcat.util.http.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 
 /**
  *
@@ -66,7 +61,7 @@ public class CommentOfferController {
             throw new BadRequestAlertException("A new commentOffer cannot already have an ID idexists");
         }
 
-        Long userId = SecurityUtils.getCurrentUserId().orElseThrow(() -> new AccountResourceException("Current user login not found"));
+        Long userId = SecurityUtils.getIdByCurrentUser().orElseThrow(() -> new AccountResourceException("Current user login not found"));
 
         UserDTO currentUserDTO = new UserDTO();
         currentUserDTO.setId(userId);

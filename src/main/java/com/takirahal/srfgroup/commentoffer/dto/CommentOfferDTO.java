@@ -1,7 +1,7 @@
 package com.takirahal.srfgroup.commentoffer.dto;
 
 import com.takirahal.srfgroup.offer.dto.OfferDTO;
-import com.takirahal.srfgroup.dto.UserDTO;
+import com.takirahal.srfgroup.user.dto.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

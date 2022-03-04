@@ -1,4 +1,4 @@
-package com.takirahal.srfgroup.entities;
+package com.takirahal.srfgroup.user.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,7 +17,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "authority")
+@Table(name = "sg_authority")
 public class Authority implements Serializable {
 
     private static final long serialVersionUID = 1L;

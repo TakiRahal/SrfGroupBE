@@ -1,7 +1,7 @@
 package com.takirahal.srfgroup.mapper;
 
-import com.takirahal.srfgroup.dto.UserDTO;
-import com.takirahal.srfgroup.entities.User;
+import com.takirahal.srfgroup.user.dto.UserDTO;
+import com.takirahal.srfgroup.user.entities.User;
 import com.takirahal.srfgroup.security.UserPrincipal;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
