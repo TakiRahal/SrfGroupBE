@@ -1,6 +1,7 @@
 package com.takirahal.srfgroup.config;
 
 
+import com.takirahal.srfgroup.constants.AuthoritiesConstants;
 import com.takirahal.srfgroup.security.CustomUserDetailsService;
 import com.takirahal.srfgroup.security.JwtAuthenticationEntryPoint;
 import com.takirahal.srfgroup.security.JwtAuthenticationFilter;
@@ -92,6 +93,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/offer/public/**").permitAll()
                 .antMatchers("/api/sell-offers/public/**").permitAll()
                 .antMatchers("/api/address/public/**").permitAll()
+                .antMatchers("/api/faq/admin/**").hasAuthority(AuthoritiesConstants.ADMIN)
                 .antMatchers("/api/user/checkUsernameAvailability", "/api/user/checkEmailAvailability")
                 .permitAll()
                 .antMatchers(HttpMethod.GET, "/api/polls/**", "/api/users/**")
