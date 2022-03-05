@@ -1,4 +1,4 @@
-package com.takirahal.srfgroup.services;
+package com.takirahal.srfgroup.user.services;
 
 import com.takirahal.srfgroup.dto.LoginDTO;
 import com.takirahal.srfgroup.dto.RegisterDTO;

@@ -11,7 +11,7 @@ import com.takirahal.srfgroup.mapper.UserMapper;
 import com.takirahal.srfgroup.repositories.UserRepository;
 import com.takirahal.srfgroup.security.JwtAuthenticationFilter;
 import com.takirahal.srfgroup.security.JwtTokenProvider;
-import com.takirahal.srfgroup.services.UserService;
+import com.takirahal.srfgroup.user.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

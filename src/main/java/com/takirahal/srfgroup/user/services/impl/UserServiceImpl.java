@@ -1,10 +1,11 @@
-package com.takirahal.srfgroup.services.impl;
+package com.takirahal.srfgroup.user.services.impl;
 
 import com.takirahal.srfgroup.constants.AuthoritiesConstants;
 import com.takirahal.srfgroup.dto.LoginDTO;
 import com.takirahal.srfgroup.dto.RegisterDTO;
 import com.takirahal.srfgroup.exceptions.BadRequestAlertException;
 import com.takirahal.srfgroup.security.JwtTokenProvider;
+import com.takirahal.srfgroup.services.impl.MailService;
 import com.takirahal.srfgroup.user.dto.UserDTO;
 import com.takirahal.srfgroup.user.entities.Authority;
 import com.takirahal.srfgroup.user.entities.User;
@@ -15,7 +16,7 @@ import com.takirahal.srfgroup.mapper.UserMapper;
 import com.takirahal.srfgroup.repositories.AuthorityRepository;
 import com.takirahal.srfgroup.repositories.UserRepository;
 import com.takirahal.srfgroup.security.UserPrincipal;
-import com.takirahal.srfgroup.services.UserService;
+import com.takirahal.srfgroup.user.services.UserService;
 import com.takirahal.srfgroup.utils.RandomUtil;
 import com.takirahal.srfgroup.utils.SecurityUtils;
 import org.slf4j.Logger;

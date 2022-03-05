@@ -1,0 +1,25 @@
+package com.takirahal.srfgroup.contactus.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.Lob;
+import java.io.Serializable;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ContactUsDTO implements Serializable {
+
+    private Long id;
+
+    private String name;
+
+    private String email;
+
+    private String subject;
+
+    @Lob
+    private String message;
+}
