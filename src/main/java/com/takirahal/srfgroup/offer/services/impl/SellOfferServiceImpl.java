@@ -5,7 +5,7 @@ import com.takirahal.srfgroup.dto.SellOfferDTO;
 import com.takirahal.srfgroup.entities.SellOffer;
 import com.takirahal.srfgroup.offer.mapper.SellOfferMapper;
 import com.takirahal.srfgroup.repositories.SellOfferRepository;
-import com.takirahal.srfgroup.services.OfferImagesService;
+import com.takirahal.srfgroup.offer.services.OfferImagesService;
 import com.takirahal.srfgroup.offer.services.SellOfferService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

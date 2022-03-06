@@ -1,10 +1,10 @@
-package com.takirahal.srfgroup.services.impl;
+package com.takirahal.srfgroup.offer.services.impl;
 
 import com.takirahal.srfgroup.dto.OfferImagesDTO;
 import com.takirahal.srfgroup.entities.OfferImages;
 import com.takirahal.srfgroup.mapper.OfferImagesMapper;
 import com.takirahal.srfgroup.repositories.OfferImagesRepository;
-import com.takirahal.srfgroup.services.OfferImagesService;
+import com.takirahal.srfgroup.offer.services.OfferImagesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

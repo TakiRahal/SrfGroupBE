@@ -1,4 +1,4 @@
-package com.takirahal.srfgroup.offer.entities;
+package com.takirahal.srfgroup.favoriteuser.entities;
 
 import com.takirahal.srfgroup.user.entities.User;
 import lombok.AllArgsConstructor;

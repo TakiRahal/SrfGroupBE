@@ -6,7 +6,7 @@ import com.takirahal.srfgroup.entities.FindOffer;
 import com.takirahal.srfgroup.offer.mapper.FindOfferMapper;
 import com.takirahal.srfgroup.repositories.FindOfferRepository;
 import com.takirahal.srfgroup.offer.services.FindOfferService;
-import com.takirahal.srfgroup.services.OfferImagesService;
+import com.takirahal.srfgroup.offer.services.OfferImagesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,5 +1,6 @@
 package com.takirahal.srfgroup.offer.services.impl;
 
+import com.takirahal.srfgroup.exceptions.AccountResourceException;
 import com.takirahal.srfgroup.offer.dto.OfferDTO;
 import com.takirahal.srfgroup.offer.dto.filter.OfferFilter;
 import com.takirahal.srfgroup.offer.entities.Offer;
@@ -8,6 +9,9 @@ import com.takirahal.srfgroup.offer.repositories.OfferRepository;
 import com.takirahal.srfgroup.offer.services.OfferService;
 import com.takirahal.srfgroup.services.impl.ResizeImage;
 import com.takirahal.srfgroup.services.impl.StorageService;
+import com.takirahal.srfgroup.user.dto.UserDTO;
+import com.takirahal.srfgroup.user.dto.filter.UserOfferFilter;
+import com.takirahal.srfgroup.utils.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +76,32 @@ public class OfferServiceImpl implements OfferService {
     public Optional<OfferDTO> findOne(Long id) {
         log.debug("Request to get Offer : {}", id);
         return offerRepository.findById(id).map(customOfferMapper::toDtoDetailsOffer);
+    }
+
+    @Override
+    public Page<OfferDTO> getOffersByCurrentUser(OfferFilter offerFilter, Pageable pageable) {
+        Long useId = SecurityUtils
+                .getIdByCurrentUser()
+                .orElseThrow(() -> new AccountResourceException("Current user not found"));
+
+        UserOfferFilter userOfferFilter = new UserOfferFilter();
+        userOfferFilter.setId(useId);
+        offerFilter.setUser(userOfferFilter);
+
+        return findByCriteria(offerFilter, pageable);
+    }
+
+    @Override
+    public void delete(Long id) {
+        log.debug("Request to delete Offer : {}", id);
+        offerRepository.deleteById(id);
+
+        // Delete folder for images
+        String pathAddProduct = storageService.getBaseStorageProductImages() + id;
+        if (storageService.existPath(pathAddProduct)) {
+            Path rootLocation = Paths.get(pathAddProduct);
+            storageService.deleteFiles(rootLocation);
+        }
     }
 
 

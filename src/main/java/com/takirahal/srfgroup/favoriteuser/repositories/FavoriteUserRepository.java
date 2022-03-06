@@ -1,7 +1,7 @@
-package com.takirahal.srfgroup.offer.repositories;
+package com.takirahal.srfgroup.favoriteuser.repositories;
 
 import com.takirahal.srfgroup.user.entities.User;
-import com.takirahal.srfgroup.offer.entities.FavoriteUser;
+import com.takirahal.srfgroup.favoriteuser.entities.FavoriteUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

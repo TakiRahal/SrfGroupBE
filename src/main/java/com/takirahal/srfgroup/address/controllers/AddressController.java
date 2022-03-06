@@ -1,7 +1,7 @@
-package com.takirahal.srfgroup.controllers;
+package com.takirahal.srfgroup.address.controllers;
 
 import com.takirahal.srfgroup.dto.AddressDTO;
-import com.takirahal.srfgroup.services.AddressService;
+import com.takirahal.srfgroup.address.services.AddressService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

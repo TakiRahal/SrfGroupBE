@@ -5,7 +5,7 @@ import com.takirahal.srfgroup.dto.RentOfferDTO;
 import com.takirahal.srfgroup.entities.RentOffer;
 import com.takirahal.srfgroup.offer.mapper.RentOfferMapper;
 import com.takirahal.srfgroup.repositories.RentOfferRepository;
-import com.takirahal.srfgroup.services.OfferImagesService;
+import com.takirahal.srfgroup.offer.services.OfferImagesService;
 import com.takirahal.srfgroup.offer.services.RentOfferService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
