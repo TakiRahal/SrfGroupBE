@@ -2,7 +2,6 @@ package com.takirahal.srfgroup.offer.dto;
 
 import com.takirahal.srfgroup.dto.AddressDTO;
 import com.takirahal.srfgroup.dto.CategoryDTO;
-import com.takirahal.srfgroup.dto.OfferImagesDTO;
 import com.takirahal.srfgroup.user.dto.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;

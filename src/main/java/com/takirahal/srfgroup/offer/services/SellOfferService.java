@@ -1,6 +1,9 @@
 package com.takirahal.srfgroup.offer.services;
 
-import com.takirahal.srfgroup.dto.SellOfferDTO;
+import com.takirahal.srfgroup.offer.dto.SellOfferDTO;
+import com.takirahal.srfgroup.offer.dto.filter.SellOfferFilter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface SellOfferService {
 
@@ -12,4 +15,5 @@ public interface SellOfferService {
      */
     SellOfferDTO save(SellOfferDTO sellOfferDTO);
 
+    Page<SellOfferDTO> findByCriteria(SellOfferFilter sellOfferFilter, Pageable pageable);
 }

@@ -1,8 +1,9 @@
 package com.takirahal.srfgroup.offer.services.impl;
 
-import com.takirahal.srfgroup.dto.OfferImagesDTO;
-import com.takirahal.srfgroup.dto.SellOfferDTO;
+import com.takirahal.srfgroup.offer.dto.OfferImagesDTO;
+import com.takirahal.srfgroup.offer.dto.SellOfferDTO;
 import com.takirahal.srfgroup.entities.SellOffer;
+import com.takirahal.srfgroup.offer.dto.filter.SellOfferFilter;
 import com.takirahal.srfgroup.offer.mapper.SellOfferMapper;
 import com.takirahal.srfgroup.repositories.SellOfferRepository;
 import com.takirahal.srfgroup.offer.services.OfferImagesService;
@@ -10,7 +11,14 @@ import com.takirahal.srfgroup.offer.services.SellOfferService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import javax.persistence.criteria.Predicate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class SellOfferServiceImpl implements SellOfferService {
@@ -40,5 +48,18 @@ public class SellOfferServiceImpl implements SellOfferService {
         }
 
         return result;
+    }
+
+    @Override
+    public Page<SellOfferDTO> findByCriteria(SellOfferFilter sellOfferFilter, Pageable pageable) {
+        return sellOfferRepository.findAll(createSpecification(sellOfferFilter), pageable).map(sellOfferMapper::toDto);
+    }
+
+    private Specification<SellOffer> createSpecification(SellOfferFilter sellOfferFilter) {
+        return (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            query.orderBy(criteriaBuilder.desc(root.get("id")));
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
     }
 }

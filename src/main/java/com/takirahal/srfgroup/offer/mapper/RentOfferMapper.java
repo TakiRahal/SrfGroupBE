@@ -1,6 +1,6 @@
 package com.takirahal.srfgroup.offer.mapper;
 
-import com.takirahal.srfgroup.dto.RentOfferDTO;
+import com.takirahal.srfgroup.offer.dto.RentOfferDTO;
 import com.takirahal.srfgroup.entities.RentOffer;
 import com.takirahal.srfgroup.mapper.EntityMapper;
 import com.takirahal.srfgroup.mapper.OfferImagesMapper;

@@ -1,6 +1,9 @@
 package com.takirahal.srfgroup.offer.services;
 
-import com.takirahal.srfgroup.dto.FindOfferDTO;
+import com.takirahal.srfgroup.offer.dto.FindOfferDTO;
+import com.takirahal.srfgroup.offer.dto.filter.FindOfferFilter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface FindOfferService {
 
@@ -11,4 +14,6 @@ public interface FindOfferService {
      * @return the persisted entity.
      */
     FindOfferDTO save(FindOfferDTO findOfferDTO);
+
+    Page<FindOfferDTO> findByCriteria(FindOfferFilter findOfferFilter, Pageable pageable);
 }

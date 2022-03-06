@@ -1,6 +1,9 @@
 package com.takirahal.srfgroup.offer.services;
 
-import com.takirahal.srfgroup.dto.RentOfferDTO;
+import com.takirahal.srfgroup.offer.dto.RentOfferDTO;
+import com.takirahal.srfgroup.offer.dto.filter.RentOfferFilter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface RentOfferService {
 
@@ -11,4 +14,6 @@ public interface RentOfferService {
      * @return the persisted entity.
      */
     RentOfferDTO save(RentOfferDTO rentOfferDTO);
+
+    Page<RentOfferDTO> findByCriteria(RentOfferFilter rentOfferFilter, Pageable pageable);
 }

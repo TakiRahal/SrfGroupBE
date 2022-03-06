@@ -1,13 +1,15 @@
 package com.takirahal.srfgroup.offer.controllers;
 
-import com.takirahal.srfgroup.dto.SellOfferDTO;
+import com.takirahal.srfgroup.offer.dto.SellOfferDTO;
 import com.takirahal.srfgroup.exceptions.BadRequestAlertException;
+import com.takirahal.srfgroup.offer.dto.filter.SellOfferFilter;
 import com.takirahal.srfgroup.offer.services.SellOfferService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.*;
-import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,6 +47,20 @@ public class SellOfferController {
                 .created(new URI("/api/sell-offer/" + result.getId()))
                 // .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
                 .body(result);
+    }
+
+
+    /**
+     *
+     * @param sellOfferFilter
+     * @param pageable
+     * @return
+     */
+    @GetMapping("public")
+    public ResponseEntity<Page<SellOfferDTO>> getAllOffersForSell(SellOfferFilter sellOfferFilter, Pageable pageable) {
+        log.debug("REST request to get SellOffers public by criteria: {}", sellOfferFilter);
+        Page<SellOfferDTO> page = sellOfferService.findByCriteria(sellOfferFilter, pageable);
+        return new ResponseEntity<>(page, HttpStatus.OK);
     }
 
 }

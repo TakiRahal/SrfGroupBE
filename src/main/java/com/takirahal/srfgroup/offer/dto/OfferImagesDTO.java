@@ -1,4 +1,4 @@
-package com.takirahal.srfgroup.dto;
+package com.takirahal.srfgroup.offer.dto;
 
 import com.takirahal.srfgroup.offer.dto.OfferDTO;
 import lombok.AllArgsConstructor;

@@ -1,6 +1,6 @@
 package com.takirahal.srfgroup.mapper;
 
-import com.takirahal.srfgroup.dto.OfferImagesDTO;
+import com.takirahal.srfgroup.offer.dto.OfferImagesDTO;
 import com.takirahal.srfgroup.entities.OfferImages;
 import com.takirahal.srfgroup.offer.mapper.OfferMapper;
 import org.mapstruct.BeanMapping;

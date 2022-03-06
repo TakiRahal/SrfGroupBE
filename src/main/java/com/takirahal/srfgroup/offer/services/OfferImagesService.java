@@ -1,6 +1,6 @@
 package com.takirahal.srfgroup.offer.services;
 
-import com.takirahal.srfgroup.dto.OfferImagesDTO;
+import com.takirahal.srfgroup.offer.dto.OfferImagesDTO;
 
 public interface OfferImagesService {
 

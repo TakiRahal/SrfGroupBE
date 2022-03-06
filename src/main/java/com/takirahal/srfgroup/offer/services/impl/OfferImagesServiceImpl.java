@@ -1,6 +1,6 @@
 package com.takirahal.srfgroup.offer.services.impl;
 
-import com.takirahal.srfgroup.dto.OfferImagesDTO;
+import com.takirahal.srfgroup.offer.dto.OfferImagesDTO;
 import com.takirahal.srfgroup.entities.OfferImages;
 import com.takirahal.srfgroup.mapper.OfferImagesMapper;
 import com.takirahal.srfgroup.repositories.OfferImagesRepository;
