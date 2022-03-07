@@ -3,11 +3,14 @@ package com.takirahal.srfgroup.offer.services.impl;
 import com.takirahal.srfgroup.offer.dto.OfferImagesDTO;
 import com.takirahal.srfgroup.entities.OfferImages;
 import com.takirahal.srfgroup.mapper.OfferImagesMapper;
+import com.takirahal.srfgroup.offer.dto.filter.OfferImagesFilter;
 import com.takirahal.srfgroup.repositories.OfferImagesRepository;
 import com.takirahal.srfgroup.offer.services.OfferImagesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,5 +30,12 @@ public class OfferImagesServiceImpl implements OfferImagesService {
         OfferImages offerImages = offerImagesMapper.toEntity(offerImagesDTO);
         offerImages = offerImagesRepository.save(offerImages);
         return offerImagesMapper.toDto(offerImages);
+    }
+
+    @Override
+    public Page<OfferImages> getListExistOfferImages(OfferImagesFilter offerImagesFilter, Pageable pageable) {
+        log.debug("find by criteria : {}, page: {}", offerImagesFilter, pageable);
+        Page<OfferImages> listExistOfferImages = offerImagesRepository.getListExistOfferImages(pageable);
+        return listExistOfferImages;
     }
 }
