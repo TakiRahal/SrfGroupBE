@@ -16,6 +16,11 @@ public interface RentOfferMapper extends EntityMapper<RentOfferDTO, RentOffer> {
     @Mapping(target = "offerImages", source = "offerImages", qualifiedByName = "idSet")
     RentOfferDTO toDto(RentOffer rentOffer);
 
+    @Named("toDtoSearchOffers")
+    @Mapping(target = "user", source = "user", qualifiedByName = "searchOffers")
+    @Mapping(target = "offerImages", source = "offerImages", qualifiedByName = "idSet")
+    RentOfferDTO toDtoSearchOffers(RentOffer rentOffer);
+
     @Mapping(target = "offerImages", ignore = true)
     RentOffer toEntity(RentOfferDTO rentOfferDTO);
 

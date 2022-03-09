@@ -15,6 +15,7 @@ import com.takirahal.srfgroup.user.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 @RestController
@@ -130,10 +134,35 @@ public class UserController {
      * @return the current user.
      * @throws RuntimeException {@code 500 (Internal Server Error)} if the user couldn't be returned.
      */
-    @GetMapping("/current-user")
+    @GetMapping("current-user")
     public ResponseEntity<UserDTO> getAccountUser() {
         log.debug("REST request to get Current User : {}");
         return new ResponseEntity<>(userService.getCurrentUser(), HttpStatus.OK);
+    }
+
+
+    /**
+     *
+     * @param file
+     * @return current user after update avatar
+     */
+    @RequestMapping(value = "avatar", method = RequestMethod.POST)
+    public ResponseEntity<UserDTO> updateAvatar(@RequestParam("avatar") MultipartFile file) {
+        log.debug("REST request to update Avatar : {}", file.getOriginalFilename());
+        return new ResponseEntity<>(userService.updateAvatar(file), HttpStatus.OK);
+    }
+
+    /**
+     *
+     * @param id
+     * @param filename
+     * @return
+     */
+    @GetMapping("/public/avatar/{id}/{filename:.+}")
+    @ResponseBody
+    public ResponseEntity<Resource> getFile(@PathVariable Long id, @PathVariable String filename) {
+        Resource file = userService.getAvatar(id, filename);
+        return new ResponseEntity<>(file, HttpStatus.OK);
     }
 
 //    @GetMapping("/websocket/users")

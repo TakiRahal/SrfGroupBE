@@ -44,6 +44,26 @@ public class CustomOfferMapper {
     }
 
 
+    public OfferDTO toDtoSearchOffer(Offer offer) {
+        if (offer == null) {
+            return null;
+        }
+
+        if (offer.getTypeOffer().equalsIgnoreCase(TypeOffer.SellOffer.toString())) {
+            SellOffer sellOffer = (SellOffer) offer;
+            return sellOfferMapper.toDtoSearchOffers(sellOffer);
+        } else if (offer.getTypeOffer().equalsIgnoreCase(TypeOffer.RentOffer.toString())) {
+            RentOffer rentOffer = (RentOffer) offer;
+            return rentOfferMapper.toDtoSearchOffers(rentOffer);
+        } else if (offer.getTypeOffer().equalsIgnoreCase(TypeOffer.FindOffer.toString())) {
+            FindOffer findOffer = (FindOffer) offer;
+            return findOfferMapper.toDtoSearchOffers(findOffer);
+        }
+
+        return offerMapper.toDto(offer);
+    }
+
+
     public OfferDTO toDtoDetailsOffer(Offer offer) {
         if (offer == null) {
             return null;

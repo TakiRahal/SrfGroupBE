@@ -16,6 +16,11 @@ public interface FindOfferMapper extends EntityMapper<FindOfferDTO, FindOffer> {
     @Mapping(target = "offerImages", source = "offerImages", qualifiedByName = "idSet")
     FindOfferDTO toDto(FindOffer findOffer);
 
+    @Named("toDtoSearchOffers")
+    @Mapping(target = "user", source = "user", qualifiedByName = "searchOffers")
+    @Mapping(target = "offerImages", source = "offerImages", qualifiedByName = "idSet")
+    FindOfferDTO toDtoSearchOffers(FindOffer findOffer);
+
     @Mapping(target = "offerImages", ignore = true)
     FindOffer toEntity(FindOfferDTO findOfferDTO);
 

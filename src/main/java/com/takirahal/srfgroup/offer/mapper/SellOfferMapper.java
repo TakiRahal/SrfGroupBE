@@ -16,6 +16,11 @@ public interface SellOfferMapper extends EntityMapper<SellOfferDTO, SellOffer> {
     @Mapping(target = "offerImages", source = "offerImages", qualifiedByName = "idSet")
     SellOfferDTO toDto(SellOffer sellOffer);
 
+    @Named("toDtoSearchOffers")
+    @Mapping(target = "user", source = "user", qualifiedByName = "searchOffers")
+    @Mapping(target = "offerImages", source = "offerImages", qualifiedByName = "idSet")
+    SellOfferDTO toDtoSearchOffers(SellOffer sellOffer);
+
     @Mapping(target = "offerImages", ignore = true)
     SellOffer toEntity(SellOfferDTO sellOfferDTO);
 

@@ -2,8 +2,11 @@ package com.takirahal.srfgroup.favoriteuser.services.impl;
 
 import com.takirahal.srfgroup.exceptions.AccountResourceException;
 import com.takirahal.srfgroup.favoriteuser.dto.FavoriteUserDTO;
+import com.takirahal.srfgroup.favoriteuser.dto.filter.FavoriteUserFilter;
 import com.takirahal.srfgroup.favoriteuser.mapper.FavoriteUserMapper;
 import com.takirahal.srfgroup.offer.dto.OfferDTO;
+import com.takirahal.srfgroup.offer.dto.filter.OfferFilter;
+import com.takirahal.srfgroup.offer.entities.Offer;
 import com.takirahal.srfgroup.user.dto.UserDTO;
 import com.takirahal.srfgroup.user.entities.User;
 import com.takirahal.srfgroup.mapper.UserMapper;
@@ -16,9 +19,15 @@ import com.takirahal.srfgroup.utils.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.Predicate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -41,7 +50,7 @@ public class FavoriteUserServiceImpl implements FavoriteUserService {
 
 
         UserDTO currentUser = SecurityUtils.getCurrentUser()
-                .map(userMapper::toCurrentUser)
+                .map(userMapper::toCurrentUserPrincipal)
                 .orElseThrow(() -> new AccountResourceException("Current user login not found"));
 
         favoriteDTO.setCurrentUser(currentUser);
@@ -66,6 +75,17 @@ public class FavoriteUserServiceImpl implements FavoriteUserService {
         return offerWithMyFavoriteUserDTO;
     }
 
+    @Override
+    public Page<FavoriteUserDTO> findByCriteria(FavoriteUserFilter favoriteUserFilter, Pageable pageable) {
+        log.debug("Request to find Favorite User: {}", favoriteUserFilter);
+        UserDTO currentUser = SecurityUtils.getCurrentUser()
+                .map(userMapper::toCurrentUserPrincipal)
+                .orElseThrow(() -> new AccountResourceException("Current user login not found"));
+
+        favoriteUserFilter.setCurrentUser(currentUser);
+        return favoriteUserRepository.findAll(createSpecification(favoriteUserFilter), pageable).map(favoriteUserMapper::toDto);
+    }
+
     @Transactional(readOnly = true)
     public boolean isMyFavoriteUser(UserPrincipal currentUser, UserDTO favoriteUser) {
         User entityFavoriteUser = userMapper.toEntity(favoriteUser);
@@ -75,5 +95,16 @@ public class FavoriteUserServiceImpl implements FavoriteUserService {
             return true;
         }
         return false;
+    }
+
+    protected Specification<FavoriteUser> createSpecification(FavoriteUserFilter favoriteUserFilter) {
+        return (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+//            if ( favoriteUserFilter.getCurrentUser() != null ) {
+//                predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(root.get("currentUser")),favoriteUserFilter.getCurrentUser().getId().toString()));
+//            }
+            query.orderBy(criteriaBuilder.desc(root.get("id")));
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
     }
 }

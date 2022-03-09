@@ -11,6 +11,20 @@ import org.mapstruct.Named;
 @Mapper(componentModel = "spring", uses = {})
 public interface UserMapper extends EntityMapper<UserDTO, User> {
 
+    @Named("currentUserPrincipal")
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "username", source = "username")
+    @Mapping(target = "firstName", source = "firstName")
+    @Mapping(target = "lastName", source = "lastName")
+    @Mapping(target = "email", source = "email")
+    @Mapping(target = "imageUrl", source = "imageUrl")
+    @Mapping(target = "phone", source = "phone")
+    @Mapping(target = "sourceRegister", source = "sourceRegister")
+    @Mapping(target = "idOneSignal", source = "idOneSignal")
+    @Mapping(target = "authorities", source = "authorities")
+    UserDTO toCurrentUserPrincipal(UserPrincipal user);
+
     @Named("currentUser")
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
@@ -23,7 +37,7 @@ public interface UserMapper extends EntityMapper<UserDTO, User> {
     @Mapping(target = "sourceRegister", source = "sourceRegister")
     @Mapping(target = "idOneSignal", source = "idOneSignal")
     @Mapping(target = "authorities", source = "authorities")
-    UserDTO toCurrentUser(UserPrincipal user);
+    UserDTO toCurrentUser(User user);
 
     @Named("username")
     @BeanMapping(ignoreByDefault = true)
@@ -50,4 +64,14 @@ public interface UserMapper extends EntityMapper<UserDTO, User> {
     @Mapping(target = "idOneSignal", source = "idOneSignal")
     @Mapping(target = "authorities", source = "authorities")
     UserDTO toDtoPublicUser(User user);
+
+    @Named("searchOffers")
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "email", source = "email")
+    @Mapping(target = "firstName", source = "firstName")
+    @Mapping(target = "lastName", source = "lastName")
+    @Mapping(target = "imageUrl", source = "imageUrl")
+    @Mapping(target = "sourceRegister", source = "sourceRegister")
+    UserDTO toDtoSearchOffers(User user);
 }

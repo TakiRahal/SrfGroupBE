@@ -50,8 +50,7 @@ public class OfferServiceImpl implements OfferService {
     @Override
     public Page<OfferDTO> findByCriteria(OfferFilter offerFilter, Pageable page) {
         log.debug("find offers by criteria : {}, page: {}", page);
-        // return offerRepository.findAll(page).map(offer -> customOfferMapper.toDto(offer));
-        return offerRepository.findAll(createSpecification(offerFilter), page).map(customOfferMapper::toDto);
+        return offerRepository.findAll(createSpecification(offerFilter), page).map(customOfferMapper::toDtoSearchOffer);
     }
 
     @Override
