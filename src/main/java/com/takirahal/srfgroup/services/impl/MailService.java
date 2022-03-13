@@ -1,6 +1,6 @@
 package com.takirahal.srfgroup.services.impl;
 
-import com.takirahal.srfgroup.user.entities.User;
+import com.takirahal.srfgroup.modules.user.entities.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

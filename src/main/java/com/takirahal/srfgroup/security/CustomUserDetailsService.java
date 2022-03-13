@@ -1,8 +1,8 @@
 package com.takirahal.srfgroup.security;
 
-import com.takirahal.srfgroup.user.entities.User;
+import com.takirahal.srfgroup.modules.user.entities.User;
 import com.takirahal.srfgroup.exceptions.UserNotActivatedException;
-import com.takirahal.srfgroup.repositories.UserRepository;
+import com.takirahal.srfgroup.modules.user.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

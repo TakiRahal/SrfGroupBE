@@ -2,7 +2,7 @@ package com.takirahal.srfgroup.utils;
 
 import com.takirahal.srfgroup.constants.AuthoritiesConstants;
 import com.takirahal.srfgroup.security.UserPrincipal;
-import com.takirahal.srfgroup.user.entities.Authority;
+import com.takirahal.srfgroup.modules.user.entities.Authority;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;

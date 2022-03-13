@@ -1,6 +1,6 @@
 package com.takirahal.srfgroup.config;
 
-import com.takirahal.srfgroup.user.entities.Authority;
+import com.takirahal.srfgroup.modules.user.entities.Authority;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
