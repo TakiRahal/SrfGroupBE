@@ -1,6 +1,7 @@
 package com.takirahal.srfgroup.chat.controllers;
 
 import com.takirahal.srfgroup.chat.dto.ConversationDTO;
+import com.takirahal.srfgroup.chat.dto.ConversationVM;
 import com.takirahal.srfgroup.chat.dto.ConversationWithLastMessageDTO;
 import com.takirahal.srfgroup.chat.dto.Filter.ConversationFilter;
 import com.takirahal.srfgroup.chat.services.ConversationService;
@@ -30,20 +31,20 @@ public class ConversationController {
     /**
      * {@code POST  /conversations} : Create a new conversation.
      *
-     * @param conversationDTO the conversationDTO to create.
+     * @param conversationVM the conversationDTO to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new conversationDTO, or with status {@code 400 (Bad Request)} if the conversation has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("create")
-    public ResponseEntity<ConversationDTO> createConversation(@RequestBody ConversationDTO conversationDTO) throws URISyntaxException {
-        log.debug("REST request to save Conversation : {}", conversationDTO);
-        if (conversationDTO.getId() != null) {
+    @PostMapping("create/message")
+    public ResponseEntity<Boolean> createConversationMessage(@RequestBody ConversationVM conversationVM) throws URISyntaxException {
+        log.debug("REST request to save Conversation : {}", conversationVM);
+        if (conversationVM.getConversation().getId() != null) {
             throw new BadRequestAlertException("A new conversation cannot already have an ID idexists");
         }
-        ConversationDTO result = conversationService.save(conversationDTO);
+        conversationService.createConversationMessage(conversationVM);
         return ResponseEntity
-                .created(new URI("/api/conversation/" + result.getId()))
-                .body(result);
+                .created(new URI("/api/conversation/"))
+                .body(true);
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.takirahal.srfgroup.chat.services.impl;
 
 import com.takirahal.srfgroup.chat.dto.ConversationDTO;
+import com.takirahal.srfgroup.chat.dto.ConversationVM;
 import com.takirahal.srfgroup.chat.dto.ConversationWithLastMessageDTO;
 import com.takirahal.srfgroup.chat.dto.Filter.ConversationFilter;
 import com.takirahal.srfgroup.chat.dto.MessageDTO;
@@ -10,10 +11,17 @@ import com.takirahal.srfgroup.chat.mapper.MessageMapper;
 import com.takirahal.srfgroup.chat.repositories.ConversationRepository;
 import com.takirahal.srfgroup.chat.repositories.MessageRepository;
 import com.takirahal.srfgroup.chat.services.ConversationService;
+import com.takirahal.srfgroup.chat.services.MessageService;
+import com.takirahal.srfgroup.exceptions.AccountResourceException;
+import com.takirahal.srfgroup.mapper.UserMapper;
+import com.takirahal.srfgroup.security.UserPrincipal;
+import com.takirahal.srfgroup.user.dto.UserDTO;
+import com.takirahal.srfgroup.utils.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -23,6 +31,7 @@ import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 @Service
@@ -42,12 +51,73 @@ public class ConversationServiceImpl implements ConversationService {
     @Autowired
     MessageMapper messageMapper;
 
+    @Autowired
+    UserMapper userMapper;
+
+    @Autowired
+    MessageService messageService;
+
     @Override
     public ConversationDTO save(ConversationDTO conversationDTO) {
         log.debug("Request to save Conversation : {}", conversationDTO);
         Conversation conversation = conversationMapper.toEntity(conversationDTO);
         conversation = conversationRepository.save(conversation);
         return conversationMapper.toDto(conversation);
+    }
+
+    @Override
+    public boolean createConversationMessage(ConversationVM conversationVM) {
+        log.debug("Request to save Conversation : {}", conversationVM);
+
+        UserDTO senderUserDTO = SecurityUtils.getCurrentUser()
+                .map(userMapper::toCurrentUserPrincipal)
+                .orElseThrow(() -> new AccountResourceException("Current user login not found"));
+
+        UserDTO receiverUserDTO = conversationVM.getConversation().getReceiverUser();
+
+        Optional<Conversation> conversationSenderReceiver = conversationRepository.findBySenderUserAndReceiverUser(
+                userMapper.toEntity(senderUserDTO),
+                userMapper.toEntity(receiverUserDTO)
+        );
+        Optional<Conversation> conversationReceiverSender = conversationRepository.findByReceiverUserAndSenderUser(
+                userMapper.toEntity(senderUserDTO),
+                userMapper.toEntity(receiverUserDTO)
+        );
+
+        // Add new message
+        if (conversationSenderReceiver != null && conversationSenderReceiver.isPresent()) {
+            MessageDTO messageDTO = new MessageDTO();
+            messageDTO.setContent(conversationVM.getContent());
+            messageDTO.setIsRead(Boolean.FALSE);
+            messageDTO.setSenderUser(senderUserDTO);
+            messageDTO.setReceiverUser(conversationVM.getConversation().getReceiverUser());
+            messageDTO.setConversation(conversationMapper.toDto(conversationSenderReceiver.get()));
+            messageService.save(messageDTO);
+
+        // Add new message
+        } else if (conversationReceiverSender != null && conversationReceiverSender.isPresent()) {
+            MessageDTO messageDTO = new MessageDTO();
+            messageDTO.setContent(conversationVM.getContent());
+            messageDTO.setIsRead(Boolean.FALSE);
+            messageDTO.setSenderUser(senderUserDTO);
+            messageDTO.setReceiverUser(conversationVM.getConversation().getReceiverUser());
+            messageDTO.setConversation(conversationMapper.toDto(conversationReceiverSender.get()));
+
+        // Create new conversation
+        } else {
+            conversationVM.getConversation().setSenderUser(senderUserDTO);
+            ConversationDTO result = save(conversationVM.getConversation());
+
+            // Add new message
+            MessageDTO messageDTO = new MessageDTO();
+            messageDTO.setContent(conversationVM.getContent());
+            messageDTO.setIsRead(Boolean.FALSE);
+            messageDTO.setSenderUser(senderUserDTO);
+            messageDTO.setReceiverUser(conversationVM.getConversation().getReceiverUser());
+            messageDTO.setConversation(result);
+            messageService.save(messageDTO);
+        }
+        return true;
     }
 
     @Override
@@ -67,88 +137,13 @@ public class ConversationServiceImpl implements ConversationService {
                     listConversationWithLastMessage.add(conversationWithLastMessageDTO);
                 }
         );
-        Page<ConversationWithLastMessageDTO> pageConversationWithLastMessage = new Page<ConversationWithLastMessageDTO>() {
-            @Override
-            public int getTotalPages() {
-                return conversationDTOPage.getTotalPages();
-            }
 
-            @Override
-            public long getTotalElements() {
-                return conversationDTOPage.getTotalElements();
-            }
-
-            @Override
-            public <U> Page<U> map(Function<? super ConversationWithLastMessageDTO, ? extends U> function) {
-                return null;
-            }
-
-            @Override
-            public int getNumber() {
-                return conversationDTOPage.getNumber();
-            }
-
-            @Override
-            public int getSize() {
-                return conversationDTOPage.getSize();
-            }
-
-            @Override
-            public int getNumberOfElements() {
-                return conversationDTOPage.getNumberOfElements();
-            }
-
-            @Override
-            public List<ConversationWithLastMessageDTO> getContent() {
-                return listConversationWithLastMessage;
-            }
-
-            @Override
-            public boolean hasContent() {
-                return conversationDTOPage.hasContent();
-            }
-
-            @Override
-            public Sort getSort() {
-                return conversationDTOPage.getSort();
-            }
-
-            @Override
-            public boolean isFirst() {
-                return conversationDTOPage.isFirst();
-            }
-
-            @Override
-            public boolean isLast() {
-                return conversationDTOPage.isLast();
-            }
-
-            @Override
-            public boolean hasNext() {
-                return conversationDTOPage.hasNext();
-            }
-
-            @Override
-            public boolean hasPrevious() {
-                return conversationDTOPage.hasPrevious();
-            }
-
-            @Override
-            public Pageable nextPageable() {
-                return conversationDTOPage.nextPageable();
-            }
-
-            @Override
-            public Pageable previousPageable() {
-                return conversationDTOPage.previousPageable();
-            }
-
-            @Override
-            public Iterator<ConversationWithLastMessageDTO> iterator() {
-                return null;
-            }
-        };
-        return pageConversationWithLastMessage;
+        Page<ConversationWithLastMessageDTO> conversationWithLastMessageDTOS = new PageImpl<ConversationWithLastMessageDTO>(
+                listConversationWithLastMessage,
+                pageable,
+                conversationDTOPage.getTotalPages()
+        );
+        return conversationWithLastMessageDTOS;
     }
 
     private Specification<Conversation> createSpecification(ConversationFilter conversationFilter) {
