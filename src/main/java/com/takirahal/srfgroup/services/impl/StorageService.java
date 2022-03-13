@@ -42,6 +42,7 @@ public class StorageService {
             if (resource.exists() || resource.isReadable()) {
                 return resource;
             } else {
+                log.debug("File not exist");
                 throw new RuntimeException("FAIL!");
             }
         } catch (MalformedURLException e) {
