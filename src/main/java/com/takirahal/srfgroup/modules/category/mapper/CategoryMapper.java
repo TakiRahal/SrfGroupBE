@@ -8,6 +8,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
+/**
+ * Mapper for the entity {@link Category} and its DTO {@link CategoryDTO}.
+ */
 @Mapper(componentModel = "spring", uses = {})
 public interface CategoryMapper extends EntityMapper<CategoryDTO, Category> {
     @Named("id")

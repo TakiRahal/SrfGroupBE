@@ -1,6 +1,5 @@
 package com.takirahal.srfgroup.modules.category.entities;
 
-import com.takirahal.srfgroup.modules.category.entities.Category;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

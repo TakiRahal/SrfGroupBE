@@ -21,5 +21,5 @@ public interface CommentOfferService {
      * @param pageable
      * @return
      */
-    Page<CommentOfferDTO> findByCriteria(CommentOfferFilter criteria, Pageable pageable);
+    Page<CommentOfferDTO> findByCriteria(CommentOfferFilter criteria, Pageable pageable, Long commentOfferId);
 }

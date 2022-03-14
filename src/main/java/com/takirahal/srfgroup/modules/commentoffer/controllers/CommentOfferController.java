@@ -34,15 +34,9 @@ public class CommentOfferController {
     public ResponseEntity<Page<CommentOfferDTO>> getAllCommentsByOffer(
             CommentOfferFilter criteria,
             Pageable pageable,
-            @PathVariable("commentOfferId") Long commentOfferId
+            @PathVariable("commentOfferId") Long offerId
     ) {
-        // log.debug("REST request to get CommentOffers by criteria: {}", criteria);
-
-//        LongFilter longFilter = new LongFilter();
-//        longFilter.setEquals(commentOfferId);
-//        criteria.setOfferId(longFilter);
-
-        Page<CommentOfferDTO> page = commentOfferService.findByCriteria(criteria, pageable);
+        Page<CommentOfferDTO> page = commentOfferService.findByCriteria(criteria, pageable, offerId);
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
 
