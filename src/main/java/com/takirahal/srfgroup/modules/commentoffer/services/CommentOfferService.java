@@ -22,4 +22,19 @@ public interface CommentOfferService {
      * @return
      */
     Page<CommentOfferDTO> findByCriteria(CommentOfferFilter criteria, Pageable pageable, Long commentOfferId);
+
+    /**
+     *
+     * @param commentOfferDTO
+     * @param id
+     * @return
+     */
+    CommentOfferDTO updateCommentOffer(CommentOfferDTO commentOfferDTO, Long id);
+
+    /**
+     * Delete the "id" commentOffer.
+     *
+     * @param id the id of the entity.
+     */
+    void delete(Long id);
 }

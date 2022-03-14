@@ -1,8 +1,7 @@
-package com.takirahal.srfgroup.exceptions.advice;
+package com.takirahal.srfgroup.modules.offer.exceptions.advice;
 
 import com.takirahal.srfgroup.exceptions.BadRequestAlertException;
 import com.takirahal.srfgroup.exceptions.ErrorMessage;
-import com.takirahal.srfgroup.exceptions.InvalidPasswordException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

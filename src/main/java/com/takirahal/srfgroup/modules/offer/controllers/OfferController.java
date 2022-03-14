@@ -54,7 +54,7 @@ public class OfferController {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the offerDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("public/{id}")
-    public ResponseEntity<OfferWithMyFavoriteUserDTO> getOffer(@PathVariable Long id) {
+    public ResponseEntity<OfferWithMyFavoriteUserDTO> getOfferWithFavorite(@PathVariable Long id) {
         log.debug("REST request to get Offer : {}", id);
         Optional<OfferDTO> offerDTO = offerService.findOne(id);
         if(!offerDTO.isPresent()){
@@ -100,8 +100,8 @@ public class OfferController {
      * @param id the id of the offerDTO to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the offerDTO, or with status {@code 404 (Not Found)}.
      */
-    @GetMapping("public/entity/{id}")
-    public ResponseEntity<OfferDTO> getPublicOffer(@PathVariable Long id) {
+    @GetMapping("{id}")
+    public ResponseEntity<OfferDTO> getOffer(@PathVariable Long id) {
         log.debug("REST request to get Offer : {}", id);
         Optional<OfferDTO> offerDTO = offerService.findOne(id);
         return new ResponseEntity<>(offerDTO.get(), HttpStatus.OK);

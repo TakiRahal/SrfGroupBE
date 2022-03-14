@@ -1,4 +1,4 @@
-package com.takirahal.srfgroup.exceptions;
+package com.takirahal.srfgroup.modules.user.exceptioins;
 
 public class InvalidPasswordException extends RuntimeException {
     public InvalidPasswordException(String message) {

@@ -4,7 +4,7 @@ import com.takirahal.srfgroup.modules.commentoffer.dto.CommentOfferDTO;
 import com.takirahal.srfgroup.modules.commentoffer.dto.filter.CommentOfferFilter;
 import com.takirahal.srfgroup.modules.commentoffer.services.CommentOfferService;
 import com.takirahal.srfgroup.modules.user.dto.UserDTO;
-import com.takirahal.srfgroup.exceptions.AccountResourceException;
+import com.takirahal.srfgroup.modules.user.exceptioins.AccountResourceException;
 import com.takirahal.srfgroup.exceptions.BadRequestAlertException;
 import com.takirahal.srfgroup.utils.SecurityUtils;
 import org.slf4j.Logger;
@@ -62,19 +62,41 @@ public class CommentOfferController {
         commentOfferDTO.setUser(currentUserDTO);
         CommentOfferDTO result = commentOfferService.save(commentOfferDTO);
 
-//        if (commentOfferDTO.getOffer().getUser().getId().equals(userId) == false) {
-//            NotificationDTO notificationDTO = new NotificationDTO();
-//            notificationDTO.setDateCreated(Instant.now());
-//            notificationDTO.setContent("Test comment offer");
-//            notificationDTO.setModule(ModuleNotification.CommentOffer.toString());
-//            notificationDTO.setIsRead(Boolean.FALSE);
-//            notificationDTO.setUser(commentOfferDTO.getOffer().getUser());
-//            notificationService.saveCommentOffer(notificationDTO);
-//        }
-
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
+    /**
+     * {@code PUT  /comment-offers/:id} : Updates an existing commentOffer.
+     *
+     * @param id the id of the commentOfferDTO to save.
+     * @param commentOfferDTO the commentOfferDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated commentOfferDTO,
+     * or with status {@code 400 (Bad Request)} if the commentOfferDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the commentOfferDTO couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     */
+    @PutMapping("{id}")
+    public ResponseEntity<CommentOfferDTO> updateCommentOffer(
+            @PathVariable(value = "id", required = false) final Long id,
+            @RequestBody CommentOfferDTO commentOfferDTO
+    ) throws URISyntaxException {
+        log.debug("REST request to update CommentOffer : {}, {}", id, commentOfferDTO);
+        CommentOfferDTO result = commentOfferService.updateCommentOffer(commentOfferDTO, id);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 
+
+    /**
+     * {@code DELETE  /comment-offers/:id} : delete the "id" commentOffer.
+     *
+     * @param id the id of the commentOfferDTO to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+     */
+    @DeleteMapping("{id}")
+    public ResponseEntity<Boolean> deleteCommentOffer(@PathVariable Long id) {
+        log.debug("REST request to delete CommentOffer : {}", id);
+        commentOfferService.delete(id);
+        return new ResponseEntity<>(true, HttpStatus.OK);
+    }
 
 }

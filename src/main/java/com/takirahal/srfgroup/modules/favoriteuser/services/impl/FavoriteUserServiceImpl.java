@@ -1,6 +1,6 @@
 package com.takirahal.srfgroup.modules.favoriteuser.services.impl;
 
-import com.takirahal.srfgroup.exceptions.AccountResourceException;
+import com.takirahal.srfgroup.modules.user.exceptioins.AccountResourceException;
 import com.takirahal.srfgroup.modules.favoriteuser.dto.FavoriteUserDTO;
 import com.takirahal.srfgroup.modules.favoriteuser.dto.filter.FavoriteUserFilter;
 import com.takirahal.srfgroup.modules.favoriteuser.mapper.FavoriteUserMapper;

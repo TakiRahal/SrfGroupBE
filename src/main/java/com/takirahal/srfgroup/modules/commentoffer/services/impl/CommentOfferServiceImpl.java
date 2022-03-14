@@ -1,7 +1,10 @@
 package com.takirahal.srfgroup.modules.commentoffer.services.impl;
 
 import com.takirahal.srfgroup.enums.ModuleNotification;
-import com.takirahal.srfgroup.exceptions.AccountResourceException;
+import com.takirahal.srfgroup.exceptions.ResouorceNotFoundException;
+import com.takirahal.srfgroup.exceptions.UnauthorizedException;
+import com.takirahal.srfgroup.modules.user.exceptioins.AccountResourceException;
+import com.takirahal.srfgroup.exceptions.BadRequestAlertException;
 import com.takirahal.srfgroup.modules.commentoffer.dto.CommentOfferDTO;
 import com.takirahal.srfgroup.modules.commentoffer.dto.filter.CommentOfferFilter;
 import com.takirahal.srfgroup.modules.commentoffer.entities.CommentOffer;
@@ -24,6 +27,7 @@ import javax.persistence.criteria.Predicate;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class CommentOfferServiceImpl implements CommentOfferService {
@@ -68,6 +72,48 @@ public class CommentOfferServiceImpl implements CommentOfferService {
         offerDTO.setId(offerId);
         criteria.setOffer(offerDTO);
         return commentOfferRepository.findAll(createSpecification(criteria), pageable).map(commentOfferMapper::toDto);
+    }
+
+    @Override
+    public CommentOfferDTO updateCommentOffer(CommentOfferDTO commentOfferDTO, Long id) {
+        if (commentOfferDTO.getId() == null) {
+            throw new BadRequestAlertException("Invalid id null");
+        }
+        if (!Objects.equals(id, commentOfferDTO.getId())) {
+            throw new BadRequestAlertException("Invalid ID id invalid");
+        }
+
+        CommentOffer commentOffer = commentOfferRepository.findById(id)
+                .orElseThrow(() -> new BadRequestAlertException("Entity not found id not found"));
+
+
+        Long useId = SecurityUtils
+                .getIdByCurrentUser()
+                .orElseThrow(() -> new AccountResourceException("Current user not found"));
+        if (!Objects.equals(useId, commentOffer.getUser().getId())) {
+            throw new UnauthorizedException("Unauthorized action");
+        }
+
+        commentOffer.setContent(commentOfferDTO.getContent());
+        CommentOffer commentOfferUpdate = commentOfferRepository.save(commentOffer);
+        return commentOfferMapper.toDto(commentOfferUpdate);
+    }
+
+    @Override
+    public void delete(Long id) {
+        log.debug("Request to delete CommentOffer : {}", id);
+
+        CommentOffer commentOffer = commentOfferRepository.findById(id)
+                .orElseThrow(() -> new ResouorceNotFoundException("Entity not found with id"));
+
+        Long useId = SecurityUtils
+                .getIdByCurrentUser()
+                .orElseThrow(() -> new AccountResourceException("Current user not found"));
+        if (!Objects.equals(useId, commentOffer.getUser().getId())) {
+            throw new UnauthorizedException("Unauthorized action");
+        }
+
+        commentOfferRepository.deleteById(id);
     }
 
     private Specification<CommentOffer> createSpecification(CommentOfferFilter criteria) {

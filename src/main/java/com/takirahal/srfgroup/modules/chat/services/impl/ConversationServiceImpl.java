@@ -12,7 +12,7 @@ import com.takirahal.srfgroup.modules.chat.repositories.ConversationRepository;
 import com.takirahal.srfgroup.modules.chat.repositories.MessageRepository;
 import com.takirahal.srfgroup.modules.chat.services.ConversationService;
 import com.takirahal.srfgroup.modules.chat.services.MessageService;
-import com.takirahal.srfgroup.exceptions.AccountResourceException;
+import com.takirahal.srfgroup.modules.user.exceptioins.AccountResourceException;
 import com.takirahal.srfgroup.modules.user.mapper.UserMapper;
 import com.takirahal.srfgroup.modules.user.dto.UserDTO;
 import com.takirahal.srfgroup.utils.SecurityUtils;

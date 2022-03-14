@@ -1,6 +1,10 @@
 package com.takirahal.srfgroup.modules.offer.services.impl;
 
-import com.takirahal.srfgroup.exceptions.AccountResourceException;
+import com.takirahal.srfgroup.exceptions.ResouorceNotFoundException;
+import com.takirahal.srfgroup.exceptions.UnauthorizedException;
+import com.takirahal.srfgroup.modules.commentoffer.repositories.CommentOfferRepository;
+import com.takirahal.srfgroup.modules.offer.repositories.OfferImagesRepository;
+import com.takirahal.srfgroup.modules.user.exceptioins.AccountResourceException;
 import com.takirahal.srfgroup.modules.offer.dto.OfferDTO;
 import com.takirahal.srfgroup.modules.offer.dto.filter.OfferFilter;
 import com.takirahal.srfgroup.modules.offer.entities.Offer;
@@ -9,7 +13,6 @@ import com.takirahal.srfgroup.modules.offer.repositories.OfferRepository;
 import com.takirahal.srfgroup.modules.offer.services.OfferService;
 import com.takirahal.srfgroup.services.impl.ResizeImage;
 import com.takirahal.srfgroup.services.impl.StorageService;
-import com.takirahal.srfgroup.modules.user.dto.UserDTO;
 import com.takirahal.srfgroup.modules.user.dto.filter.UserOfferFilter;
 import com.takirahal.srfgroup.utils.SecurityUtils;
 import org.slf4j.Logger;
@@ -20,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.criteria.Predicate;
@@ -28,6 +32,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -46,6 +51,12 @@ public class OfferServiceImpl implements OfferService {
 
     @Autowired
     ResizeImage resizeImage;
+
+    @Autowired
+    CommentOfferRepository commentOfferRepository;
+
+    @Autowired
+    OfferImagesRepository offerImagesRepository;
 
     @Override
     public Page<OfferDTO> findByCriteria(OfferFilter offerFilter, Pageable page) {
@@ -91,9 +102,19 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         log.debug("Request to delete Offer : {}", id);
-        offerRepository.deleteById(id);
+
+        Offer offer = offerRepository.findById(id)
+                .orElseThrow(() -> new ResouorceNotFoundException("Entity not found with id"));
+
+        Long useId = SecurityUtils
+                .getIdByCurrentUser()
+                .orElseThrow(() -> new AccountResourceException("Current user not found"));
+        if (!Objects.equals(useId, offer.getUser().getId())) {
+            throw new UnauthorizedException("Unauthorized action");
+        }
 
         // Delete folder for images
         String pathAddProduct = storageService.getBaseStorageProductImages() + id;
@@ -101,6 +122,15 @@ public class OfferServiceImpl implements OfferService {
             Path rootLocation = Paths.get(pathAddProduct);
             storageService.deleteFiles(rootLocation);
         }
+
+        // Delete all comments
+        commentOfferRepository.deleteCommentsByOfferId(id);
+
+        // Delete all images_offer
+        offerImagesRepository.deleteImagesByOfferId(id);
+
+        // Delete entity
+        offerRepository.deleteById(id);
     }
 
 

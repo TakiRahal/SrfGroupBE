@@ -1,5 +1,11 @@
-package com.takirahal.srfgroup.exceptions;
+package com.takirahal.srfgroup.modules.user.exceptioins.advice;
 
+import com.takirahal.srfgroup.exceptions.advice.ControllerExceptionHandler;
+import com.takirahal.srfgroup.exceptions.ErrorMessage;
+import com.takirahal.srfgroup.modules.user.exceptioins.AccountResourceException;
+import com.takirahal.srfgroup.modules.user.exceptioins.EmailAlreadyUsedException;
+import com.takirahal.srfgroup.modules.user.exceptioins.InvalidPasswordException;
+import com.takirahal.srfgroup.modules.user.exceptioins.UserNotActivatedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -11,24 +17,8 @@ import org.springframework.web.context.request.WebRequest;
 import java.util.Date;
 
 @ControllerAdvice
-public class ControllerExceptionHandler {
-
+public class UserControllerExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(ControllerExceptionHandler.class);
-
-    @ExceptionHandler(ResouorceNotFoundException.class)
-    public ResponseEntity<ErrorMessage> handeleResouorceNotFoundException(ResouorceNotFoundException ex, WebRequest request) {
-        log.error("An exception have been occurred please see logging error", ex.getMessage());
-        ErrorMessage message = new ErrorMessage(
-                HttpStatus.NOT_FOUND.value(),
-                new Date(),
-                ex.getMessage(),
-                request.getDescription(false));
-
-        return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
-    }
-
-
-
 
     @ExceptionHandler(InvalidPasswordException.class)
     public ResponseEntity<ErrorMessage> handeleInvalidPasswordException(InvalidPasswordException ex, WebRequest request) {

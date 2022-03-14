@@ -1,6 +1,6 @@
 package com.takirahal.srfgroup.modules.notification.services.impl;
 
-import com.takirahal.srfgroup.exceptions.AccountResourceException;
+import com.takirahal.srfgroup.modules.user.exceptioins.AccountResourceException;
 import com.takirahal.srfgroup.modules.notification.dto.NotificationDTO;
 import com.takirahal.srfgroup.modules.notification.dto.filter.NotificationFilter;
 import com.takirahal.srfgroup.modules.notification.entities.Notification;
