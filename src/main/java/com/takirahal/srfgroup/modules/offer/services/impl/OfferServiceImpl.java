@@ -68,9 +68,11 @@ public class OfferServiceImpl implements OfferService {
     public void uploadImages(List<MultipartFile> multipartFiles, @RequestParam("offerId") Long offerId) {
         log.debug("uploadImages : {}", offerId);
         String pathAddProduct = storageService.getBaseStorageProductImages() + offerId;
-        if (storageService.existPath(pathAddProduct)) { // Already exixit path
+        if (storageService.existPath(pathAddProduct)) { // Upload for Update offer
+
+
             storeImages(multipartFiles, pathAddProduct);
-        } else { // Create  new path
+        } else { // Upload for new offer
             storageService.init(pathAddProduct);
             storeImages(multipartFiles, pathAddProduct);
         }
@@ -148,6 +150,11 @@ public class OfferServiceImpl implements OfferService {
             if (offerFilter.getTitle() != null && !offerFilter.getTitle().isEmpty()) {
                 predicates.add(criteriaBuilder.like(root.get("title"), "%" + offerFilter.getTitle() + "%"));
             }
+
+            if ( offerFilter.getUser() != null && offerFilter.getUser().getId() != null ) {
+                predicates.add(criteriaBuilder.equal(root.get("user").get("id"), offerFilter.getUser().getId()));
+            }
+
 //            if (request.getName() != null && !request.getName().isEmpty()) {
 //                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("fullName")),
 //                        "%" + request.getName().toLowerCase() + "%"));
@@ -158,8 +165,5 @@ public class OfferServiceImpl implements OfferService {
             query.orderBy(criteriaBuilder.desc(root.get("id")));
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
-
-//        Specification<Offer> specification = Specification.where(null);
-//        return specification;
     }
 }

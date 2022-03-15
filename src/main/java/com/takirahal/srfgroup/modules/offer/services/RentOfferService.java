@@ -16,4 +16,6 @@ public interface RentOfferService {
     RentOfferDTO save(RentOfferDTO rentOfferDTO);
 
     Page<RentOfferDTO> findByCriteria(RentOfferFilter rentOfferFilter, Pageable pageable);
+
+    RentOfferDTO updateRentOffer(RentOfferDTO rentOfferDTO, Long id);
 }

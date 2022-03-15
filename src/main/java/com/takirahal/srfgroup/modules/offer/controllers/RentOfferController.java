@@ -60,4 +60,24 @@ public class RentOfferController {
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
 
+
+    /**
+     * {@code PUT  /rent-offers/:id} : Updates an existing rentOffer.
+     *
+     * @param id the id of the rentOfferDTO to save.
+     * @param rentOfferDTO the rentOfferDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated rentOfferDTO,
+     * or with status {@code 400 (Bad Request)} if the rentOfferDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the rentOfferDTO couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     */
+    @PutMapping("{id}")
+    public ResponseEntity<RentOfferDTO> updateRentOffer(
+            @PathVariable(value = "id", required = false) final Long id,
+            @RequestBody RentOfferDTO rentOfferDTO
+    ) {
+        log.debug("REST request to update RentOffer : {}, {}", id, rentOfferDTO);
+        RentOfferDTO result = rentOfferService.updateRentOffer(rentOfferDTO, id);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 }

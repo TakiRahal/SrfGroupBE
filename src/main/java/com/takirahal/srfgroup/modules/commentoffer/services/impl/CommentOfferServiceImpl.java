@@ -76,6 +76,7 @@ public class CommentOfferServiceImpl implements CommentOfferService {
 
     @Override
     public CommentOfferDTO updateCommentOffer(CommentOfferDTO commentOfferDTO, Long id) {
+        log.debug("update offer by commentOfferDTO : {}, id: {}", commentOfferDTO, id);
         if (commentOfferDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id null");
         }
@@ -84,7 +85,7 @@ public class CommentOfferServiceImpl implements CommentOfferService {
         }
 
         CommentOffer commentOffer = commentOfferRepository.findById(id)
-                .orElseThrow(() -> new BadRequestAlertException("Entity not found id not found"));
+                .orElseThrow(() -> new BadRequestAlertException("Entity not found with id"));
 
 
         Long useId = SecurityUtils

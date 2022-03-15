@@ -49,7 +49,6 @@ public class SellOfferController {
                 .body(result);
     }
 
-
     /**
      *
      * @param sellOfferFilter
@@ -61,6 +60,26 @@ public class SellOfferController {
         log.debug("REST request to get SellOffers public by criteria: {}", sellOfferFilter);
         Page<SellOfferDTO> page = sellOfferService.findByCriteria(sellOfferFilter, pageable);
         return new ResponseEntity<>(page, HttpStatus.OK);
+    }
+
+    /**
+     * {@code PUT  /sell-offers/:id} : Updates an existing sellOffer.
+     *
+     * @param id the id of the sellOfferDTO to save.
+     * @param sellOfferDTO the sellOfferDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated sellOfferDTO,
+     * or with status {@code 400 (Bad Request)} if the sellOfferDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the sellOfferDTO couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     */
+    @PutMapping("{id}")
+    public ResponseEntity<SellOfferDTO> updateSellOffer(
+            @PathVariable(value = "id", required = false) final Long id,
+            @RequestBody SellOfferDTO sellOfferDTO
+    ) {
+        log.debug("REST request to update SellOffer : {}, {}", id, sellOfferDTO);
+        SellOfferDTO result = sellOfferService.updateSellOffer(sellOfferDTO, id);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 }

@@ -16,4 +16,6 @@ public interface FindOfferService {
     FindOfferDTO save(FindOfferDTO findOfferDTO);
 
     Page<FindOfferDTO> findByCriteria(FindOfferFilter findOfferFilter, Pageable pageable);
+
+    FindOfferDTO updateFindOffer(FindOfferDTO findOfferDTO, Long id);
 }

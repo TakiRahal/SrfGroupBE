@@ -59,4 +59,24 @@ public class FindOfferController {
         Page<FindOfferDTO> page = findOfferService.findByCriteria(findOfferFilter, pageable);
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
+
+    /**
+     * {@code PUT  /find-offers/:id} : Updates an existing findOffer.
+     *
+     * @param id the id of the findOfferDTO to save.
+     * @param findOfferDTO the findOfferDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated findOfferDTO,
+     * or with status {@code 400 (Bad Request)} if the findOfferDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the findOfferDTO couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     */
+    @PutMapping("{id}")
+    public ResponseEntity<FindOfferDTO> updateFindOffer(
+            @PathVariable(value = "id", required = false) final Long id,
+            @RequestBody FindOfferDTO findOfferDTO
+    ) {
+        log.debug("REST request to update FindOffer : {}, {}", id, findOfferDTO);
+        FindOfferDTO result = findOfferService.updateFindOffer(findOfferDTO, id);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 }

@@ -22,4 +22,7 @@ public class FindOffer extends Offer {
 
     @Column(name = "amount")
     private Double amount;
+
+    @Column(name = "type_find_offer")
+    private String typeFindOffer;
 }

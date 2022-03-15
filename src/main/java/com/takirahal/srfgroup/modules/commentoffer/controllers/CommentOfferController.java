@@ -73,13 +73,12 @@ public class CommentOfferController {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated commentOfferDTO,
      * or with status {@code 400 (Bad Request)} if the commentOfferDTO is not valid,
      * or with status {@code 500 (Internal Server Error)} if the commentOfferDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("{id}")
     public ResponseEntity<CommentOfferDTO> updateCommentOffer(
             @PathVariable(value = "id", required = false) final Long id,
             @RequestBody CommentOfferDTO commentOfferDTO
-    ) throws URISyntaxException {
+    ) {
         log.debug("REST request to update CommentOffer : {}, {}", id, commentOfferDTO);
         CommentOfferDTO result = commentOfferService.updateCommentOffer(commentOfferDTO, id);
         return new ResponseEntity<>(result, HttpStatus.OK);

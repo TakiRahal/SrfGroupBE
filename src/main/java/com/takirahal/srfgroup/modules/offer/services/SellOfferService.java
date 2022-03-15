@@ -16,4 +16,6 @@ public interface SellOfferService {
     SellOfferDTO save(SellOfferDTO sellOfferDTO);
 
     Page<SellOfferDTO> findByCriteria(SellOfferFilter sellOfferFilter, Pageable pageable);
+
+    SellOfferDTO updateSellOffer(SellOfferDTO sellOfferDTO,  Long id);
 }
