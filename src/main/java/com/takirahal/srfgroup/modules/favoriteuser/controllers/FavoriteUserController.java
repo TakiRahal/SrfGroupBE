@@ -23,7 +23,7 @@ import java.util.List;
  * REST controller for managing {@link com.takirahal.srfgroup.modules.favoriteuser.entities.FavoriteUser}.
  */
 @RestController
-@RequestMapping("/api/favoriteuser")
+@RequestMapping("/api/favoriteuser/")
 public class FavoriteUserController {
 
     private final Logger log = LoggerFactory.getLogger(FavoriteUserController.class);
@@ -38,12 +38,9 @@ public class FavoriteUserController {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new favoriteDTO, or with status {@code 400 (Bad Request)} if the favorite has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("/create")
+    @PostMapping("create")
     public ResponseEntity<FavoriteUserDTO> createFavorite(@RequestBody FavoriteUserDTO favoriteDTO) throws URISyntaxException {
         log.debug("REST request to save Favorite : {}", favoriteDTO);
-        if (favoriteDTO.getId() != null) {
-            throw new BadRequestAlertException("A new favorite cannot already have an ID idexists");
-        }
         FavoriteUserDTO result = favoriteUserService.save(favoriteDTO);
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
@@ -56,10 +53,26 @@ public class FavoriteUserController {
      * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of favorites in body.
      */
-    @GetMapping("/current-user")
+    @GetMapping("current-user")
     public ResponseEntity<Page<FavoriteUserDTO>> getFavoritesCurrentUser(FavoriteUserFilter criteria, Pageable pageable) {
         log.debug("REST request to get Favorites by criteria: {}", criteria);
         Page<FavoriteUserDTO> page = favoriteUserService.findByCriteria(criteria, pageable);
         return new ResponseEntity<>(page, HttpStatus.OK);
+    }
+
+    /**
+     * {@code DELETE  /favorites/:id} : delete the "id" favorite.
+     *
+     * @param id the id of the favoriteDTO to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+     */
+    @DeleteMapping("{id}")
+    public ResponseEntity<Boolean> deleteFavorite(@PathVariable Long id) {
+        log.debug("REST request to delete Favorite : {}", id);
+        favoriteUserService.delete(id);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("X-app-alert", "deleted comment");
+        return new ResponseEntity<>(true, httpHeaders, HttpStatus.OK);
     }
 }

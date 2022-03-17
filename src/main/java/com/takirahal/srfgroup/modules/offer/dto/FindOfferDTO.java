@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FindOfferDTO extends OfferDTO {
     private Double amount;
+    private String typeFindOffer;
 }

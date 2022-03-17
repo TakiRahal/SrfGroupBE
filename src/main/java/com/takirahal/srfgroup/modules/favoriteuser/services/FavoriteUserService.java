@@ -22,4 +22,11 @@ public interface FavoriteUserService {
     OfferWithMyFavoriteUserDTO getOfferWithMyFavoriteUser(Optional<OfferDTO> offerDTO);
 
     Page<FavoriteUserDTO> findByCriteria(FavoriteUserFilter criteria, Pageable pageable);
+
+    /**
+     * Delete the "id" favorite.
+     *
+     * @param id the id of the entity.
+     */
+    void delete(Long id);
 }

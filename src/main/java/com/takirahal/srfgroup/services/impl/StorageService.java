@@ -45,7 +45,7 @@ public class StorageService {
             return null;
         } catch (MalformedURLException e) {
             log.debug("MalformedURLException : {}", e.getMessage());
-            throw new RuntimeException("FAIL!");
+            return null;
         }
     }
 

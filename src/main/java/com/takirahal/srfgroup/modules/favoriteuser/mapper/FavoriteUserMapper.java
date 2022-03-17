@@ -12,7 +12,7 @@ import org.mapstruct.Mapping;
  */
 @Mapper(componentModel = "spring", uses = { UserMapper.class })
 public interface FavoriteUserMapper extends EntityMapper<FavoriteUserDTO, FavoriteUser> {
-    @Mapping(target = "currentUser", source = "currentUser", qualifiedByName = "email")
-    @Mapping(target = "favoriteUser", source = "favoriteUser", qualifiedByName = "email")
+    @Mapping(target = "currentUser", source = "currentUser", qualifiedByName = "publicUser")
+    @Mapping(target = "favoriteUser", source = "favoriteUser", qualifiedByName = "publicUser")
     FavoriteUserDTO toDto(FavoriteUser s);
 }

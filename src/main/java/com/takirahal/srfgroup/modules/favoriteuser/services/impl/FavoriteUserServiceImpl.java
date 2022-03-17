@@ -1,5 +1,6 @@
 package com.takirahal.srfgroup.modules.favoriteuser.services.impl;
 
+import com.takirahal.srfgroup.exceptions.BadRequestAlertException;
 import com.takirahal.srfgroup.modules.user.exceptioins.AccountResourceException;
 import com.takirahal.srfgroup.modules.favoriteuser.dto.FavoriteUserDTO;
 import com.takirahal.srfgroup.modules.favoriteuser.dto.filter.FavoriteUserFilter;
@@ -46,10 +47,17 @@ public class FavoriteUserServiceImpl implements FavoriteUserService {
     public FavoriteUserDTO save(FavoriteUserDTO favoriteDTO) {
         log.debug("Request to save Favorite User: {}", favoriteDTO);
 
+        if (favoriteDTO.getId() != null) {
+            throw new BadRequestAlertException("A new favorite cannot already have an ID idexists");
+        }
 
         UserDTO currentUser = SecurityUtils.getCurrentUser()
                 .map(userMapper::toCurrentUserPrincipal)
                 .orElseThrow(() -> new AccountResourceException("Current user login not found"));
+
+        if(currentUser.getId().equals(favoriteDTO.getFavoriteUser().getId())){
+            throw new BadRequestAlertException("Invalid user");
+        }
 
         favoriteDTO.setCurrentUser(currentUser);
         FavoriteUser favorite = favoriteUserMapper.toEntity(favoriteDTO);
@@ -93,6 +101,12 @@ public class FavoriteUserServiceImpl implements FavoriteUserService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void delete(Long id) {
+        log.debug("Request to delete Favorite : {}", id);
+        favoriteUserRepository.deleteById(id);
     }
 
     protected Specification<FavoriteUser> createSpecification(FavoriteUserFilter favoriteUserFilter) {
