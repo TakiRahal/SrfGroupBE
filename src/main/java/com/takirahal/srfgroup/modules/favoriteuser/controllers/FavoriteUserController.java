@@ -4,6 +4,7 @@ import com.takirahal.srfgroup.exceptions.BadRequestAlertException;
 import com.takirahal.srfgroup.modules.favoriteuser.dto.FavoriteUserDTO;
 import com.takirahal.srfgroup.modules.favoriteuser.dto.filter.FavoriteUserFilter;
 import com.takirahal.srfgroup.modules.favoriteuser.services.FavoriteUserService;
+import com.takirahal.srfgroup.utils.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,9 +71,6 @@ public class FavoriteUserController {
     public ResponseEntity<Boolean> deleteFavorite(@PathVariable Long id) {
         log.debug("REST request to delete Favorite : {}", id);
         favoriteUserService.delete(id);
-
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("X-app-alert", "deleted comment");
-        return new ResponseEntity<>(true, httpHeaders, HttpStatus.OK);
+        return new ResponseEntity<>(true, HeaderUtil.createAlert("deleted comment", id.toString()), HttpStatus.OK);
     }
 }
