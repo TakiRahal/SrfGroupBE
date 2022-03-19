@@ -38,6 +38,6 @@ public class ReportOfferController {
     public ResponseEntity<ReportOfferDTO> createReportOffer(@RequestBody ReportOfferDTO reportOfferDTO) {
         log.debug("REST request to save ReportOffer : {}", reportOfferDTO);
         ReportOfferDTO result = reportOfferService.save(reportOfferDTO);
-        return new ResponseEntity<>(result, HeaderUtil.createAlert("Reported offer succeffully", reportOfferDTO.getOffer().getId().toString()), HttpStatus.CREATED);
+        return new ResponseEntity<>(result, HeaderUtil.createAlert("Reported offer succeffully", result.getId().toString()), HttpStatus.CREATED);
     }
 }

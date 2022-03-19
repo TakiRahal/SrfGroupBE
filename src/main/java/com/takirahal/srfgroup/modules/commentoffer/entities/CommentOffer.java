@@ -34,6 +34,9 @@ public class CommentOffer implements Serializable {
     @Column(name = "content")
     private String content;
 
+    @Column(name = "blocked_by_reported")
+    private Boolean blockedByReported = false;
+
     @ManyToOne
     @JsonIgnoreProperties(value = { "user", "offerImages" }, allowSetters = true)
     private Offer offer;

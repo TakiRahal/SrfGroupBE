@@ -7,18 +7,21 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Lob;
+import java.io.Serializable;
 import java.time.Instant;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentOfferDTO {
+public class CommentOfferDTO implements Serializable {
     private Long id;
 
     private Instant createdDate;
 
     @Lob
     private String content;
+
+    private Boolean blockedByReported;
 
     private OfferDTO offer;
 
