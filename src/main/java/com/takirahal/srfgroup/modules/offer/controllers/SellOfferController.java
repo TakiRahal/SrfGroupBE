@@ -4,6 +4,7 @@ import com.takirahal.srfgroup.modules.offer.dto.SellOfferDTO;
 import com.takirahal.srfgroup.exceptions.BadRequestAlertException;
 import com.takirahal.srfgroup.modules.offer.dto.filter.SellOfferFilter;
 import com.takirahal.srfgroup.modules.offer.services.SellOfferService;
+import com.takirahal.srfgroup.utils.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,10 +44,7 @@ public class SellOfferController {
         }
         SellOfferDTO result = sellOfferService.save(sellOfferDTO);
 
-        return ResponseEntity
-                .created(new URI("/api/sell-offer/" + result.getId()))
-                // .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-                .body(result);
+        return new ResponseEntity<>(result, HeaderUtil.createAlert("Offer created successfully", ""), HttpStatus.CREATED);
     }
 
     /**

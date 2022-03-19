@@ -1,5 +1,6 @@
 package com.takirahal.srfgroup.services.impl;
 
+import com.takirahal.srfgroup.utils.CommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -30,7 +31,6 @@ public class StorageService {
             Files.copy(file.getInputStream(), rootLocation.resolve(file.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception e) {
             log.debug("Exception store file : {}", e.getMessage());
-            log.info("Exception store file : {}", e.getMessage());
             throw new RuntimeException("FAIL!");
         }
     }
@@ -42,10 +42,10 @@ public class StorageService {
             if (resource.exists() || resource.isReadable()) {
                 return resource;
             }
-            return null;
+            return CommonUtil.loadDefaultFile();
         } catch (MalformedURLException e) {
             log.debug("MalformedURLException : {}", e.getMessage());
-            return null;
+            return CommonUtil.loadDefaultFile();
         }
     }
 

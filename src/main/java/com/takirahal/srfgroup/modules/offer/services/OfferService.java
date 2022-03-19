@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface OfferService {
 
-    Page<OfferDTO> findByCriteria(OfferFilter offerFilter, Pageable pageable);
+    Page<OfferDTO> getPublicOffers(OfferFilter offerFilter, Pageable pageable);
 
     void uploadImages(List<MultipartFile> multipartFiles, Long offerId);
 
@@ -23,4 +23,5 @@ public interface OfferService {
     Page<OfferDTO> getOffersByCurrentUser(OfferFilter offerFilter, Pageable pageable);
 
     void delete(Long id);
+
 }

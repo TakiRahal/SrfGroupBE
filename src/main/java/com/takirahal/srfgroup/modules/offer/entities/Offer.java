@@ -58,4 +58,7 @@ public class Offer implements Serializable {
     @ManyToOne
     @JsonIgnoreProperties(value = { "subCategories" }, allowSetters = true)
     private Category category;
+
+    @Column(name = "blocked_by_reported")
+    private Boolean blockedByReported = false;
 }

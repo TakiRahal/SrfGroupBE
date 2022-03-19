@@ -27,4 +27,6 @@ public class OfferFilter {
     private UserOfferFilter user;
 
     private AddressDTO address;
+
+    private Boolean blockedByReported = false;
 }

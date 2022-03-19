@@ -59,12 +59,6 @@ public class OfferServiceImpl implements OfferService {
     OfferImagesRepository offerImagesRepository;
 
     @Override
-    public Page<OfferDTO> findByCriteria(OfferFilter offerFilter, Pageable page) {
-        log.debug("find offers by criteria : {}, page: {}", page);
-        return offerRepository.findAll(createSpecification(offerFilter), page).map(customOfferMapper::toDtoSearchOffer);
-    }
-
-    @Override
     public void uploadImages(List<MultipartFile> multipartFiles, @RequestParam("offerId") Long offerId) {
         log.debug("uploadImages : {}", offerId);
         String pathAddProduct = storageService.getBaseStorageProductImages() + offerId;
@@ -99,6 +93,7 @@ public class OfferServiceImpl implements OfferService {
         UserOfferFilter userOfferFilter = new UserOfferFilter();
         userOfferFilter.setId(useId);
         offerFilter.setUser(userOfferFilter);
+        offerFilter.setBlockedByReported(null);
 
         return findByCriteria(offerFilter, pageable);
     }
@@ -135,6 +130,17 @@ public class OfferServiceImpl implements OfferService {
         offerRepository.deleteById(id);
     }
 
+    @Override
+    public Page<OfferDTO> getPublicOffers(OfferFilter offerFilter, Pageable pageable) {
+        offerFilter.setBlockedByReported(Boolean.FALSE);
+        return findByCriteria(offerFilter, pageable);
+    }
+
+
+    private Page<OfferDTO> findByCriteria(OfferFilter offerFilter, Pageable page) {
+        log.debug("find offers by criteria : {}, page: {}", page);
+        return offerRepository.findAll(createSpecification(offerFilter), page).map(customOfferMapper::toDtoSearchOffer);
+    }
 
     private void storeImages(List<MultipartFile> multipartFiles, String pathAddProduct){
         Path rootLocation = Paths.get(pathAddProduct);
@@ -155,13 +161,10 @@ public class OfferServiceImpl implements OfferService {
                 predicates.add(criteriaBuilder.equal(root.get("user").get("id"), offerFilter.getUser().getId()));
             }
 
-//            if (request.getName() != null && !request.getName().isEmpty()) {
-//                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("fullName")),
-//                        "%" + request.getName().toLowerCase() + "%"));
-//            }
-//            if (request.getGender() != null && !request.getGender().isEmpty()) {
-//                predicates.add(criteriaBuilder.equal(root.get("gender"), request.getGender()));
-//            }
+            if (offerFilter.getBlockedByReported() != null ) {
+                 predicates.add(criteriaBuilder.equal(root.get("blockedByReported"), offerFilter.getBlockedByReported()));
+            }
+
             query.orderBy(criteriaBuilder.desc(root.get("id")));
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };

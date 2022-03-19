@@ -4,6 +4,7 @@ import com.takirahal.srfgroup.modules.offer.dto.RentOfferDTO;
 import com.takirahal.srfgroup.exceptions.BadRequestAlertException;
 import com.takirahal.srfgroup.modules.offer.dto.filter.RentOfferFilter;
 import com.takirahal.srfgroup.modules.offer.services.RentOfferService;
+import com.takirahal.srfgroup.utils.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,10 +41,7 @@ public class RentOfferController {
         }
         RentOfferDTO result = rentOfferService.save(rentOfferDTO);
 
-        return ResponseEntity
-                .created(new URI("/api/rent-offer/" + result.getId()))
-                // .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-                .body(result);
+        return new ResponseEntity<>(result, HeaderUtil.createAlert("Offer created successfully", ""), HttpStatus.CREATED);
     }
 
 

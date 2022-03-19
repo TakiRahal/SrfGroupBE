@@ -37,10 +37,9 @@ public class FavoriteUserController {
      *
      * @param favoriteDTO the favoriteDTO to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new favoriteDTO, or with status {@code 400 (Bad Request)} if the favorite has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("create")
-    public ResponseEntity<FavoriteUserDTO> createFavorite(@RequestBody FavoriteUserDTO favoriteDTO) throws URISyntaxException {
+    public ResponseEntity<FavoriteUserDTO> createFavorite(@RequestBody FavoriteUserDTO favoriteDTO){
         log.debug("REST request to save Favorite : {}", favoriteDTO);
         FavoriteUserDTO result = favoriteUserService.save(favoriteDTO);
         return new ResponseEntity<>(result, HttpStatus.CREATED);

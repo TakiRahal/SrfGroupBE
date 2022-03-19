@@ -35,4 +35,6 @@ public class OfferDTO  implements Serializable {
     private AddressDTO address;
 
     private CategoryDTO category;
+
+    private Boolean blockedByReported;
 }
