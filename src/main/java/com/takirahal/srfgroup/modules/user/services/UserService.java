@@ -24,4 +24,6 @@ public interface UserService {
     UserDTO updateAvatar(MultipartFile file);
 
     Resource getAvatar(Long id, String filename);
+
+    UserDTO updateCurrentUser(UserDTO user);
 }

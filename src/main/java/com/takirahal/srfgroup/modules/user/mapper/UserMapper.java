@@ -38,6 +38,7 @@ public interface UserMapper extends EntityMapper<UserDTO, User> {
     @Mapping(target = "sourceRegister", source = "sourceRegister")
     @Mapping(target = "idOneSignal", source = "idOneSignal")
     @Mapping(target = "authorities", source = "authorities")
+    @Mapping(target = "address", source = "address")
     UserDTO toCurrentUser(User user);
 
     @Named("email")
