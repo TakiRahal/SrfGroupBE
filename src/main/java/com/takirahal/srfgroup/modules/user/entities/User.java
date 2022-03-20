@@ -1,6 +1,7 @@
 package com.takirahal.srfgroup.modules.user.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.takirahal.srfgroup.modules.address.entities.Address;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -86,5 +87,8 @@ public class User /*extends AbstractAuditingEntity*/ implements Serializable {
     )
     @BatchSize(size = 20)
     private Set<Authority> authorities = new HashSet<>();
+
+    @ManyToOne
+    private Address address;
 
 }

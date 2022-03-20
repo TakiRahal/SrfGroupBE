@@ -148,6 +148,13 @@ public class UserController {
     }
 
 
+    @PutMapping("update-current-user")
+    public ResponseEntity<UserDTO> updateCurrentUser(@RequestBody UserDTO user) {
+        log.debug("REST request to update Current User : {}");
+        UserDTO userDTO = userService.updateCurrentUser(user);
+        return new ResponseEntity<>(userDTO, HeaderUtil.createAlert("Update infos succefully", user.getId().toString()), HttpStatus.OK);
+    }
+
     /**
      *
      * @param file

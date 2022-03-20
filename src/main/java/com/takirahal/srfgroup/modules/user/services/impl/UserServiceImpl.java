@@ -1,10 +1,12 @@
 package com.takirahal.srfgroup.modules.user.services.impl;
 
 import com.takirahal.srfgroup.constants.AuthoritiesConstants;
+import com.takirahal.srfgroup.modules.address.mapper.AddressMapper;
 import com.takirahal.srfgroup.modules.user.dto.LoginDTO;
 import com.takirahal.srfgroup.modules.user.dto.RegisterDTO;
 import com.takirahal.srfgroup.exceptions.BadRequestAlertException;
 import com.takirahal.srfgroup.security.JwtTokenProvider;
+import com.takirahal.srfgroup.security.UserPrincipal;
 import com.takirahal.srfgroup.services.impl.MailService;
 import com.takirahal.srfgroup.services.impl.ResizeImage;
 import com.takirahal.srfgroup.services.impl.StorageService;
@@ -71,6 +73,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     ResizeImage resizeImage;
+
+    @Autowired
+    AddressMapper addressMapper;
 
     @Override
     public User registerUser(RegisterDTO registerDTO) {
@@ -158,6 +163,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO updateAvatar(MultipartFile file) {
+        log.debug("REST request to update avatar: {} ");
         Long currentUserId = SecurityUtils
                 .getIdByCurrentUser()
                 .orElseThrow(() -> new AccountResourceException("Current user login not found"));
@@ -191,5 +197,24 @@ public class UserServiceImpl implements UserService {
     public Resource getAvatar(Long id, String filename) {
         Path rootLocation = Paths.get(storageService.getBaseStorageUserImages() + id);
         return storageService.loadFile(filename, rootLocation);
+    }
+
+    @Override
+    public UserDTO updateCurrentUser(UserDTO user) {
+        log.debug("REST request to update infos: {} ", user);
+        Long userId = SecurityUtils.getIdByCurrentUser()
+                .orElseThrow(() -> new AccountResourceException("Current user login not found"));
+
+        User currentUser = userRepository.findById(userId)
+                .orElseThrow(() -> new AccountResourceException("Current user login not found"));
+
+        currentUser.setFirstName(user.getFirstName());
+        currentUser.setLastName(user.getLastName());
+        currentUser.setPhone(user.getPhone());
+        currentUser.setAddress(addressMapper.toEntity(user.getAddress()));
+
+        User newUser = userRepository.save(currentUser);
+
+        return userMapper.toCurrentUser(newUser);
     }
 }

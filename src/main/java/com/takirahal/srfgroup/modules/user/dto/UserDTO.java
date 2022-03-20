@@ -1,5 +1,6 @@
 package com.takirahal.srfgroup.modules.user.dto;
 
+import com.takirahal.srfgroup.modules.address.dto.AddressDTO;
 import com.takirahal.srfgroup.modules.user.entities.Authority;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,4 +33,6 @@ public class UserDTO  implements Serializable {
     private String idOneSignal;
 
     private Set<Authority> authorities;
+
+    private AddressDTO address;
 }
