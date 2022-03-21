@@ -3,6 +3,7 @@ package com.takirahal.srfgroup.modules.user.controllers;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.takirahal.srfgroup.modules.user.dto.LoginDTO;
 import com.takirahal.srfgroup.modules.user.dto.RegisterDTO;
+import com.takirahal.srfgroup.modules.user.dto.UpdatePasswordDTO;
 import com.takirahal.srfgroup.modules.user.dto.UserDTO;
 import com.takirahal.srfgroup.modules.user.entities.User;
 import com.takirahal.srfgroup.modules.user.exceptioins.AccountResourceException;
@@ -105,10 +106,6 @@ public class UserController {
     @PostMapping("public/signup")
     public ResponseEntity<String> signup(@RequestBody RegisterDTO registerDTO) {
         log.debug("REST request to signup : {} ", registerDTO);
-        if (isPasswordLengthInvalid(registerDTO.getPassword())) {
-            throw new InvalidPasswordException("Incorrect password");
-        }
-
         userService.registerUser(registerDTO);
         return new ResponseEntity<String>("true", HttpStatus.CREATED);
     }
@@ -148,11 +145,28 @@ public class UserController {
     }
 
 
+    /**
+     * Update infos for current user
+     * @param user
+     * @return
+     */
     @PutMapping("update-current-user")
     public ResponseEntity<UserDTO> updateCurrentUser(@RequestBody UserDTO user) {
         log.debug("REST request to update Current User : {}");
         UserDTO userDTO = userService.updateCurrentUser(user);
         return new ResponseEntity<>(userDTO, HeaderUtil.createAlert("Update infos succefully", user.getId().toString()), HttpStatus.OK);
+    }
+
+    /**
+     * Update password for current user
+     * @param updatePasswordDTO
+     * @return
+     */
+    @PutMapping("update-password-current-user")
+    public ResponseEntity<Boolean> updatePasswordCurrentUser(@RequestBody UpdatePasswordDTO updatePasswordDTO) {
+        log.debug("REST request to update Current User : {}");
+        Boolean result = userService.updatePasswordCurrentUser(updatePasswordDTO);
+        return new ResponseEntity<>(true, HeaderUtil.createAlert("Update password succefully", ""), HttpStatus.OK);
     }
 
     /**
@@ -186,14 +200,6 @@ public class UserController {
 //        this.userRegistry.getUsers();
 //        return ResponseEntity.ok().body(true);
 //    }
-
-    private static boolean isPasswordLengthInvalid(String password) {
-        return (
-                StringUtils.isEmpty(password) ||
-                        password.length() < RegisterDTO.PASSWORD_MIN_LENGTH ||
-                        password.length() > RegisterDTO.PASSWORD_MAX_LENGTH
-        );
-    }
 
     /**
      * Object to return as body in JWT Authentication.

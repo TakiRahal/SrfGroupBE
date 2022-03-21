@@ -5,6 +5,8 @@ import com.takirahal.srfgroup.modules.address.mapper.AddressMapper;
 import com.takirahal.srfgroup.modules.user.dto.LoginDTO;
 import com.takirahal.srfgroup.modules.user.dto.RegisterDTO;
 import com.takirahal.srfgroup.exceptions.BadRequestAlertException;
+import com.takirahal.srfgroup.modules.user.dto.UpdatePasswordDTO;
+import com.takirahal.srfgroup.modules.user.exceptioins.InvalidPasswordException;
 import com.takirahal.srfgroup.security.JwtTokenProvider;
 import com.takirahal.srfgroup.security.UserPrincipal;
 import com.takirahal.srfgroup.services.impl.MailService;
@@ -33,6 +35,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Path;
@@ -79,6 +82,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User registerUser(RegisterDTO registerDTO) {
+        log.debug("Reques for register user {}", registerDTO);
+        if (isPasswordLengthInvalid(registerDTO.getPassword())) {
+            throw new InvalidPasswordException("Incorrect password");
+        }
         userRepository
                 .findOneByEmailIgnoreCase(registerDTO.getEmail())
                 .ifPresent(
@@ -216,5 +223,38 @@ public class UserServiceImpl implements UserService {
         User newUser = userRepository.save(currentUser);
 
         return userMapper.toCurrentUser(newUser);
+    }
+
+    @Override
+    public Boolean updatePasswordCurrentUser(UpdatePasswordDTO updatePasswordDTO) {
+        log.debug("REST request to update password: {} ", updatePasswordDTO);
+        if (isPasswordLengthInvalid(updatePasswordDTO.getNewPassword())) {
+            throw new InvalidPasswordException("Inavalid length password");
+        }
+
+        Long userId = SecurityUtils.getIdByCurrentUser()
+                .orElseThrow(() -> new AccountResourceException("Current user login not found"));
+
+        User currentUser = userRepository.findById(userId)
+                .orElseThrow(() -> new AccountResourceException("Current user login not found"));
+
+        String currentEncryptedPassword = currentUser.getPassword();
+
+        if (!passwordEncoder.matches(updatePasswordDTO.getCurrentPassword(), currentEncryptedPassword)) {
+            throw new InvalidPasswordException("Invalid old password");
+        }
+
+        String encryptedPassword = passwordEncoder.encode(updatePasswordDTO.getNewPassword());
+        currentUser.setPassword(encryptedPassword);
+        userRepository.save(currentUser);
+        return Boolean.TRUE;
+    }
+
+    private static boolean isPasswordLengthInvalid(String password) {
+        return (
+                StringUtils.isEmpty(password) ||
+                        password.length() < RegisterDTO.PASSWORD_MIN_LENGTH ||
+                        password.length() > RegisterDTO.PASSWORD_MAX_LENGTH
+        );
     }
 }
