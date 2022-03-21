@@ -166,7 +166,7 @@ public class UserController {
     public ResponseEntity<Boolean> updatePasswordCurrentUser(@RequestBody UpdatePasswordDTO updatePasswordDTO) {
         log.debug("REST request to update Current User : {}");
         Boolean result = userService.updatePasswordCurrentUser(updatePasswordDTO);
-        return new ResponseEntity<>(true, HeaderUtil.createAlert("Update password succefully", ""), HttpStatus.OK);
+        return new ResponseEntity<>(result, HeaderUtil.createAlert("Update password succefully", ""), HttpStatus.OK);
     }
 
     /**
