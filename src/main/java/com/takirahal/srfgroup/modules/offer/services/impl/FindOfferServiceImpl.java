@@ -54,6 +54,7 @@ public class FindOfferServiceImpl implements FindOfferService {
     @Override
     public FindOfferDTO save(FindOfferDTO findOfferDTO) {
         log.debug("Request to save FindOffer : {}", findOfferDTO);
+        findOfferDTO.setBlockedByReported(Boolean.FALSE);
         FindOffer findOffer = findOfferMapper.toEntity(findOfferDTO);
         findOffer = findOfferRepository.save(findOffer);
 

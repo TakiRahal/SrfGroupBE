@@ -52,6 +52,7 @@ public class SellOfferServiceImpl implements SellOfferService {
     @Override
     public SellOfferDTO save(SellOfferDTO sellOfferDTO) {
         log.debug("Request to save SellOffer : {}", sellOfferDTO);
+        sellOfferDTO.setBlockedByReported(Boolean.FALSE);
         SellOffer sellOffer = sellOfferMapper.toEntity(sellOfferDTO);
         sellOffer = sellOfferRepository.save(sellOffer);
 

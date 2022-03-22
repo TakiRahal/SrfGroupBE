@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
@@ -60,7 +59,6 @@ public class Offer implements Serializable {
     @JsonIgnoreProperties(value = { "subCategories" }, allowSetters = true)
     private Category category;
 
-    @NotNull
-    @Column(nullable = false)
+    @Column(name = "blocked_by_reported")
     private Boolean blockedByReported = false;
 }

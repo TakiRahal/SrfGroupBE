@@ -54,6 +54,7 @@ public class RentOfferServiceImpl implements RentOfferService {
     @Override
     public RentOfferDTO save(RentOfferDTO rentOfferDTO) {
         log.debug("Request to save RentOffer : {}", rentOfferDTO);
+        rentOfferDTO.setBlockedByReported(Boolean.FALSE);
         RentOffer rentOffer = rentOfferMapper.toEntity(rentOfferDTO);
         rentOffer = rentOfferRepository.save(rentOffer);
 
