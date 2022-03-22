@@ -59,6 +59,6 @@ public class Offer implements Serializable {
     @JsonIgnoreProperties(value = { "subCategories" }, allowSetters = true)
     private Category category;
 
-    @Column(name = "blocked_by_reported")
+    @Column(name = "blocked_by_reported", columnDefinition = "false")
     private Boolean blockedByReported = false;
 }
