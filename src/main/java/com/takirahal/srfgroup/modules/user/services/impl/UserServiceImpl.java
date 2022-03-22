@@ -1,18 +1,20 @@
 package com.takirahal.srfgroup.modules.user.services.impl;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import com.takirahal.srfgroup.constants.AuthoritiesConstants;
 import com.takirahal.srfgroup.modules.address.mapper.AddressMapper;
-import com.takirahal.srfgroup.modules.user.dto.LoginDTO;
-import com.takirahal.srfgroup.modules.user.dto.RegisterDTO;
+import com.takirahal.srfgroup.modules.user.dto.*;
 import com.takirahal.srfgroup.exceptions.BadRequestAlertException;
-import com.takirahal.srfgroup.modules.user.dto.UpdatePasswordDTO;
 import com.takirahal.srfgroup.modules.user.exceptioins.InvalidPasswordException;
+import com.takirahal.srfgroup.security.CustomUserDetailsService;
 import com.takirahal.srfgroup.security.JwtTokenProvider;
 import com.takirahal.srfgroup.security.UserPrincipal;
 import com.takirahal.srfgroup.services.impl.MailService;
 import com.takirahal.srfgroup.services.impl.ResizeImage;
 import com.takirahal.srfgroup.services.impl.StorageService;
-import com.takirahal.srfgroup.modules.user.dto.UserDTO;
 import com.takirahal.srfgroup.modules.user.entities.Authority;
 import com.takirahal.srfgroup.modules.user.entities.User;
 import com.takirahal.srfgroup.modules.user.exceptioins.AccountResourceException;
@@ -27,19 +29,26 @@ import com.takirahal.srfgroup.utils.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.social.facebook.api.Facebook;
+import org.springframework.social.facebook.api.impl.FacebookTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -79,6 +88,12 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     AddressMapper addressMapper;
+
+    @Value("${dynamicsvariables.googleClientId}")
+    private String googleClientId;
+
+    @Autowired
+    CustomUserDetailsService customUserDetailsService;
 
     @Override
     public User registerUser(RegisterDTO registerDTO) {
@@ -248,6 +263,95 @@ public class UserServiceImpl implements UserService {
         currentUser.setPassword(encryptedPassword);
         userRepository.save(currentUser);
         return Boolean.TRUE;
+    }
+
+    @Override
+    public String signinGooglePlus(GooglePlusVM googlePlusVM) throws IOException{
+        final NetHttpTransport transport = new NetHttpTransport();
+        final JacksonFactory jacksonFactory = JacksonFactory.getDefaultInstance();
+        GoogleIdTokenVerifier.Builder verifier = new GoogleIdTokenVerifier.Builder(transport, jacksonFactory)
+                .setAudience(Collections.singletonList(googleClientId));
+        final GoogleIdToken googleIdToken = GoogleIdToken.parse(verifier.getJsonFactory(), googlePlusVM.getTokenId());
+        final GoogleIdToken.Payload payload = googleIdToken.getPayload();
+
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUsername(payload.getEmail());
+        userDTO.setEmail(payload.getEmail());
+        userDTO.setFirstName(googlePlusVM.getProfileObj().getFamilyName());
+        userDTO.setLastName(googlePlusVM.getProfileObj().getGivenName());
+        userDTO.setImageUrl(googlePlusVM.getProfileObj().getImageUrl());
+        userDTO.setSourceRegister(googlePlusVM.getSourceProvider());
+        Set<Authority> authorities = new HashSet<>();
+        Authority authority = new Authority();
+        authority.setName(AuthoritiesConstants.USER);
+        authorities.add(authority);
+        userDTO.setAuthorities(authorities);
+
+        Optional<User> userExist = userRepository.findOneByEmailIgnoreCase(payload.getEmail());
+        if (userExist.isPresent()) {
+            // Update user
+            userDTO.setId(userExist.get().getId());
+        }
+
+        // Save new User
+        User user = userMapper.toEntity(userDTO);
+        user.setPassword(RandomUtil.generateActivationKey(20));
+        user.setActivated(true);
+        User newUser = userRepository.save(user);
+
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(userMapper.toDto(newUser).getEmail());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                userDetails,
+                "",
+                userDetails.getAuthorities()
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        String jwt = tokenProvider.createToken(authenticationToken, true);
+        return jwt;
+    }
+
+    @Override
+    public String signinFacebook(FacebookVM facebookVM) {
+        Facebook facebook = new FacebookTemplate(facebookVM.getAccessToken());
+        final String[] fields = { "email", "picture" };
+        FacebookVM userFacebook = facebook.fetchObject("me", FacebookVM.class, fields);
+
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUsername(userFacebook.getEmail());
+        userDTO.setEmail(facebookVM.getEmail());
+        userDTO.setFirstName(facebookVM.getName());
+        userDTO.setLastName(facebookVM.getName());
+        userDTO.setImageUrl(facebookVM.getPicture().getData().getUrl());
+        userDTO.setSourceRegister(facebookVM.getSourceProvider());
+        Set<Authority> authorities = new HashSet<>();
+        Authority authority = new Authority();
+        authority.setName(AuthoritiesConstants.USER);
+        authorities.add(authority);
+        userDTO.setAuthorities(authorities);
+
+        Optional<User> userExist = userRepository.findOneByEmailIgnoreCase(userFacebook.getEmail());
+        if (userExist.isPresent()) {
+            // Update user
+            userDTO.setId(userExist.get().getId());
+        }
+
+        // Save new User
+        User user = userMapper.toEntity(userDTO);
+        user.setPassword(RandomUtil.generateActivationKey(20));
+        user.setActivated(true);
+        User newUser = userRepository.save(user);
+
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(userMapper.toDto(newUser).getEmail());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                userDetails,
+                "",
+                userDetails.getAuthorities()
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        String jwt = tokenProvider.createToken(authenticationToken, true);
+        return jwt;
     }
 
     private static boolean isPasswordLengthInvalid(String password) {

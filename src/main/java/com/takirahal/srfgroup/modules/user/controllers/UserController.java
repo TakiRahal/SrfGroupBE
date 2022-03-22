@@ -1,10 +1,7 @@
 package com.takirahal.srfgroup.modules.user.controllers;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.takirahal.srfgroup.modules.user.dto.LoginDTO;
-import com.takirahal.srfgroup.modules.user.dto.RegisterDTO;
-import com.takirahal.srfgroup.modules.user.dto.UpdatePasswordDTO;
-import com.takirahal.srfgroup.modules.user.dto.UserDTO;
+import com.takirahal.srfgroup.modules.user.dto.*;
 import com.takirahal.srfgroup.modules.user.entities.User;
 import com.takirahal.srfgroup.modules.user.exceptioins.AccountResourceException;
 import com.takirahal.srfgroup.modules.user.exceptioins.InvalidPasswordException;
@@ -30,6 +27,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
+import java.io.IOException;
 import java.util.Optional;
 
 @RestController
@@ -82,6 +81,38 @@ public class UserController {
             throw new InvalidPasswordException("Bad Credentials");
         }
 
+    }
+
+
+    @PostMapping("public/signin-google-plus")
+    public ResponseEntity<JWTToken> signinGooglePlus(@Valid @RequestBody GooglePlusVM googlePlusVM) {
+        log.debug("REST request to signin Google Plus: {} ", googlePlusVM);
+        try {
+            String jwt = userService.signinGooglePlus(googlePlusVM);
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.add(JwtAuthenticationFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
+            httpHeaders.add("X-app-alert", "Welcome");
+            return new ResponseEntity<>(new JWTToken(jwt), httpHeaders, HttpStatus.OK);
+        }
+        catch(Exception e){
+            throw new InvalidPasswordException("Bad Credentials");
+        }
+    }
+
+
+    @PostMapping("public/signin-facebook")
+    public ResponseEntity<JWTToken> signinFacebook(@Valid @RequestBody FacebookVM facebookVM) {
+        log.debug("REST request to signin Google Plus: {} ", facebookVM);
+        try {
+            String jwt = userService.signinFacebook(facebookVM);
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.add(JwtAuthenticationFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
+            httpHeaders.add("X-app-alert", "Welcome");
+            return new ResponseEntity<>(new JWTToken(jwt), httpHeaders, HttpStatus.OK);
+        }
+        catch(Exception e){
+            throw new InvalidPasswordException("Bad Credentials");
+        }
     }
 
 
