@@ -16,7 +16,7 @@ import org.mapstruct.Named;
 @Mapper(componentModel = "spring", uses = { OfferMapper.class, UserMapper.class })
 public interface CommentOfferMapper extends EntityMapper<CommentOfferDTO, CommentOffer> {
     @Mapping(target = "offer", source = "offer", qualifiedByName = "id")
-    @Mapping(target = "user", source = "user", qualifiedByName = "email")
+    @Mapping(target = "user", source = "user", qualifiedByName = "commentOffer")
     CommentOfferDTO toDto(CommentOffer s);
 
     @Named("id")

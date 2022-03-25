@@ -6,6 +6,7 @@ import com.takirahal.srfgroup.modules.commentoffer.services.CommentOfferService;
 import com.takirahal.srfgroup.modules.user.dto.UserDTO;
 import com.takirahal.srfgroup.modules.user.exceptioins.AccountResourceException;
 import com.takirahal.srfgroup.exceptions.BadRequestAlertException;
+import com.takirahal.srfgroup.utils.HeaderUtil;
 import com.takirahal.srfgroup.utils.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +63,7 @@ public class CommentOfferController {
         commentOfferDTO.setUser(currentUserDTO);
         CommentOfferDTO result = commentOfferService.save(commentOfferDTO);
 
-        return new ResponseEntity<>(result, HttpStatus.CREATED);
+        return new ResponseEntity<>(result, HeaderUtil.createAlert("comment_offer.comment_offer_added_succefully", result.getId().toString()), HttpStatus.CREATED);
     }
 
     /**
