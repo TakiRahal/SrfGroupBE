@@ -11,8 +11,8 @@ import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring", uses = { UserMapper.class })
 public interface ConversationMapper extends EntityMapper<ConversationDTO, Conversation> {
-    @Mapping(target = "senderUser", source = "senderUser", qualifiedByName = "email")
-    @Mapping(target = "receiverUser", source = "receiverUser", qualifiedByName = "email")
+    @Mapping(target = "senderUser", source = "senderUser", qualifiedByName = "conversation")
+    @Mapping(target = "receiverUser", source = "receiverUser", qualifiedByName = "conversation")
     ConversationDTO toDto(Conversation s);
 
     @Named("id")

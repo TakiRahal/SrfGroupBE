@@ -86,4 +86,24 @@ public interface UserMapper extends EntityMapper<UserDTO, User> {
     @Mapping(target = "imageUrl", source = "imageUrl")
     @Mapping(target = "sourceRegister", source = "sourceRegister")
     UserDTO toDtoCommentOffer(User user);
+
+    @Named("conversation")
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "email", source = "email")
+    @Mapping(target = "firstName", source = "firstName")
+    @Mapping(target = "lastName", source = "lastName")
+    @Mapping(target = "imageUrl", source = "imageUrl")
+    @Mapping(target = "sourceRegister", source = "sourceRegister")
+    UserDTO toDtoConversation(User user);
+
+    @Named("message")
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "email", source = "email")
+    @Mapping(target = "firstName", source = "firstName")
+    @Mapping(target = "lastName", source = "lastName")
+    @Mapping(target = "imageUrl", source = "imageUrl")
+    @Mapping(target = "sourceRegister", source = "sourceRegister")
+    UserDTO toDtoMessage(User user);
 }

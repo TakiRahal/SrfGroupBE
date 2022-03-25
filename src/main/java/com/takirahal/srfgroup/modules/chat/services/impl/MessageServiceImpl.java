@@ -8,7 +8,14 @@ import com.takirahal.srfgroup.modules.chat.services.MessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import javax.persistence.criteria.Predicate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class MessageServiceImpl implements MessageService {
@@ -27,5 +34,21 @@ public class MessageServiceImpl implements MessageService {
         Message message = messageMapper.toEntity(messageDTO);
         message = messageRepository.save(message);
         return messageMapper.toDto(message);
+    }
+
+    @Override
+    public Page<MessageDTO> findByCriteria(Pageable pageable, Long conversationId) {
+        log.debug("find message by criteria : {}, page: {}", pageable);
+        return messageRepository.findAll(createSpecification(conversationId), pageable).map(messageMapper::toDto);
+    }
+
+    private Specification<Message> createSpecification(Long conversationId) {
+        return (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            predicates.add(criteriaBuilder.equal(root.get("conversation").get("id"), conversationId));
+
+            query.orderBy(criteriaBuilder.asc(root.get("id")));
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
     }
 }

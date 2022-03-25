@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Lob;
 import java.io.Serializable;
+import java.time.Instant;
 
 
 @Data
@@ -18,6 +19,8 @@ public class MessageDTO implements Serializable {
 
     @Lob
     private String content;
+
+    private Instant dateCreated;
 
     private Boolean isRead;
 

@@ -9,6 +9,7 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.Instant;
 
 @Data
 @NoArgsConstructor
@@ -28,6 +29,9 @@ public class Message implements Serializable {
     @Type(type = "org.hibernate.type.TextType")
     @Column(name = "content")
     private String content;
+
+    @Column(name = "date_created")
+    private Instant dateCreated;
 
     @Column(name = "is_read")
     private Boolean isRead;
