@@ -62,13 +62,13 @@ public class SrfgroupApplication implements CommandLineRunner {
         }
 
         // For user
-//        Map<String, JobParameter> parmsUser = new HashMap<>();
-//        parmsUser.put("time", new JobParameter(System.currentTimeMillis()));
-//        JobParameters jobParameterUser = new JobParameters(parmsUser);
-//        JobExecution jobExecutionUser = jobLauncher.run(jobUser, jobParameterUser);
-//        while (jobExecutionUser.isRunning()){
-//            System.out.println("...");
-//        }
+        Map<String, JobParameter> parmsUser = new HashMap<>();
+        parmsUser.put("time", new JobParameter(System.currentTimeMillis()));
+        JobParameters jobParameterUser = new JobParameters(parmsUser);
+        JobExecution jobExecutionUser = jobLauncher.run(jobUser, jobParameterUser);
+        while (jobExecutionUser.isRunning()){
+            System.out.println("...");
+        }
 
         // return jobExecution.getStatus();
     }

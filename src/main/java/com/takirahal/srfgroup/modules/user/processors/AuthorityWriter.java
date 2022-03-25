@@ -6,6 +6,8 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -16,7 +18,7 @@ public class AuthorityWriter implements ItemWriter<Authority> {
     AuthorityRepository authorityRepository;
 
     @Override
-    public void write(List<? extends Authority> list) throws Exception {
-        authorityRepository.saveAll(list);
+    public void write(List<? extends Authority> list) {
+         authorityRepository.saveAll(list);
     }
 }
