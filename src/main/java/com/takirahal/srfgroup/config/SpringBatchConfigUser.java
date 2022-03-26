@@ -70,7 +70,7 @@ public class SpringBatchConfigUser {
         DelimitedLineTokenizer delimitedLineTokenizer = new DelimitedLineTokenizer();
         delimitedLineTokenizer.setDelimiter(";");
         delimitedLineTokenizer.setStrict(false);
-        delimitedLineTokenizer.setNames("id", "firstName", "lastName", "username", "email", "activated", "imageUrl", "activationKey", "resetKey", "phone", "sourceRegister", "idOneSignal", "password");
+        delimitedLineTokenizer.setNames("id", "firstName", "lastName", "username", "email", "activated", "imageUrl", "activationKey", "resetKey", "phone", "sourceRegister", "password");
         bankTransactionLineMapper.setLineTokenizer(delimitedLineTokenizer);
         BeanWrapperFieldSetMapper fieldSetMapper = new BeanWrapperFieldSetMapper();
         fieldSetMapper.setTargetType(User.class);

@@ -1,8 +1,8 @@
 package com.takirahal.srfgroup.modules.commentoffer.services.impl;
 
-import com.takirahal.srfgroup.enums.ModuleNotification;
 import com.takirahal.srfgroup.exceptions.ResouorceNotFoundException;
 import com.takirahal.srfgroup.exceptions.UnauthorizedException;
+import com.takirahal.srfgroup.modules.notification.enums.ModuleNotification;
 import com.takirahal.srfgroup.modules.user.exceptioins.AccountResourceException;
 import com.takirahal.srfgroup.exceptions.BadRequestAlertException;
 import com.takirahal.srfgroup.modules.commentoffer.dto.CommentOfferDTO;
@@ -56,7 +56,7 @@ public class CommentOfferServiceImpl implements CommentOfferService {
             NotificationDTO notificationDTO = new NotificationDTO();
             notificationDTO.setDateCreated(Instant.now());
             notificationDTO.setContent("Test comment offer");
-            notificationDTO.setModule(ModuleNotification.CommentOffer.toString());
+            notificationDTO.setModule(ModuleNotification.CommentOfferNotification.name());
             notificationDTO.setIsRead(Boolean.FALSE);
             notificationDTO.setUser(commentOfferDTO.getOffer().getUser());
             notificationService.save(notificationDTO);

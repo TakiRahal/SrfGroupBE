@@ -18,6 +18,8 @@ public interface UserService {
 
     UserDTO getCurrentUser();
 
+    String signinClient(LoginDTO loginDTO);
+
     String signInAdmin(LoginDTO loginDTO);
 
     UserDTO updateAvatar(MultipartFile file);

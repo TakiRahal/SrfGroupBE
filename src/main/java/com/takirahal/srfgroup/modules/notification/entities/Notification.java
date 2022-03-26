@@ -1,5 +1,6 @@
 package com.takirahal.srfgroup.modules.notification.entities;
 
+import com.takirahal.srfgroup.modules.notification.enums.ModuleNotification;
 import com.takirahal.srfgroup.modules.user.entities.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,10 +33,10 @@ public class Notification implements Serializable {
     private String content;
 
     @Column(name = "module")
-    private String module;
+    private String module; // ModuleNotification
 
     @Column(name = "is_read")
-    private Boolean isRead;
+    private Boolean isRead = false;
 
     @ManyToOne
     private User user;

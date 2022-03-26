@@ -20,7 +20,6 @@ public class UserPrincipal implements UserDetails {
     private String imageUrl;
     private String phone;
     private String sourceRegister;
-    private String idOneSignal;
 
     @JsonIgnore
     private String password;
@@ -35,7 +34,6 @@ public class UserPrincipal implements UserDetails {
                          String imageUrl,
                          String phone,
                          String sourceRegister,
-                         String idOneSignal,
                          String password,
                          Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
@@ -46,7 +44,6 @@ public class UserPrincipal implements UserDetails {
         this.imageUrl = imageUrl;
         this.phone = phone;
         this.sourceRegister = sourceRegister;
-        this.idOneSignal = idOneSignal;
         this.password = password;
         this.authorities = authorities;
     }
@@ -65,7 +62,6 @@ public class UserPrincipal implements UserDetails {
                 user.getImageUrl(),
                 user.getPhone(),
                 user.getSourceRegister(),
-                user.getIdOneSignal(),
                 user.getPassword(),
                 authorities
         );
@@ -102,10 +98,6 @@ public class UserPrincipal implements UserDetails {
 
     public String getSourceRegister() {
         return sourceRegister;
-    }
-
-    public String getIdOneSignal() {
-        return idOneSignal;
     }
 
     @Override

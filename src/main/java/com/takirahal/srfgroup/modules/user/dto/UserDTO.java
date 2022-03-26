@@ -30,8 +30,6 @@ public class UserDTO  implements Serializable {
 
     private String sourceRegister;
 
-    private String idOneSignal;
-
     private Set<Authority> authorities;
 
     private AddressDTO address;

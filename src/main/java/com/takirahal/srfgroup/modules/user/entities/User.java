@@ -21,7 +21,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "sg_user")
-public class User /*extends AbstractAuditingEntity*/ implements Serializable {
+public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -69,10 +69,6 @@ public class User /*extends AbstractAuditingEntity*/ implements Serializable {
     @Size(max = 30)
     @Column(name = "source_register", length = 20)
     private String sourceRegister;
-
-    @Size(max = 30)
-    @Column(name = "id_one_signal", length = 20)
-    private String idOneSignal;
 
     @NotBlank
     @Size(max = 100)

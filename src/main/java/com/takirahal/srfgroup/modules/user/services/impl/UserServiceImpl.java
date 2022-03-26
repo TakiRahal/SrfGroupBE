@@ -6,9 +6,14 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.takirahal.srfgroup.constants.AuthoritiesConstants;
 import com.takirahal.srfgroup.modules.address.mapper.AddressMapper;
+import com.takirahal.srfgroup.modules.notification.entities.Notification;
+import com.takirahal.srfgroup.modules.notification.enums.ModuleNotification;
+import com.takirahal.srfgroup.modules.notification.repositories.NotificationRepository;
 import com.takirahal.srfgroup.modules.user.dto.*;
 import com.takirahal.srfgroup.exceptions.BadRequestAlertException;
+import com.takirahal.srfgroup.modules.user.entities.UserOneSignal;
 import com.takirahal.srfgroup.modules.user.exceptioins.InvalidPasswordException;
+import com.takirahal.srfgroup.modules.user.services.UserOneSignalService;
 import com.takirahal.srfgroup.security.CustomUserDetailsService;
 import com.takirahal.srfgroup.security.JwtTokenProvider;
 import com.takirahal.srfgroup.security.UserPrincipal;
@@ -42,12 +47,14 @@ import org.springframework.social.facebook.api.Facebook;
 import org.springframework.social.facebook.api.impl.FacebookTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
@@ -95,9 +102,15 @@ public class UserServiceImpl implements UserService {
     @Autowired
     CustomUserDetailsService customUserDetailsService;
 
+    @Autowired
+    UserOneSignalService userOneSignalService;
+
+    @Autowired
+    NotificationRepository notificationRepository;
+
     @Override
     public User registerUser(RegisterDTO registerDTO) {
-        log.debug("Reques for register user {}", registerDTO);
+        log.debug("REST request for register user {}", registerDTO);
         if (isPasswordLengthInvalid(registerDTO.getPassword())) {
             throw new InvalidPasswordException("Incorrect password");
         }
@@ -122,16 +135,27 @@ public class UserServiceImpl implements UserService {
         Set<Authority> authorities = new HashSet<>();
         authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
         newUser.setAuthorities(authorities);
-        userRepository.save(newUser);
+        User user = userRepository.save(newUser);
 
         mailService.sendActivationEmail(newUser);
 
-        return newUser;
+        // Register one signal id
+        if(registerDTO.getIdOneSignal()!=null){
+            UserOneSignalDTO userOneSignalDTO = new UserOneSignalDTO();
+            userOneSignalDTO.setIdOneSignal(registerDTO.getIdOneSignal());
+            userOneSignalDTO.setUser(userMapper.toDtoIdEmail(user));
+            userOneSignalService.save(userOneSignalDTO);
+        }
+
+        // Add Welcome notification
+        addWelcomeNotification(user);
+
+        return user;
     }
 
     @Override
     public Optional<User> activateRegistration(String key) {
-        log.debug("Activating user for activation key {}", key);
+        log.debug("REST request to Activating user for activation key {}", key);
         return userRepository
                 .findOneByActivationKey(key)
                 .map(
@@ -158,6 +182,28 @@ public class UserServiceImpl implements UserService {
                 .flatMap(userRepository::findOneByEmailIgnoreCase)
                 .map(userMapper::toCurrentUser)
                 .orElseThrow(() -> new AccountResourceException("Current user login not found"));
+    }
+
+    @Override
+    public String signinClient(LoginDTO loginDTO) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginDTO.getEmail(),
+                            loginDTO.getPassword()
+                    )
+            );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String jwt = tokenProvider.generateToken(authentication);
+
+            // Register one signal id if not exist already
+            saveOneSignal(loginDTO.getIdOneSignal());
+
+            return jwt;
+        }
+        catch(BadCredentialsException e){
+            throw new InvalidPasswordException("Bad Credentials");
+        }
     }
 
     @Override
@@ -308,6 +354,17 @@ public class UserServiceImpl implements UserService {
 
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         String jwt = tokenProvider.createToken(authenticationToken, true);
+
+
+        // Register one signal id if not exist already
+        saveOneSignal(googlePlusVM.getIdOneSignal());
+
+
+        // Add Welcome notification first time
+        if (!userExist.isPresent()) {
+            addWelcomeNotification(user);
+        }
+
         return jwt;
     }
 
@@ -351,7 +408,46 @@ public class UserServiceImpl implements UserService {
 
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         String jwt = tokenProvider.createToken(authenticationToken, true);
+
+        // Register one signal id if not exist already
+        saveOneSignal(facebookVM.getIdOneSignal());
+
+        // Add Welcome notification first time
+        if (!userExist.isPresent()) {
+            addWelcomeNotification(user);
+        }
+
         return jwt;
+    }
+
+    /**
+     *
+     * @param idOneSignal
+     */
+    private void saveOneSignal(String idOneSignal){
+        if(idOneSignal!=null && !ObjectUtils.isEmpty(idOneSignal)){
+            Optional<UserPrincipal> userPrincipalOptional = SecurityUtils.getCurrentUser();
+            Optional<UserOneSignal> userOneSignal = userOneSignalService.findByIdOneSignalAndUser(idOneSignal,userMapper.currentUserToEntity(userPrincipalOptional.get()));
+            if(!userOneSignal.isPresent()){
+                UserOneSignalDTO userOneSignalDTO = new UserOneSignalDTO();
+                userOneSignalDTO.setIdOneSignal(idOneSignal);
+                userOneSignalDTO.setUser(userMapper.toCurrentUserPrincipal(userPrincipalOptional.get()));
+                userOneSignalService.save(userOneSignalDTO);
+            }
+        }
+    }
+
+    /**
+     *
+     * @param user
+     */
+    private void addWelcomeNotification(User user){
+        Notification notification = new Notification();
+        notification.setDateCreated(Instant.now());
+        notification.setContent("Welcome in Espace SrfGroup");
+        notification.setModule(ModuleNotification.AdminNotification.name());
+        notification.setUser(user);
+        notificationRepository.save(notification);
     }
 
     private static boolean isPasswordLengthInvalid(String password) {

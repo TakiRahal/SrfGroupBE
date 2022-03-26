@@ -63,24 +63,11 @@ public class UserController {
     @PostMapping("public/signin")
     public ResponseEntity<JWTToken> signin(@RequestBody LoginDTO loginDTO) {
         log.debug("REST request to signin : {} ", loginDTO);
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginDTO.getEmail(),
-                            loginDTO.getPassword()
-                    )
-            );
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            String jwt = tokenProvider.generateToken(authentication);
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.add(JwtAuthenticationFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
-            httpHeaders.add("X-app-alert", "Welcome");
-            return new ResponseEntity<>(new JWTToken(jwt), httpHeaders, HttpStatus.OK);
-        }
-        catch(BadCredentialsException e){
-            throw new InvalidPasswordException("Bad Credentials");
-        }
-
+        String jwt = userService.signinClient(loginDTO);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(JwtAuthenticationFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
+        httpHeaders.add("X-app-alert", "Welcome");
+        return new ResponseEntity<>(new JWTToken(jwt), httpHeaders, HttpStatus.OK);
     }
 
 

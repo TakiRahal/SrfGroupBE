@@ -1,5 +1,6 @@
 package com.takirahal.srfgroup.modules.notification.dto;
 
+import com.takirahal.srfgroup.modules.notification.enums.ModuleNotification;
 import com.takirahal.srfgroup.modules.user.dto.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;

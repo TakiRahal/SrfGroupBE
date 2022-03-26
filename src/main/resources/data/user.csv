@@ -1,2 +1,2 @@
 id;firstName;lastName;username;email;activated;imageUrl;activationKey;resetKey;phone;sourceRegister;idOneSignal;password
-1;Admin;Localhost;admin@localhost.com;admin@localhost.com;true;image;123456789;123456789;0021624158860;Web;0000;$2a$10$OOP92q7D6ssNhv4corGRfOa3CgejEQMLqrWgzlLbLUfcPGyoO0ZpW
+1;Admin;Localhost;admin@localhost.com;admin@localhost.com;true;image;123456789;123456789;0021624158860;Web;$2a$10$OOP92q7D6ssNhv4corGRfOa3CgejEQMLqrWgzlLbLUfcPGyoO0ZpW

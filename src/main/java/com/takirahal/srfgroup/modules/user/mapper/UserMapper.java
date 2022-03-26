@@ -22,7 +22,6 @@ public interface UserMapper extends EntityMapper<UserDTO, User> {
     @Mapping(target = "imageUrl", source = "imageUrl")
     @Mapping(target = "phone", source = "phone")
     @Mapping(target = "sourceRegister", source = "sourceRegister")
-    @Mapping(target = "idOneSignal", source = "idOneSignal")
     @Mapping(target = "authorities", source = "authorities")
     UserDTO toCurrentUserPrincipal(UserPrincipal user);
 
@@ -36,7 +35,6 @@ public interface UserMapper extends EntityMapper<UserDTO, User> {
     @Mapping(target = "imageUrl", source = "imageUrl")
     @Mapping(target = "phone", source = "phone")
     @Mapping(target = "sourceRegister", source = "sourceRegister")
-    @Mapping(target = "idOneSignal", source = "idOneSignal")
     @Mapping(target = "authorities", source = "authorities")
     @Mapping(target = "address", source = "address")
     UserDTO toCurrentUser(User user);
@@ -63,7 +61,6 @@ public interface UserMapper extends EntityMapper<UserDTO, User> {
     @Mapping(target = "imageUrl", source = "imageUrl")
     @Mapping(target = "phone", source = "phone")
     @Mapping(target = "sourceRegister", source = "sourceRegister")
-    @Mapping(target = "idOneSignal", source = "idOneSignal")
     @Mapping(target = "authorities", source = "authorities")
     UserDTO toDtoPublicUser(User user);
 

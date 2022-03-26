@@ -24,4 +24,6 @@ public class RegisterDTO {
     private String password;
 
     private String sourceRegister;
+
+    private String idOneSignal;
 }
