@@ -75,6 +75,6 @@ public class CategoryController {
     public ResponseEntity<CategoryDTO> updateCategory(@RequestBody CategoryDTO categoryDTO){
         log.debug("REST request to uodate Category : {}", categoryDTO);
         CategoryDTO result = categoryService.save(categoryDTO);
-        return new ResponseEntity<>(result, HeaderUtil.createAlert("Category update succefully", result.getId().toString()), HttpStatus.CREATED);
+        return new ResponseEntity<>(result, HeaderUtil.createAlert("Category update succefully", result.getId().toString()), HttpStatus.OK);
     }
 }
