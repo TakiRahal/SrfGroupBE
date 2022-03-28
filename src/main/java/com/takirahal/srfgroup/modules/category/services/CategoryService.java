@@ -5,6 +5,29 @@ import com.takirahal.srfgroup.modules.category.dto.filter.CategoryFilter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Optional;
+
 public interface CategoryService {
+
+    /**
+     *
+     * @param criteria
+     * @param pageable
+     * @return
+     */
     Page<CategoryDTO> findByCriteria(CategoryFilter criteria, Pageable pageable);
+
+    /**
+     *
+     * @param categoryDTO
+     * @return
+     */
+    CategoryDTO save(CategoryDTO categoryDTO);
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    Optional<CategoryDTO> findOne(Long id);
 }

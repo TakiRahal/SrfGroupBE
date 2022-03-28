@@ -214,19 +214,25 @@ public class UserServiceImpl implements UserService {
             throw new AccountResourceException("Not found user with email");
         }
 
-        if( !SecurityUtils.hasUserThisAuthority(existingUser.get().getAuthorities(), AuthoritiesConstants.ADMIN) ){
+        if( !SecurityUtils.hasUserThisAuthority(existingUser.get().getAuthorities(), AuthoritiesConstants.ADMIN) &&
+            !SecurityUtils.hasUserThisAuthority(existingUser.get().getAuthorities(), AuthoritiesConstants.SUPER_ADMIN)){
             throw new BadRequestAlertException("Not admin");
         }
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginDTO.getEmail(),
-                        loginDTO.getPassword()
-                )
-        );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginDTO.getEmail(),
+                            loginDTO.getPassword()
+                    )
+            );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return tokenProvider.generateToken(authentication);
+            return tokenProvider.generateToken(authentication);
+        }
+        catch(BadCredentialsException e){
+            throw new InvalidPasswordException("Bad Credentials");
+        }
     }
 
     @Override

@@ -3,6 +3,8 @@ package com.takirahal.srfgroup.modules.category.controllers;
 import com.takirahal.srfgroup.modules.category.dto.CategoryDTO;
 import com.takirahal.srfgroup.modules.category.dto.filter.CategoryFilter;
 import com.takirahal.srfgroup.modules.category.services.CategoryService;
+import com.takirahal.srfgroup.modules.faq.dto.FaqDTO;
+import com.takirahal.srfgroup.utils.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +13,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/category/")
@@ -36,5 +38,43 @@ public class CategoryController {
         log.debug("REST request to get Categories by criteria: {}", criteria);
         Page<CategoryDTO> page = categoryService.findByCriteria(criteria, pageable);
         return new ResponseEntity<>(page, HttpStatus.OK);
+    }
+
+    /**
+     *
+     * @param categoryDTO
+     * @return
+     */
+    @PostMapping("admin/create")
+    public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO categoryDTO){
+        log.debug("REST request to save Category : {}", categoryDTO);
+        CategoryDTO result = categoryService.save(categoryDTO);
+        return new ResponseEntity<>(result, HeaderUtil.createAlert("Category create succefully", result.getId().toString()), HttpStatus.CREATED);
+    }
+
+    /**
+     * {@code GET  /offers/:id} : get the "id" offer.
+     *
+     * @param id the id of the offerDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the offerDTO, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("admin/{id}")
+    public ResponseEntity<CategoryDTO> getOffer(@PathVariable Long id) {
+        log.debug("REST request to get Category : {}", id);
+        Optional<CategoryDTO> categoryDTO = categoryService.findOne(id);
+        return new ResponseEntity<>(categoryDTO.get(), HttpStatus.OK);
+    }
+
+
+    /**
+     *
+     * @param categoryDTO
+     * @return
+     */
+    @PutMapping("admin/update")
+    public ResponseEntity<CategoryDTO> updateCategory(@RequestBody CategoryDTO categoryDTO){
+        log.debug("REST request to uodate Category : {}", categoryDTO);
+        CategoryDTO result = categoryService.save(categoryDTO);
+        return new ResponseEntity<>(result, HeaderUtil.createAlert("Category update succefully", result.getId().toString()), HttpStatus.CREATED);
     }
 }

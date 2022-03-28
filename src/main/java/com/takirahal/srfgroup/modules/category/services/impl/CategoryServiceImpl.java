@@ -6,6 +6,9 @@ import com.takirahal.srfgroup.modules.category.entities.Category;
 import com.takirahal.srfgroup.modules.category.mapper.CategoryMapper;
 import com.takirahal.srfgroup.modules.category.repositories.CategoryRepository;
 import com.takirahal.srfgroup.modules.category.services.CategoryService;
+import com.takirahal.srfgroup.modules.notification.services.impl.NotificationServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,9 +18,12 @@ import org.springframework.stereotype.Service;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
+
+    private final Logger log = LoggerFactory.getLogger(CategoryServiceImpl.class);
 
     @Autowired
     CategoryRepository categoryRepository;
@@ -28,6 +34,20 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Page<CategoryDTO> findByCriteria(CategoryFilter criteria, Pageable pageable) {
         return categoryRepository.findAll(createSpecification(criteria), pageable).map(categoryMapper::toDto);
+    }
+
+    @Override
+    public CategoryDTO save(CategoryDTO categoryDTO) {
+        log.debug("Request to save Category : {}", categoryDTO);
+        Category category = categoryMapper.toEntity(categoryDTO);
+        category = categoryRepository.save(category);
+        return categoryMapper.toDto(category);
+    }
+
+    @Override
+    public Optional<CategoryDTO> findOne(Long id) {
+        log.debug("Request to get Category : {}", id);
+        return categoryRepository.findById(id).map(categoryMapper::toDto);
     }
 
     private Specification<Category> createSpecification(CategoryFilter criteria) {
