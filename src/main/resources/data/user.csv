@@ -1,2 +1,2 @@
 id;firstName;lastName;username;email;activated;imageUrl;activationKey;resetKey;phone;sourceRegister;idOneSignal;password
-1;Srf;Group;srfgroup.contact@gmail.com;srfgroup.contact@gmail.com;true;image;123456789;123456789;0021624158860;Web;$2a$10$4Ba5qhmFQ14vhIwrYXNDA.Wvs/3zAkwt.u19Ceqg9hHyTn/1SOBri
+1;Srf;Group;srfgroup.contact@gmail.com;srfgroup.contact@gmail.com;true;image;123456789;123456789;0021624158860;WebBrowser;$2a$10$4Ba5qhmFQ14vhIwrYXNDA.Wvs/3zAkwt.u19Ceqg9hHyTn/1SOBri

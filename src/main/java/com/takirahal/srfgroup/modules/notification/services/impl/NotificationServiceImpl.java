@@ -1,5 +1,6 @@
 package com.takirahal.srfgroup.modules.notification.services.impl;
 
+import com.takirahal.srfgroup.modules.user.dto.filter.UserOfferFilter;
 import com.takirahal.srfgroup.modules.user.exceptioins.AccountResourceException;
 import com.takirahal.srfgroup.modules.notification.dto.NotificationDTO;
 import com.takirahal.srfgroup.modules.notification.dto.filter.NotificationFilter;
@@ -88,6 +89,10 @@ public class NotificationServiceImpl implements NotificationService {
         UserDTO currentUser = SecurityUtils.getCurrentUser()
                 .map(userMapper::toCurrentUserPrincipal)
                 .orElseThrow(() -> new AccountResourceException("Current user not found"));
+
+        UserOfferFilter userOfferFilter = new UserOfferFilter();
+        userOfferFilter.setId(currentUser.getId());
+        criteria.setUser(userOfferFilter);
         return notificationRepository.findAll(createSpecification(criteria), pageable).map(notificationMapper::toDto);
     }
 
@@ -99,6 +104,9 @@ public class NotificationServiceImpl implements NotificationService {
     private Specification<Notification> createSpecification(NotificationFilter criteria) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
+            if ( criteria.getUser() != null && criteria.getUser().getId() != null ) {
+                predicates.add(criteriaBuilder.equal(root.get("user").get("id"), criteria.getUser().getId()));
+            }
             query.orderBy(criteriaBuilder.desc(root.get("id")));
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };

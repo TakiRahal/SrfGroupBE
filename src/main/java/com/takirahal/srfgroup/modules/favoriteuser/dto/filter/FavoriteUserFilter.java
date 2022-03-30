@@ -1,6 +1,7 @@
 package com.takirahal.srfgroup.modules.favoriteuser.dto.filter;
 
 import com.takirahal.srfgroup.modules.user.dto.UserDTO;
+import com.takirahal.srfgroup.modules.user.dto.filter.UserOfferFilter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ public class FavoriteUserFilter {
 
     private Instant favoriteDate;
 
-    private UserDTO currentUser;
+    private UserOfferFilter currentUser;
 
-    private UserDTO favoriteUser;
+    private UserOfferFilter favoriteUser;
 }

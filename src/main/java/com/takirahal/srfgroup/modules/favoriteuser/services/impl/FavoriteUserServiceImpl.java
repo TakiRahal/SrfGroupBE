@@ -1,6 +1,7 @@
 package com.takirahal.srfgroup.modules.favoriteuser.services.impl;
 
 import com.takirahal.srfgroup.exceptions.BadRequestAlertException;
+import com.takirahal.srfgroup.modules.user.dto.filter.UserOfferFilter;
 import com.takirahal.srfgroup.modules.user.exceptioins.AccountResourceException;
 import com.takirahal.srfgroup.modules.favoriteuser.dto.FavoriteUserDTO;
 import com.takirahal.srfgroup.modules.favoriteuser.dto.filter.FavoriteUserFilter;
@@ -88,7 +89,9 @@ public class FavoriteUserServiceImpl implements FavoriteUserService {
                 .map(userMapper::toCurrentUserPrincipal)
                 .orElseThrow(() -> new AccountResourceException("Current user login not found"));
 
-        favoriteUserFilter.setCurrentUser(currentUser);
+        UserOfferFilter userOfferFilter = new UserOfferFilter();
+        userOfferFilter.setId(currentUser.getId());
+        favoriteUserFilter.setCurrentUser(userOfferFilter);
         return favoriteUserRepository.findAll(createSpecification(favoriteUserFilter), pageable).map(favoriteUserMapper::toDto);
     }
 
@@ -112,9 +115,9 @@ public class FavoriteUserServiceImpl implements FavoriteUserService {
     protected Specification<FavoriteUser> createSpecification(FavoriteUserFilter favoriteUserFilter) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
-//            if ( favoriteUserFilter.getCurrentUser() != null ) {
-//                predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(root.get("currentUser")),favoriteUserFilter.getCurrentUser().getId().toString()));
-//            }
+            if ( favoriteUserFilter.getCurrentUser() != null && favoriteUserFilter.getCurrentUser().getId() != null ) {
+                predicates.add(criteriaBuilder.equal(root.get("currentUser").get("id"), favoriteUserFilter.getCurrentUser().getId()));
+            }
             query.orderBy(criteriaBuilder.desc(root.get("id")));
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
