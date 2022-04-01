@@ -52,17 +52,7 @@ public class CommentOfferController {
     @PostMapping("create")
     public ResponseEntity<CommentOfferDTO> createCommentOfferByCurrentUser(@RequestBody CommentOfferDTO commentOfferDTO) {
         log.debug("REST request to save CommentOffer : {}", commentOfferDTO);
-        if (commentOfferDTO.getId() != null) {
-            throw new BadRequestAlertException("A new commentOffer cannot already have an ID idexists");
-        }
-
-        Long userId = SecurityUtils.getIdByCurrentUser().orElseThrow(() -> new AccountResourceException("Current user login not found"));
-
-        UserDTO currentUserDTO = new UserDTO();
-        currentUserDTO.setId(userId);
-        commentOfferDTO.setUser(currentUserDTO);
         CommentOfferDTO result = commentOfferService.save(commentOfferDTO);
-
         return new ResponseEntity<>(result, HeaderUtil.createAlert("comment_offer.comment_offer_added_succefully", result.getId().toString()), HttpStatus.CREATED);
     }
 

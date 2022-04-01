@@ -3,6 +3,7 @@ package com.takirahal.srfgroup.modules.commentoffer.services.impl;
 import com.takirahal.srfgroup.exceptions.ResouorceNotFoundException;
 import com.takirahal.srfgroup.exceptions.UnauthorizedException;
 import com.takirahal.srfgroup.modules.notification.enums.ModuleNotification;
+import com.takirahal.srfgroup.modules.user.dto.UserDTO;
 import com.takirahal.srfgroup.modules.user.exceptioins.AccountResourceException;
 import com.takirahal.srfgroup.exceptions.BadRequestAlertException;
 import com.takirahal.srfgroup.modules.commentoffer.dto.CommentOfferDTO;
@@ -14,6 +15,8 @@ import com.takirahal.srfgroup.modules.commentoffer.services.CommentOfferService;
 import com.takirahal.srfgroup.modules.notification.dto.NotificationDTO;
 import com.takirahal.srfgroup.modules.notification.services.NotificationService;
 import com.takirahal.srfgroup.modules.offer.dto.OfferDTO;
+import com.takirahal.srfgroup.security.UserPrincipal;
+import com.takirahal.srfgroup.utils.CommonUtil;
 import com.takirahal.srfgroup.utils.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,19 +49,30 @@ public class CommentOfferServiceImpl implements CommentOfferService {
     @Override
     public CommentOfferDTO save(CommentOfferDTO commentOfferDTO) {
         log.debug("Request to save CommentOffer : {}", commentOfferDTO);
+        if (commentOfferDTO.getId() != null) {
+            throw new BadRequestAlertException("A new commentOffer cannot already have an ID idexists");
+        }
+
+        UserPrincipal currentUser = SecurityUtils.getCurrentUser().orElseThrow(() -> new AccountResourceException("Current user login not found"));
+
+        UserDTO currentUserDTO = new UserDTO();
+        currentUserDTO.setId(currentUser.getId());
+        currentUserDTO.setFirstName(currentUser.getFirstName());
+        currentUserDTO.setLastName(currentUser.getLastName());
+        commentOfferDTO.setUser(currentUserDTO);
+
         CommentOffer commentOffer = commentOfferMapper.toEntity(commentOfferDTO);
         commentOffer = commentOfferRepository.save(commentOffer);
 
-        Long userId = SecurityUtils.getIdByCurrentUser().orElseThrow(() -> new AccountResourceException("Current user login not found"));
-
         // Add notification
-        if (!commentOfferDTO.getOffer().getUser().getId().equals(userId)) {
+        if (!commentOfferDTO.getOffer().getUser().getId().equals(currentUser.getId())) {
             NotificationDTO notificationDTO = new NotificationDTO();
             notificationDTO.setDateCreated(Instant.now());
-            notificationDTO.setContent("Test comment offer");
+            notificationDTO.setContent(CommonUtil.getFullNameUser(currentUserDTO)+ " commented your offer");
             notificationDTO.setModule(ModuleNotification.CommentOfferNotification.name());
             notificationDTO.setIsRead(Boolean.FALSE);
             notificationDTO.setUser(commentOfferDTO.getOffer().getUser());
+            notificationDTO.setOffer(commentOfferDTO.getOffer());
             notificationService.save(notificationDTO);
         }
 

@@ -1,6 +1,7 @@
 package com.takirahal.srfgroup.modules.notification.dto;
 
 import com.takirahal.srfgroup.modules.notification.enums.ModuleNotification;
+import com.takirahal.srfgroup.modules.offer.dto.OfferDTO;
 import com.takirahal.srfgroup.modules.user.dto.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,4 +29,6 @@ public class NotificationDTO implements Serializable {
     private Boolean isRead;
 
     private UserDTO user;
+
+    private OfferDTO offer;
 }

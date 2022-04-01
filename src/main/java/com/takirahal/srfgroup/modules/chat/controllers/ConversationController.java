@@ -6,6 +6,7 @@ import com.takirahal.srfgroup.modules.chat.dto.ConversationWithLastMessageDTO;
 import com.takirahal.srfgroup.modules.chat.dto.Filter.ConversationFilter;
 import com.takirahal.srfgroup.modules.chat.services.ConversationService;
 import com.takirahal.srfgroup.exceptions.BadRequestAlertException;
+import com.takirahal.srfgroup.utils.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +43,7 @@ public class ConversationController {
             throw new BadRequestAlertException("A new conversation cannot already have an ID idexists");
         }
         conversationService.createConversationMessage(conversationVM);
-        return ResponseEntity
-                .created(new URI("/api/conversation/"))
-                .body(true);
+        return new ResponseEntity<>(true, HeaderUtil.createAlert("message.sent_succefully", ""), HttpStatus.CREATED);
     }
 
     /**

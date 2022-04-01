@@ -1,5 +1,6 @@
 package com.takirahal.srfgroup.utils;
 
+import com.takirahal.srfgroup.modules.user.dto.UserDTO;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 
@@ -9,6 +10,10 @@ import java.nio.file.Paths;
 
 public class CommonUtil {
 
+    /**
+     *
+     * @return
+     */
     public static Resource loadDefaultFile() {
         try {
             String directoryDefaultUpload = System.getProperty("user.home") + "/srf-group/upload-dir/";
@@ -19,5 +24,15 @@ public class CommonUtil {
         } catch (MalformedURLException e) {
             return null;
         }
+    }
+
+
+    /**
+     *
+     * @param user
+     * @return
+     */
+    public static String getFullNameUser(UserDTO user){
+        return (user.getFirstName()!="" || user.getLastName()!="") ? user.getFirstName()+" "+user.getLastName() : user.getEmail();
     }
 }

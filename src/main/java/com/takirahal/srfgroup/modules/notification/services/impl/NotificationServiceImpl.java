@@ -97,6 +97,17 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    public void setIsReadNotifications(List<NotificationDTO> notificationDTOS) {
+
+        Long userId = SecurityUtils.getIdByCurrentUser()
+                .orElseThrow(() -> new AccountResourceException("Current user login not found"));
+
+        for (NotificationDTO notif: notificationDTOS) {
+            notificationRepository.updateSeeToNotification(notif.getId(), userId);
+        }
+    }
+
+    @Override
     public Long getNotReadNotifications() {
         return 1L; // notificationRepository.getNotReadNotifications();
     }
@@ -107,7 +118,7 @@ public class NotificationServiceImpl implements NotificationService {
             if ( criteria.getUser() != null && criteria.getUser().getId() != null ) {
                 predicates.add(criteriaBuilder.equal(root.get("user").get("id"), criteria.getUser().getId()));
             }
-            query.orderBy(criteriaBuilder.desc(root.get("id")));
+            query.orderBy(criteriaBuilder.asc(root.get("id")));
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }

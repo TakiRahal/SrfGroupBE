@@ -5,6 +5,7 @@ import com.takirahal.srfgroup.modules.notification.dto.filter.NotificationFilter
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface NotificationService {
@@ -54,4 +55,6 @@ public interface NotificationService {
     void delete(Long id);
 
     Page<NotificationDTO> findByCriteria(NotificationFilter criteria, Pageable pageable);
+
+    void setIsReadNotifications(List<NotificationDTO> notificationDTOS);
 }

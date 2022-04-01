@@ -1,6 +1,7 @@
 package com.takirahal.srfgroup.modules.user.controllers;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.takirahal.srfgroup.modules.notification.repositories.NotificationRepository;
 import com.takirahal.srfgroup.modules.user.dto.*;
 import com.takirahal.srfgroup.modules.user.entities.User;
 import com.takirahal.srfgroup.modules.user.exceptioins.AccountResourceException;
@@ -11,6 +12,7 @@ import com.takirahal.srfgroup.security.JwtAuthenticationFilter;
 import com.takirahal.srfgroup.security.JwtTokenProvider;
 import com.takirahal.srfgroup.modules.user.services.UserService;
 import com.takirahal.srfgroup.utils.HeaderUtil;
+import com.takirahal.srfgroup.utils.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +53,9 @@ public class UserController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    NotificationRepository notificationRepository;
 
 //    @Autowired
 //    SimpUserRegistry userRegistry;
@@ -185,6 +190,22 @@ public class UserController {
         log.debug("REST request to update Current User : {}");
         Boolean result = userService.updatePasswordCurrentUser(updatePasswordDTO);
         return new ResponseEntity<>(result, HeaderUtil.createAlert("Update password succefully", ""), HttpStatus.OK);
+    }
+
+
+    /**
+     *
+     * @return
+     */
+    @GetMapping("count-not-see-notifications")
+    public ResponseEntity<Long> getNumberNotSeeMessageForUserId() {
+        log.debug("REST request to get number of notification by user: {}");
+
+        Long userId = SecurityUtils.getIdByCurrentUser()
+                .orElseThrow(() -> new AccountResourceException("Current user login not found"));
+
+        Long nbeNotSee = notificationRepository.getNotReadNotifications(userId);
+        return new ResponseEntity<>(nbeNotSee, HttpStatus.OK);
     }
 
     /**
