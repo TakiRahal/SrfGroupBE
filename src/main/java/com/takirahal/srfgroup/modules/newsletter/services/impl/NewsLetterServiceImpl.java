@@ -35,3 +35,4 @@ public class NewsLetterServiceImpl implements NewsLetterService {
         return newsLetterRepository.findAll(pageable);
     }
 }
+    
