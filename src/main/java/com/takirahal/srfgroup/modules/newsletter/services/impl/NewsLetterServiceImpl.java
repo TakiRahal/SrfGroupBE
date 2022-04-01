@@ -1,7 +1,6 @@
 package com.takirahal.srfgroup.modules.newsletter.services.impl;
 
 import com.takirahal.srfgroup.exceptions.BadRequestAlertException;
-import com.takirahal.srfgroup.modules.newsletter.controllers.NewsLetterController;
 import com.takirahal.srfgroup.modules.newsletter.dto.filter.NewsLetterFilter;
 import com.takirahal.srfgroup.modules.newsletter.entities.NewsLetter;
 import com.takirahal.srfgroup.modules.newsletter.repositories.NewsLetterRepository;
