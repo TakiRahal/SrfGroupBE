@@ -169,6 +169,10 @@ public class OfferServiceImpl implements OfferService {
                 predicates.add(criteriaBuilder.equal(root.get("address").get("id"), offerFilter.getAddress().getId()));
             }
 
+            if ( offerFilter.getCategory() != null && offerFilter.getCategory().getId() != null ) {
+                predicates.add(criteriaBuilder.equal(root.get("category").get("id"), offerFilter.getCategory().getId()));
+            }
+
             if (offerFilter.getBlockedByReported() != null ) {
                  predicates.add(criteriaBuilder.equal(root.get("blockedByReported"), offerFilter.getBlockedByReported()));
             }

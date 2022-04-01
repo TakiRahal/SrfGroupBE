@@ -12,16 +12,48 @@ import java.util.Optional;
 
 public interface OfferService {
 
+    /**
+     *
+     * @param offerFilter
+     * @param pageable
+     * @return
+     */
     Page<OfferDTO> getPublicOffers(OfferFilter offerFilter, Pageable pageable);
 
+    /**
+     *
+     * @param multipartFiles
+     * @param offerId
+     */
     void uploadImages(List<MultipartFile> multipartFiles, Long offerId);
 
+    /**
+     *
+     * @param offerId
+     * @param filename
+     * @return
+     */
     Resource loadFile(Long offerId, String filename);
 
+    /**
+     *
+     * @param id
+     * @return
+     */
     Optional<OfferDTO> findOne(Long id);
 
+    /**
+     *
+     * @param offerFilter
+     * @param pageable
+     * @return
+     */
     Page<OfferDTO> getOffersByCurrentUser(OfferFilter offerFilter, Pageable pageable);
 
+    /**
+     *
+     * @param id
+     */
     void delete(Long id);
 
 }
