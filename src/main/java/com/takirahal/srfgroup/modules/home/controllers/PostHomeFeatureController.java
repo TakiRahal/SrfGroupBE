@@ -82,8 +82,8 @@ public class PostHomeFeatureController {
      * @return
      */
     @GetMapping("/public/last")
-    public ResponseEntity<PostHomeFeatureDTO> geLasttCmsHomeMedium() {
-        log.debug("REST request to get CmsHomeMedium : {}");
+    public ResponseEntity<PostHomeFeatureDTO> geLasttPostHomeFeature() {
+        log.debug("REST request to get PostHomeFeature : {}");
         Optional<PostHomeFeatureDTO> postHomeFeatureDTO = postHomeFeatureService.findLastOne();
         if(!postHomeFeatureDTO.isPresent()){
             throw new ResouorceNotFoundException("Not found PostHomeFeature with id");
