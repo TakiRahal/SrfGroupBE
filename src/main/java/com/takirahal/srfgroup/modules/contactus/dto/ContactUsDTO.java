@@ -22,4 +22,7 @@ public class ContactUsDTO implements Serializable {
 
     @Lob
     private String message;
+
+    @Lob
+    private String captchaResponse;
 }

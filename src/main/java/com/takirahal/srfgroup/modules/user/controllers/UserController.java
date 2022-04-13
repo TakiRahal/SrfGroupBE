@@ -130,7 +130,7 @@ public class UserController {
     public ResponseEntity<String> signup(@RequestBody RegisterDTO registerDTO) {
         log.debug("REST request to signup : {} ", registerDTO);
         userService.registerUser(registerDTO);
-        return new ResponseEntity<String>("true", HttpStatus.CREATED);
+        return new ResponseEntity<>("true", HttpStatus.CREATED);
     }
 
     @GetMapping("public/activate-account")
@@ -208,6 +208,32 @@ public class UserController {
         return new ResponseEntity<>(nbeNotSee, HttpStatus.OK);
     }
 
+
+    /**
+     * {@code POST   /account/reset-password/init} : Send an email to reset the password of the user.
+     *
+     * @param mail the mail of the user.
+     */
+    @PostMapping(path = "public/forgot-password/init")
+    public ResponseEntity<Boolean> requestPasswordReset(@RequestBody String mail) {
+        Boolean result = userService.requestPasswordReset(mail);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+
+    /**
+     * {@code POST   /account/reset-password/finish} : Finish to reset the password of the user.
+     *
+     * @param keyAndPassword the generated key and the new password.
+     * @throws InvalidPasswordException {@code 400 (Bad Request)} if the password is incorrect.
+     * @throws RuntimeException {@code 500 (Internal Server Error)} if the password could not be reset.
+     */
+    @PostMapping(path = "public/forgot-password/finish")
+    public ResponseEntity<Boolean> finishPasswordReset(@RequestBody KeyAndPasswordVM keyAndPassword) {
+        userService.completePasswordReset(keyAndPassword.getPassword(), keyAndPassword.getKey());
+        return new ResponseEntity<>(true, HeaderUtil.createAlert("forgot_password_init.reset_finish_messages_success", ""), HttpStatus.OK);
+    }
+
     /**
      *
      * @param file
@@ -225,7 +251,7 @@ public class UserController {
      * @param filename
      * @return
      */
-    @GetMapping("/public/avatar/{id}/{filename:.+}")
+    @GetMapping("public/avatar/{id}/{filename:.+}")
     @ResponseBody
     public ResponseEntity<Resource> getFile(@PathVariable Long id, @PathVariable String filename) {
         Resource file = userService.getAvatar(id, filename);

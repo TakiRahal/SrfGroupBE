@@ -1,9 +1,11 @@
 package com.takirahal.srfgroup.modules.contactus.controllers;
 
 
+import com.takirahal.srfgroup.exceptions.UnauthorizedException;
 import com.takirahal.srfgroup.modules.contactus.dto.ContactUsDTO;
 import com.takirahal.srfgroup.modules.contactus.services.ContactUsService;
 import com.takirahal.srfgroup.exceptions.BadRequestAlertException;
+import com.takirahal.srfgroup.services.impl.ValidateCaptchaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,9 @@ public class ContactUsController {
     @Autowired
     ContactUsService contactUsService;
 
+    @Autowired
+    ValidateCaptchaService validateCaptchaService;
+
     /**
      * {@code POST  /contactuses} : Create a new contactUs.
      *
@@ -37,6 +42,14 @@ public class ContactUsController {
     @PostMapping("/public")
     public ResponseEntity<ContactUsDTO> createContactUs(@RequestBody ContactUsDTO contactUsDTO) throws URISyntaxException {
         log.debug("REST request to save ContactUs : {}", contactUsDTO);
+
+        final boolean isValidCaptcha = validateCaptchaService.validateCaptcha(contactUsDTO.getCaptchaResponse());
+        log.debug("Response recaptcha : {}", isValidCaptcha);
+
+        if(!isValidCaptcha){
+            throw new UnauthorizedException("Invalid recaptcha");
+        }
+
         if (contactUsDTO.getId() != null) {
             throw new BadRequestAlertException("A new contactUs cannot already have an ID idexists");
         }

@@ -13,6 +13,7 @@ import com.takirahal.srfgroup.modules.user.dto.*;
 import com.takirahal.srfgroup.exceptions.BadRequestAlertException;
 import com.takirahal.srfgroup.modules.user.entities.UserOneSignal;
 import com.takirahal.srfgroup.modules.user.exceptioins.InvalidPasswordException;
+import com.takirahal.srfgroup.modules.user.exceptioins.UserNotActivatedException;
 import com.takirahal.srfgroup.modules.user.services.UserOneSignalService;
 import com.takirahal.srfgroup.security.CustomUserDetailsService;
 import com.takirahal.srfgroup.security.JwtTokenProvider;
@@ -424,6 +425,42 @@ public class UserServiceImpl implements UserService {
         }
 
         return jwt;
+    }
+
+    @Override
+    public Boolean requestPasswordReset(String mail) {
+        User user = userRepository.findOneByEmailIgnoreCase(mail)
+                .orElseThrow(() -> new ResouorceNotFoundException("User not found with this email"));
+
+        if(!user.isActivated()){
+            throw new UserNotActivatedException("User not active yet");
+        }
+
+        user.setResetKey(RandomUtil.generateActivationKey(20));
+        User newUser = userRepository.save(user);
+
+        mailService.sendPasswordResetMail(newUser);
+
+        return true;
+    }
+
+    @Override
+    public void completePasswordReset(String password, String key) {
+        if (isPasswordLengthInvalid(password)) {
+            throw new InvalidPasswordException("Incorrect password");
+        }
+
+        Optional<User> newUser = userRepository
+                .findOneByResetKey(key)
+                .map(user -> {
+                    user.setPassword(passwordEncoder.encode(password));
+                    user.setResetKey(null);
+                    return user;
+                });
+
+        if (!newUser.isPresent()) {
+            throw new AccountResourceException("No user was found for this reset key");
+        }
     }
 
     /**

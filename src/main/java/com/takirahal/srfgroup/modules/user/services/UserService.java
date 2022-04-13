@@ -33,4 +33,8 @@ public interface UserService {
     String signinGooglePlus(GooglePlusVM googlePlusVM) throws IOException;
 
     String signinFacebook(FacebookVM facebookVM);
+
+    Boolean requestPasswordReset(String mail);
+
+    void completePasswordReset(String password, String key);
 }
