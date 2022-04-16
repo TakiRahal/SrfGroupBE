@@ -118,7 +118,7 @@ public class NotificationServiceImpl implements NotificationService {
             if ( criteria.getUser() != null && criteria.getUser().getId() != null ) {
                 predicates.add(criteriaBuilder.equal(root.get("user").get("id"), criteria.getUser().getId()));
             }
-            query.orderBy(criteriaBuilder.asc(root.get("id")));
+            query.orderBy(criteriaBuilder.desc(root.get("id")));
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }

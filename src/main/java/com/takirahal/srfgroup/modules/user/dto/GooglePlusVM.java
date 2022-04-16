@@ -9,11 +9,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GooglePlusVM {
-    String Ba;
-    String accessToken;
-    String googleId;
-    ProfileObj profileObj;
-    String tokenId;
-    String sourceProvider;
-    String idOneSignal;
+    private String Ba;
+    private String accessToken;
+    private String googleId;
+    private ProfileObj profileObj;
+    private String tokenId;
+    private String sourceProvider;
+    private String idOneSignal;
+    private String langKey;
 }

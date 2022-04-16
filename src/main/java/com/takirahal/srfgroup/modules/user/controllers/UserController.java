@@ -29,6 +29,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Optional;
@@ -107,6 +108,16 @@ public class UserController {
         }
     }
 
+    /**
+     *
+     * @param registerDTO
+     */
+    @PostMapping("public/signup")
+    public ResponseEntity<String> signup(@RequestBody RegisterDTO registerDTO) {
+        log.debug("REST request to signup : {} ", registerDTO);
+        userService.registerUser(registerDTO);
+        return new ResponseEntity<>("true", HttpStatus.CREATED);
+    }
 
     /**
      *
@@ -122,16 +133,6 @@ public class UserController {
         return new ResponseEntity<>(new JWTToken(jwt), httpHeaders, HttpStatus.OK);
     }
 
-    /**
-     *
-     * @param registerDTO
-     */
-    @PostMapping("public/signup")
-    public ResponseEntity<String> signup(@RequestBody RegisterDTO registerDTO) {
-        log.debug("REST request to signup : {} ", registerDTO);
-        userService.registerUser(registerDTO);
-        return new ResponseEntity<>("true", HttpStatus.CREATED);
-    }
 
     @GetMapping("public/activate-account")
     public void activateAccount(@RequestParam(value = "key") String key) {
@@ -162,8 +163,9 @@ public class UserController {
      * @throws RuntimeException {@code 500 (Internal Server Error)} if the user couldn't be returned.
      */
     @GetMapping("current-user")
-    public ResponseEntity<UserDTO> getAccountUser() {
+    public ResponseEntity<UserDTO> getAccountUser(HttpServletRequest request) {
         log.debug("REST request to get Current User : {}");
+        // request.getHeader("localTest")
         return new ResponseEntity<>(userService.getCurrentUser(), HttpStatus.OK);
     }
 

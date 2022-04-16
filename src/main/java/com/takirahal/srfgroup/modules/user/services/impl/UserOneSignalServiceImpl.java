@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -35,5 +36,10 @@ public class UserOneSignalServiceImpl implements UserOneSignalService {
     @Override
     public Optional<UserOneSignal> findByIdOneSignalAndUser(String idOneSignal, User user) {
         return userOneSignalRepository.findByIdOneSignalAndUser(idOneSignal, user);
+    }
+
+    @Override
+    public List<UserOneSignal> findByUser(User user) {
+        return userOneSignalRepository.findByUser(user);
     }
 }

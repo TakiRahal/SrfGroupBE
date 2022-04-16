@@ -13,6 +13,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -62,6 +63,9 @@ public class User implements Serializable {
     @JsonIgnore
     private String resetKey;
 
+    @Size(min = 2, max = 10)
+    private String langKey;
+
     @Size(max = 20)
     @Column(name = "phone", length = 20)
     private String phone;
@@ -73,6 +77,9 @@ public class User implements Serializable {
     @NotBlank
     @Size(max = 100)
     private String password;
+
+    @Column(name = "register_date")
+    private Instant registerDate;
 
     @JsonIgnore
     @ManyToMany

@@ -6,9 +6,11 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.takirahal.srfgroup.constants.AuthoritiesConstants;
 import com.takirahal.srfgroup.modules.address.mapper.AddressMapper;
+import com.takirahal.srfgroup.modules.notification.dto.NotificationDTO;
 import com.takirahal.srfgroup.modules.notification.entities.Notification;
 import com.takirahal.srfgroup.modules.notification.enums.ModuleNotification;
 import com.takirahal.srfgroup.modules.notification.repositories.NotificationRepository;
+import com.takirahal.srfgroup.modules.notification.services.NotificationService;
 import com.takirahal.srfgroup.modules.user.dto.*;
 import com.takirahal.srfgroup.exceptions.BadRequestAlertException;
 import com.takirahal.srfgroup.modules.user.entities.UserOneSignal;
@@ -36,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.core.io.Resource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -56,10 +59,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @Transactional
@@ -109,6 +109,12 @@ public class UserServiceImpl implements UserService {
     @Autowired
     NotificationRepository notificationRepository;
 
+    @Autowired
+    MessageSource messageSource;
+
+    @Autowired
+    NotificationService notificationService;
+
     @Override
     public User registerUser(RegisterDTO registerDTO) {
         log.debug("REST request for register user {}", registerDTO);
@@ -132,13 +138,13 @@ public class UserServiceImpl implements UserService {
         newUser.setActivated(false);
         newUser.setActivationKey(RandomUtil.generateActivationKey(20));
         newUser.setSourceRegister(registerDTO.getSourceRegister());
+        newUser.setRegisterDate(Instant.now());
+        newUser.setLangKey(registerDTO.getLangKey());
 
         Set<Authority> authorities = new HashSet<>();
         authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
         newUser.setAuthorities(authorities);
         User user = userRepository.save(newUser);
-
-        mailService.sendActivationEmail(newUser);
 
         // Register one signal id
         if(registerDTO.getIdOneSignal()!=null){
@@ -148,8 +154,11 @@ public class UserServiceImpl implements UserService {
             userOneSignalService.save(userOneSignalDTO);
         }
 
-        // Add Welcome notification
-        addWelcomeNotification(user);
+        // Add all notifications
+        addAllNotification(user);
+
+        // Send Activation Email
+        mailService.sendActivationEmail(user);
 
         return user;
     }
@@ -197,9 +206,20 @@ public class UserServiceImpl implements UserService {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String jwt = tokenProvider.generateToken(authentication);
 
-            // Register one signal id if not exist already
-            saveOneSignal(loginDTO.getIdOneSignal());
+            if(!loginDTO.getIdOneSignal().equals("")){
 
+                // Register one signal id if not exist already
+                saveOneSignal(loginDTO.getIdOneSignal());
+            }
+            else{
+
+                // Create notif for subscribe in PushNotif
+                UserPrincipal currentUser = SecurityUtils.getCurrentUser().orElseThrow(() -> new AccountResourceException("Current user login not found"));
+                Locale locale = Locale.forLanguageTag(!currentUser.getLangKey().equals("") ? currentUser.getLangKey() : "fr");
+                String messageSubscPush = messageSource.getMessage("signin.message.subscribe_push_notif", null, locale);
+
+                creatNotificationByAdmin(userMapper.currentUserToEntity(currentUser), messageSubscPush);
+            }
             return jwt;
         }
         catch(BadCredentialsException e){
@@ -350,6 +370,8 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.toEntity(userDTO);
         user.setPassword(RandomUtil.generateActivationKey(20));
         user.setActivated(true);
+        user.setRegisterDate(Instant.now());
+        user.setLangKey(googlePlusVM.getLangKey());
         User newUser = userRepository.save(user);
 
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(userMapper.toDto(newUser).getEmail());
@@ -369,7 +391,9 @@ public class UserServiceImpl implements UserService {
 
         // Add Welcome notification first time
         if (!userExist.isPresent()) {
-            addWelcomeNotification(user);
+
+            // Add all notifications
+            addAllNotification(user);
         }
 
         return jwt;
@@ -404,6 +428,8 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.toEntity(userDTO);
         user.setPassword(RandomUtil.generateActivationKey(20));
         user.setActivated(true);
+        user.setRegisterDate(Instant.now());
+        user.setLangKey(facebookVM.getLangKey());
         User newUser = userRepository.save(user);
 
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(userMapper.toDto(newUser).getEmail());
@@ -421,7 +447,9 @@ public class UserServiceImpl implements UserService {
 
         // Add Welcome notification first time
         if (!userExist.isPresent()) {
-            addWelcomeNotification(user);
+
+            // Add all notifications
+            addAllNotification(user);
         }
 
         return jwt;
@@ -484,10 +512,22 @@ public class UserServiceImpl implements UserService {
      *
      * @param user
      */
-    private void addWelcomeNotification(User user){
+    private void addAllNotification(User user){
+        Locale locale = Locale.forLanguageTag(!user.getLangKey().equals("") ? user.getLangKey() : "fr");
+        String messageWelcome = messageSource.getMessage("register.message_welcome", null, locale);
+        String messageUpdate = messageSource.getMessage("register.message_update_infos", null, locale);
+
+        // Add Welcome notification
+        creatNotificationByAdmin(user, messageWelcome);
+
+        // Add notif to update infos in first time
+        creatNotificationByAdmin(user, messageUpdate);
+    }
+
+    private void creatNotificationByAdmin(User user, String message){
         Notification notification = new Notification();
         notification.setDateCreated(Instant.now());
-        notification.setContent("Welcome in Espace SrfGroup");
+        notification.setContent(message);
         notification.setModule(ModuleNotification.AdminNotification.name());
         notification.setUser(user);
         notificationRepository.save(notification);

@@ -58,6 +58,7 @@ public interface UserMapper extends EntityMapper<UserDTO, User> {
     @Mapping(target = "firstName", source = "firstName")
     @Mapping(target = "lastName", source = "lastName")
     @Mapping(target = "email", source = "email")
+    @Mapping(target = "registerDate", source = "registerDate")
     @Mapping(target = "imageUrl", source = "imageUrl")
     @Mapping(target = "phone", source = "phone")
     @Mapping(target = "sourceRegister", source = "sourceRegister")

@@ -33,6 +33,6 @@ public class CommonUtil {
      * @return
      */
     public static String getFullNameUser(UserDTO user){
-        return (user.getFirstName()!="" || user.getLastName()!="") ? user.getFirstName()+" "+user.getLastName() : user.getEmail();
+        return (!user.getFirstName().equals("") || !user.getLastName().equals("")) ? user.getFirstName()+" "+user.getLastName() : user.getEmail();
     }
 }

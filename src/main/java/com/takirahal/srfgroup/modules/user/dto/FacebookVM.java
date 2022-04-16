@@ -11,16 +11,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FacebookVM {
 
-    String accessToken;
-    String data_access_expiration_time;
-    String email;
-    String expiresIn;
-    String graphDomain;
-    String id;
-    String name;
-    PictureFacebook picture;
-    String signedRequest;
-    String userID;
-    String sourceProvider;
-    String idOneSignal;
+    private String accessToken;
+    private String data_access_expiration_time;
+    private String email;
+    private String expiresIn;
+    private String graphDomain;
+    private String id;
+    private String name;
+    private PictureFacebook picture;
+    private String signedRequest;
+    private String userID;
+    private String sourceProvider;
+    private String idOneSignal;
+    private String langKey;
 }

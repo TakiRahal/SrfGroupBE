@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Set;
 
 @Data
@@ -23,6 +24,10 @@ public class UserDTO  implements Serializable {
     private String lastName;
 
     private String email;
+
+    private Instant registerDate;
+
+    private String langKey;
 
     private String imageUrl;
 

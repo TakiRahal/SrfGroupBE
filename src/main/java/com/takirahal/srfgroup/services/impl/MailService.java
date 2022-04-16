@@ -70,7 +70,7 @@ public class MailService {
             log.debug("Email doesn't exist for user '{}'", user.getEmail());
             return;
         }
-        Locale locale = Locale.forLanguageTag("en");
+        Locale locale = Locale.forLanguageTag(!user.getLangKey().equals("") ? user.getLangKey() : "fr");
         Context context = new Context(locale);
         context.setVariable("user", user);
         context.setVariable("baseUrl", BASE_URL);
