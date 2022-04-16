@@ -117,7 +117,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User registerUser(RegisterDTO registerDTO) {
-        log.debug("REST request for register user {}", registerDTO);
+        log.debug("Request to register new user : {}", registerDTO);
         if (isPasswordLengthInvalid(registerDTO.getPassword())) {
             throw new InvalidPasswordException("Incorrect password");
         }
@@ -165,7 +165,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> activateRegistration(String key) {
-        log.debug("REST request to Activating user for activation key {}", key);
+        log.debug("Request to activation account by key : {}", key);
         return userRepository
                 .findOneByActivationKey(key)
                 .map(
@@ -197,6 +197,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public String signinClient(LoginDTO loginDTO) {
         try {
+
+            log.debug("Request to signin client: {}", loginDTO);
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             loginDTO.getEmail(),
@@ -229,7 +231,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String signInAdmin(LoginDTO loginDTO) {
-        log.debug("REST request to signin admin: {} ", loginDTO);
+        log.debug("Request to signin admin: {}", loginDTO);
         Optional<User> existingUser = userRepository.findOneByEmailIgnoreCase(loginDTO.getEmail());
         if( !existingUser.isPresent() ){
             throw new AccountResourceException("Not found user with email");
@@ -258,7 +260,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO updateAvatar(MultipartFile file) {
-        log.debug("REST request to update avatar: {} ");
+        log.debug("Request to update avatar: {}");
         Long currentUserId = SecurityUtils
                 .getIdByCurrentUser()
                 .orElseThrow(() -> new AccountResourceException("Current user login not found"));
@@ -296,7 +298,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO updateCurrentUser(UserDTO user) {
-        log.debug("REST request to update infos: {} ", user);
+        log.debug("Request to update infos: {}", user);
         Long userId = SecurityUtils.getIdByCurrentUser()
                 .orElseThrow(() -> new AccountResourceException("Current user login not found"));
 
@@ -315,7 +317,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Boolean updatePasswordCurrentUser(UpdatePasswordDTO updatePasswordDTO) {
-        log.debug("REST request to update password: {} ", updatePasswordDTO);
+        log.debug("Request to update password: {}", updatePasswordDTO);
         if (isPasswordLengthInvalid(updatePasswordDTO.getNewPassword())) {
             throw new InvalidPasswordException("Inavalid length password");
         }

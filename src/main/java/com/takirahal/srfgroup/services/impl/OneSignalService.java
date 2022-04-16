@@ -15,7 +15,7 @@ import java.util.Scanner;
 @Service
 public class OneSignalService {
 
-    private final Logger log = LoggerFactory.getLogger(MailService.class);
+    private final Logger log = LoggerFactory.getLogger(OneSignalService.class);
 
     public static final String REST_API_KEY = "N2YyNDQ4MzUtM2JiYS00YjdhLWFmYjctYjM1MjFlMzc5MjU5";
     public static final String ONESIGNAL_APP_ID = "52e18c28-761d-409f-a363-f58a9bd41cfe";
@@ -33,6 +33,7 @@ public class OneSignalService {
     @Async
     public void sendPushNotifToUser(String playerIds, String message){
         try {
+            log.debug("Request to send push notif by : {}", playerIds);
             String jsonResponse;
 
             URL url = new URL("https://onesignal.com/api/v1/notifications");
@@ -68,6 +69,7 @@ public class OneSignalService {
             System.out.println("jsonResponse:\n" + jsonResponse);
 
         } catch(Throwable t) {
+            log.debug("Exception Request to send push notif by : {}", t.getMessage());
             t.printStackTrace();
         }
     }
@@ -76,8 +78,9 @@ public class OneSignalService {
      *
      * @param message
      */
-    public static void sendPushNotifToAllUsers(String message) {
+    public void sendPushNotifToAllUsers(String message) {
         try {
+            log.debug("Request to send push notif by : {}", message);
             String jsonResponse;
 
             URL url = new URL("https://onesignal.com/api/v1/notifications");
