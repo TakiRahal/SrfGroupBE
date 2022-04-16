@@ -36,11 +36,7 @@ public class FindOfferController {
     @PostMapping("create")
     public ResponseEntity<FindOfferDTO> createFindOffer(@RequestBody FindOfferDTO findOfferDTO) throws URISyntaxException {
         log.debug("REST request to save FindOffer : {}", findOfferDTO);
-        if (findOfferDTO.getId() != null) {
-            throw new BadRequestAlertException("A new findOffer cannot already have an ID idexists");
-        }
         FindOfferDTO result = findOfferService.save(findOfferDTO);
-
         return new ResponseEntity<>(result, HeaderUtil.createAlert("Offer created successfully", ""), HttpStatus.CREATED);
     }
 

@@ -36,11 +36,7 @@ public class RentOfferController {
     @PostMapping("create")
     public ResponseEntity<RentOfferDTO> createRentOffer(@RequestBody RentOfferDTO rentOfferDTO) throws URISyntaxException {
         log.debug("REST request to save RentOffer : {}", rentOfferDTO);
-        if (rentOfferDTO.getId() != null) {
-            throw new BadRequestAlertException("A new rentOffer cannot already have an ID idexists");
-        }
         RentOfferDTO result = rentOfferService.save(rentOfferDTO);
-
         return new ResponseEntity<>(result, HeaderUtil.createAlert("Offer created successfully", ""), HttpStatus.CREATED);
     }
 

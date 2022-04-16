@@ -14,6 +14,8 @@ import com.takirahal.srfgroup.modules.offer.repositories.OfferImagesRepository;
 import com.takirahal.srfgroup.modules.offer.services.FindOfferService;
 import com.takirahal.srfgroup.modules.offer.services.OfferImagesService;
 import com.takirahal.srfgroup.modules.user.exceptioins.AccountResourceException;
+import com.takirahal.srfgroup.modules.user.mapper.UserMapper;
+import com.takirahal.srfgroup.security.UserPrincipal;
 import com.takirahal.srfgroup.services.impl.StorageService;
 import com.takirahal.srfgroup.utils.SecurityUtils;
 import org.slf4j.Logger;
@@ -51,9 +53,19 @@ public class FindOfferServiceImpl implements FindOfferService {
     @Autowired
     StorageService storageService;
 
+    @Autowired
+    UserMapper userMapper;
+
     @Override
     public FindOfferDTO save(FindOfferDTO findOfferDTO) {
         log.debug("Request to save FindOffer : {}", findOfferDTO);
+
+        if (findOfferDTO.getId() != null) {
+            throw new BadRequestAlertException("A new findOffer cannot already have an ID idexists");
+        }
+
+        UserPrincipal currentUser = SecurityUtils.getCurrentUser().orElseThrow(() -> new AccountResourceException("Current user login not found"));
+        findOfferDTO.setUser(userMapper.toCurrentUserPrincipal(currentUser));
         findOfferDTO.setBlockedByReported(Boolean.FALSE);
         FindOffer findOffer = findOfferMapper.toEntity(findOfferDTO);
         findOffer = findOfferRepository.save(findOffer);

@@ -14,6 +14,8 @@ import com.takirahal.srfgroup.modules.offer.repositories.RentOfferRepository;
 import com.takirahal.srfgroup.modules.offer.services.OfferImagesService;
 import com.takirahal.srfgroup.modules.offer.services.RentOfferService;
 import com.takirahal.srfgroup.modules.user.exceptioins.AccountResourceException;
+import com.takirahal.srfgroup.modules.user.mapper.UserMapper;
+import com.takirahal.srfgroup.security.UserPrincipal;
 import com.takirahal.srfgroup.services.impl.StorageService;
 import com.takirahal.srfgroup.utils.SecurityUtils;
 import org.slf4j.Logger;
@@ -51,13 +53,22 @@ public class RentOfferServiceImpl implements RentOfferService {
     @Autowired
     StorageService storageService;
 
+    @Autowired
+    UserMapper userMapper;
+
     @Override
     public RentOfferDTO save(RentOfferDTO rentOfferDTO) {
         log.debug("Request to save RentOffer : {}", rentOfferDTO);
+
+        if (rentOfferDTO.getId() != null) {
+            throw new BadRequestAlertException("A new rentOffer cannot already have an ID idexists");
+        }
+
+        UserPrincipal currentUser = SecurityUtils.getCurrentUser().orElseThrow(() -> new AccountResourceException("Current user login not found"));
+        rentOfferDTO.setUser(userMapper.toCurrentUserPrincipal(currentUser));
         rentOfferDTO.setBlockedByReported(Boolean.FALSE);
         RentOffer rentOffer = rentOfferMapper.toEntity(rentOfferDTO);
         rentOffer = rentOfferRepository.save(rentOffer);
-
         RentOfferDTO result = rentOfferMapper.toDto(rentOffer);
 
         for (OfferImagesDTO offerImagesDTO : rentOfferDTO.getOfferImages()) {

@@ -37,13 +37,9 @@ public class SellOfferController {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("create")
-    public ResponseEntity<SellOfferDTO> createSellOffer(@RequestBody SellOfferDTO sellOfferDTO) throws URISyntaxException {
+    public ResponseEntity<SellOfferDTO> createSellOffer(@RequestBody SellOfferDTO sellOfferDTO){
         log.debug("REST request to save SellOffer : {}", sellOfferDTO);
-        if (sellOfferDTO.getId() != null) {
-            throw new BadRequestAlertException("A new sellOffer cannot already have an ID idexists");
-        }
         SellOfferDTO result = sellOfferService.save(sellOfferDTO);
-
         return new ResponseEntity<>(result, HeaderUtil.createAlert("Offer created successfully", ""), HttpStatus.CREATED);
     }
 

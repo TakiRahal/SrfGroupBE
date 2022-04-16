@@ -91,6 +91,7 @@ public class CommentOfferServiceImpl implements CommentOfferService {
             String messageCommentOffer = CommonUtil.getFullNameUser(currentUserDTO)+" "+messageSource.getMessage("comment.comment_offer.new", null, locale);
             log.debug("messageCommentOffer : {}", messageCommentOffer);
 
+            // Create notification
             NotificationDTO notificationDTO = new NotificationDTO();
             notificationDTO.setDateCreated(Instant.now());
             notificationDTO.setContent(messageCommentOffer);
@@ -100,7 +101,7 @@ public class CommentOfferServiceImpl implements CommentOfferService {
             notificationDTO.setOffer(commentOfferDTO.getOffer());
             notificationService.save(notificationDTO);
 
-            // Send Push OS notif
+            // Send Push Notif
             List<UserOneSignal> listUserOneSignals = userOneSignalService.findByUser(userDestination.get());
             if(listUserOneSignals.size()>0){
                 String result = listUserOneSignals.stream().map(UserOneSignal::getIdOneSignal)
