@@ -16,7 +16,7 @@ public interface SellOfferService {
     SellOfferDTO save(SellOfferDTO sellOfferDTO);
 
     /**
-     * 
+     *
      * @param sellOfferFilter
      * @param pageable
      * @return

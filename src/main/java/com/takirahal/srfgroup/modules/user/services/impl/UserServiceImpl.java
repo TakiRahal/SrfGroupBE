@@ -340,6 +340,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String signinGooglePlus(GooglePlusVM googlePlusVM) throws IOException{
+        log.debug("Request to Signin GooglePlus: {}", googlePlusVM);
         final NetHttpTransport transport = new NetHttpTransport();
         final JacksonFactory jacksonFactory = JacksonFactory.getDefaultInstance();
         GoogleIdTokenVerifier.Builder verifier = new GoogleIdTokenVerifier.Builder(transport, jacksonFactory)
@@ -401,6 +402,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String signinFacebook(FacebookVM facebookVM) {
+        log.debug("Request to Signin Facebook: {}", facebookVM);
         Facebook facebook = new FacebookTemplate(facebookVM.getAccessToken());
         final String[] fields = { "email", "picture" };
         FacebookVM userFacebook = facebook.fetchObject("me", FacebookVM.class, fields);
