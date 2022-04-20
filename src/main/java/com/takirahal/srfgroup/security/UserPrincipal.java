@@ -21,6 +21,7 @@ public class UserPrincipal implements UserDetails {
     private String phone;
     private String sourceRegister;
     private String langKey;
+    private String linkProfileFacebook;
 
     @JsonIgnore
     private String password;
@@ -36,6 +37,7 @@ public class UserPrincipal implements UserDetails {
                          String phone,
                          String sourceRegister,
                          String langKey,
+                         String linkProfileFacebook,
                          String password,
                          Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
@@ -47,6 +49,7 @@ public class UserPrincipal implements UserDetails {
         this.phone = phone;
         this.sourceRegister = sourceRegister;
         this.langKey = langKey;
+        this.linkProfileFacebook = linkProfileFacebook;
         this.password = password;
         this.authorities = authorities;
     }
@@ -66,6 +69,7 @@ public class UserPrincipal implements UserDetails {
                 user.getPhone(),
                 user.getSourceRegister(),
                 user.getLangKey(),
+                user.getLinkProfileFacebook(),
                 user.getPassword(),
                 authorities
         );
@@ -105,6 +109,8 @@ public class UserPrincipal implements UserDetails {
     }
 
     public String getLangKey(){ return langKey; }
+
+    public String getLinkProfileFacebook(){ return linkProfileFacebook; }
 
     @Override
     public String getPassword() {

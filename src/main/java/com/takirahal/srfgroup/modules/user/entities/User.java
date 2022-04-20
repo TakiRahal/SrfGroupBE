@@ -81,6 +81,10 @@ public class User implements Serializable {
     @Column(name = "register_date")
     private Instant registerDate;
 
+    @Size(max = 400)
+    @Column(name = "link_profile_facebook", length = 400)
+    private String linkProfileFacebook;
+
     @JsonIgnore
     @ManyToMany
     @JoinTable(

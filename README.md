@@ -22,4 +22,10 @@ https://data.heroku.com/datastores/99847b29-d576-4442-bd3c-b1d7223dce79#administ
 
 ## Deploy jar app
 
-heroku deploy:jar target/my-app.jar --app srf-group-be
+run in Maven Project: : package (skip test for error datasource)
+
+heroku deploy:jar target/srfgroup-0.0.1-SNAPSHOT.jar --app srf-group-be
+
+heroku open --app srf-group-be
+
+heroku buildpacks:clear --app srf-group-be

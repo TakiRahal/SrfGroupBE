@@ -13,6 +13,7 @@ import com.takirahal.srfgroup.modules.notification.repositories.NotificationRepo
 import com.takirahal.srfgroup.modules.notification.services.NotificationService;
 import com.takirahal.srfgroup.modules.user.dto.*;
 import com.takirahal.srfgroup.exceptions.BadRequestAlertException;
+import com.takirahal.srfgroup.modules.user.dto.filter.UserFilter;
 import com.takirahal.srfgroup.modules.user.entities.UserOneSignal;
 import com.takirahal.srfgroup.modules.user.exceptioins.InvalidPasswordException;
 import com.takirahal.srfgroup.modules.user.exceptioins.UserNotActivatedException;
@@ -40,6 +41,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -55,6 +59,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.criteria.Predicate;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -309,6 +314,8 @@ public class UserServiceImpl implements UserService {
         currentUser.setLastName(user.getLastName());
         currentUser.setPhone(user.getPhone());
         currentUser.setAddress(addressMapper.toEntity(user.getAddress()));
+        currentUser.setLangKey(user.getLangKey());
+        currentUser.setLinkProfileFacebook(user.getLinkProfileFacebook());
 
         User newUser = userRepository.save(currentUser);
 
@@ -493,6 +500,20 @@ public class UserServiceImpl implements UserService {
         if (!newUser.isPresent()) {
             throw new AccountResourceException("No user was found for this reset key");
         }
+    }
+
+    @Override
+    public Page<UserDTO> findByCriteria(UserFilter userFilter, Pageable pageable) {
+        return userRepository.findAll(createSpecification(userFilter), pageable).map(userMapper::toDtoListAdmin);
+    }
+
+    private Specification<User> createSpecification(UserFilter userFilter) {
+        return (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            query.orderBy(criteriaBuilder.desc(root.get("id")));
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
     }
 
     /**

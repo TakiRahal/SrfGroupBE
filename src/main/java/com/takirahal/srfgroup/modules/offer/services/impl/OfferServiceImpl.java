@@ -22,12 +22,18 @@ import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.imageio.ImageIO;
 import javax.persistence.criteria.Predicate;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -135,7 +141,6 @@ public class OfferServiceImpl implements OfferService {
         offerFilter.setBlockedByReported(Boolean.FALSE);
         return findByCriteria(offerFilter, pageable);
     }
-
 
     private Page<OfferDTO> findByCriteria(OfferFilter offerFilter, Pageable page) {
         log.debug("find offers by criteria : {}, page: {}", page);

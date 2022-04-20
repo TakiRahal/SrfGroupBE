@@ -29,6 +29,8 @@ public class UserDTO  implements Serializable {
 
     private String langKey;
 
+    private String linkProfileFacebook;
+
     private String imageUrl;
 
     private String phone;

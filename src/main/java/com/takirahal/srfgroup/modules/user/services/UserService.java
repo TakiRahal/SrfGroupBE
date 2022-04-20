@@ -1,8 +1,11 @@
 package com.takirahal.srfgroup.modules.user.services;
 
 import com.takirahal.srfgroup.modules.user.dto.*;
+import com.takirahal.srfgroup.modules.user.dto.filter.UserFilter;
 import com.takirahal.srfgroup.modules.user.entities.User;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -37,4 +40,6 @@ public interface UserService {
     Boolean requestPasswordReset(String mail);
 
     void completePasswordReset(String password, String key);
+
+    Page<UserDTO> findByCriteria(UserFilter userFilter, Pageable pageable);
 }

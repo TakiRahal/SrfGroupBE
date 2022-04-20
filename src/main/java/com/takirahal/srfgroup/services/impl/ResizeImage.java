@@ -64,6 +64,10 @@ public class ResizeImage {
                 File output = new File(path);
                 ImageIO.write(resized, "png", output);
             }
+
+            // Add text for every image
+            addTextToImage(image, path);
+
         } catch (Exception e) {
             log.debug("Resize image exception '{}'", e.getMessage());
         }
@@ -80,6 +84,27 @@ public class ResizeImage {
         } catch (Exception e) {
             log.debug("Resize image exception '{}'", e.getMessage());
             return null;
+        }
+    }
+
+
+    /**
+     *
+     * @param image
+     */
+    private void addTextToImage(BufferedImage image, String path){
+        try {
+            log.error("Add text to image : {}", path);
+            // BufferedImage image = ImageIO.read(new File(path));
+            Font font = new Font("Arial", Font.BOLD, 16);
+            Graphics graphics = image.getGraphics();
+            graphics.setFont(font);
+            graphics.setColor(Color.BLACK);
+            graphics.drawString("SrfGroup", 5, 20);
+            ImageIO.write(image, "jpg", new File(path));
+        }
+        catch (Exception e){
+            log.error("Exception whene add text to image : {}", e.getMessage());
         }
     }
 }

@@ -3,6 +3,7 @@ package com.takirahal.srfgroup.modules.user.controllers;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.takirahal.srfgroup.modules.notification.repositories.NotificationRepository;
 import com.takirahal.srfgroup.modules.user.dto.*;
+import com.takirahal.srfgroup.modules.user.dto.filter.UserFilter;
 import com.takirahal.srfgroup.modules.user.entities.User;
 import com.takirahal.srfgroup.modules.user.exceptioins.AccountResourceException;
 import com.takirahal.srfgroup.modules.user.exceptioins.InvalidPasswordException;
@@ -17,6 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -235,6 +238,22 @@ public class UserController {
         userService.completePasswordReset(keyAndPassword.getPassword(), keyAndPassword.getKey());
         return new ResponseEntity<>(true, HeaderUtil.createAlert("forgot_password_init.reset_finish_messages_success", ""), HttpStatus.OK);
     }
+
+
+    /**
+     * {@code GET  /aboutuses} : get all the aboutuses.
+     *
+     * @param pageable the pagination information.
+     * @param userFilter the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of aboutuses in body.
+     */
+    @GetMapping("/admin")
+    public ResponseEntity<Page<UserDTO>> getAllAboutuses(UserFilter userFilter, Pageable pageable) {
+        log.debug("REST request to get users by criteria: {}", userFilter);
+        Page<UserDTO> page = userService.findByCriteria(userFilter, pageable);
+        return new ResponseEntity<>(page, HttpStatus.OK);
+    }
+
 
     /**
      *

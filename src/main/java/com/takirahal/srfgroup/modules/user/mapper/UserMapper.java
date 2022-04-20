@@ -37,7 +37,24 @@ public interface UserMapper extends EntityMapper<UserDTO, User> {
     @Mapping(target = "sourceRegister", source = "sourceRegister")
     @Mapping(target = "authorities", source = "authorities")
     @Mapping(target = "address", source = "address")
+    @Mapping(target = "langKey", source = "langKey")
+    @Mapping(target = "linkProfileFacebook", source = "linkProfileFacebook")
     UserDTO toCurrentUser(User user);
+
+    @Named("currentUser")
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "username", source = "username")
+    @Mapping(target = "firstName", source = "firstName")
+    @Mapping(target = "lastName", source = "lastName")
+    @Mapping(target = "email", source = "email")
+    @Mapping(target = "imageUrl", source = "imageUrl")
+    @Mapping(target = "phone", source = "phone")
+    @Mapping(target = "sourceRegister", source = "sourceRegister")
+    @Mapping(target = "authorities", source = "authorities")
+    @Mapping(target = "address", source = "address")
+    @Mapping(target = "registerDate", source = "registerDate")
+    UserDTO toDtoListAdmin(User user);
 
     @Named("email")
     @BeanMapping(ignoreByDefault = true)
@@ -63,6 +80,7 @@ public interface UserMapper extends EntityMapper<UserDTO, User> {
     @Mapping(target = "phone", source = "phone")
     @Mapping(target = "sourceRegister", source = "sourceRegister")
     @Mapping(target = "authorities", source = "authorities")
+    @Mapping(target = "linkProfileFacebook", source = "linkProfileFacebook")
     UserDTO toDtoPublicUser(User user);
 
     @Named("searchOffers")

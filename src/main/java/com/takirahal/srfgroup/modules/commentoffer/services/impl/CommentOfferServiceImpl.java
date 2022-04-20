@@ -105,7 +105,7 @@ public class CommentOfferServiceImpl implements CommentOfferService {
             List<UserOneSignal> listUserOneSignals = userOneSignalService.findByUser(userDestination.get());
             if(listUserOneSignals.size()>0){
                 String result = listUserOneSignals.stream().map(UserOneSignal::getIdOneSignal)
-                        .collect(Collectors.joining(","));
+                        .collect(Collectors.joining("\",\""));
                 oneSignalService.sendPushNotifToUser(result, messageCommentOffer);
             }
         }
