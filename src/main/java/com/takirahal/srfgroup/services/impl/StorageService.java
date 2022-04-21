@@ -42,10 +42,10 @@ public class StorageService {
             if (resource.exists() || resource.isReadable()) {
                 return resource;
             }
-            return CommonUtil.loadDefaultFile();
+            return null; // CommonUtil.loadDefaultFile();
         } catch (MalformedURLException e) {
             log.debug("MalformedURLException : {}", e.getMessage());
-            return CommonUtil.loadDefaultFile();
+            return null; // CommonUtil.loadDefaultFile();
         }
     }
 
