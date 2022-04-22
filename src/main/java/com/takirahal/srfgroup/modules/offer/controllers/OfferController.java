@@ -55,7 +55,7 @@ public class OfferController {
      */
     @GetMapping("public/{id}")
     public ResponseEntity<OfferWithMyFavoriteUserDTO> getOfferWithFavorite(@PathVariable Long id) {
-        log.debug("REST request to get Offer : {}", id);
+        log.info("REST request to get Offer with id: {}", id);
         Optional<OfferDTO> offerDTO = offerService.findOne(id);
         if(!offerDTO.isPresent()){
             throw new ResouorceNotFoundException("Not found offer with id");

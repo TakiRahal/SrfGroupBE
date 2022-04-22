@@ -29,3 +29,21 @@ heroku deploy:jar target/srfgroup-0.0.1-SNAPSHOT.jar --app srf-group-be
 heroku open --app srf-group-be
 
 heroku buildpacks:clear --app srf-group-be
+
+
+## ELK + Spring Boot
+
+1) Run Spring boot (add logging.file.name)
+    
+2) Run Elasticsearch 
+    + Version: elasticsearch-6.2.3
+    + Under folder bin command: elasticsearch.bat
+    
+3) Run Kibana
+    + Version: kibana-6.0.0
+    + Under folder bin command: kibana.bat
+    
+4) Run Logstash: 
+    + Version: logstash-7.6.1
+    + Add file config: logstash-7.6.1\bin\logstash.conf
+    + Under folder bin command:  ./logstash -f logstash.conf

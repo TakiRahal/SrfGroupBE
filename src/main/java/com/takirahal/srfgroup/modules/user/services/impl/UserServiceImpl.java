@@ -203,7 +203,7 @@ public class UserServiceImpl implements UserService {
     public String signinClient(LoginDTO loginDTO) {
         try {
 
-            log.debug("Request to signin client: {}", loginDTO);
+            log.info("Request to signin as client with email: {}", loginDTO.getEmail());
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             loginDTO.getEmail(),
@@ -230,13 +230,14 @@ public class UserServiceImpl implements UserService {
             return jwt;
         }
         catch(BadCredentialsException e){
+            log.error("Exception for request to signin client: {}", e.getMessage());
             throw new InvalidPasswordException("Bad Credentials");
         }
     }
 
     @Override
     public String signInAdmin(LoginDTO loginDTO) {
-        log.debug("Request to signin admin: {}", loginDTO);
+        log.info("Request to signin as admin with email: {}", loginDTO.getEmail());
         Optional<User> existingUser = userRepository.findOneByEmailIgnoreCase(loginDTO.getEmail());
         if( !existingUser.isPresent() ){
             throw new AccountResourceException("Not found user with email");
@@ -259,6 +260,7 @@ public class UserServiceImpl implements UserService {
             return tokenProvider.generateToken(authentication);
         }
         catch(BadCredentialsException e){
+            log.error("Exception for request to signin as admin: {}", e.getMessage());
             throw new InvalidPasswordException("Bad Credentials");
         }
     }

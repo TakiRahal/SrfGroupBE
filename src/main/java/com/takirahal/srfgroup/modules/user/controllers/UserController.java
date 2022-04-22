@@ -65,13 +65,13 @@ public class UserController {
 //    SimpUserRegistry userRegistry;
 
     /**
-     *
+     * SignIn from WebFront
      * @param loginDTO
      * @return
      */
     @PostMapping("public/signin")
-    public ResponseEntity<JWTToken> signin(@RequestBody LoginDTO loginDTO) {
-        log.debug("REST request to signin : {} ", loginDTO);
+    public ResponseEntity<JWTToken> signinClient(@RequestBody LoginDTO loginDTO) {
+        log.info("REST request to signin with email: {} ", loginDTO.getEmail());
         String jwt = userService.signinClient(loginDTO);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtAuthenticationFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);

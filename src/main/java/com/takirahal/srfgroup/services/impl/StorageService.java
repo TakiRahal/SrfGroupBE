@@ -30,7 +30,7 @@ public class StorageService {
         try {
             Files.copy(file.getInputStream(), rootLocation.resolve(file.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception e) {
-            log.debug("Exception store file : {}", e.getMessage());
+            log.error("Exception store file : {}", e.getMessage());
             throw new RuntimeException("FAIL!");
         }
     }
@@ -44,7 +44,7 @@ public class StorageService {
             }
             return null; // CommonUtil.loadDefaultFile();
         } catch (MalformedURLException e) {
-            log.debug("MalformedURLException : {}", e.getMessage());
+            log.error("Exception MalformedURLException : {}", e.getMessage());
             return null; // CommonUtil.loadDefaultFile();
         }
     }
