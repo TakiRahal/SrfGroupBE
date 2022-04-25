@@ -53,7 +53,7 @@ public class CategoryServiceImpl implements CategoryService {
     private Specification<Category> createSpecification(CategoryFilter criteria) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
-            query.orderBy(criteriaBuilder.desc(root.get("id")));
+            query.orderBy(criteriaBuilder.asc(root.get("id")));
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }

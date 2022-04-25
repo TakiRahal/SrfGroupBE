@@ -83,7 +83,6 @@ public class SpringBatchConfig {
         return new ItemProcessor<Address, Address>() {
             @Override
             public Address process(Address address) throws Exception {
-
                 return null;
             }
         };

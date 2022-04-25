@@ -1,6 +1,7 @@
 package com.takirahal.srfgroup.modules.offer.entities;
 
 import com.takirahal.srfgroup.modules.offer.entities.Offer;
+import com.takirahal.srfgroup.modules.offer.enums.TypePeriodRent;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,4 +27,7 @@ public class RentOffer extends Offer {
 
     @Column(name = "end_date")
     private Instant endDate;
+
+    @Column(name = "type_period_rent")
+    private TypePeriodRent typePeriodRent;
 }

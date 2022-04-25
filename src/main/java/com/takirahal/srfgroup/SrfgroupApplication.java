@@ -11,8 +11,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +33,10 @@ public class SrfgroupApplication implements CommandLineRunner {
     @Autowired
     @Qualifier("userBeanJob")
     private Job jobUser;
+
+    @Autowired
+    @Qualifier("categoryBeanJob")
+    private Job jobCategory;
 
     public static void main(String[] args) {
         SpringApplication.run(SrfgroupApplication.class, args);
@@ -69,6 +71,17 @@ public class SrfgroupApplication implements CommandLineRunner {
         while (jobExecutionUser.isRunning()){
             System.out.println("...");
         }
+
+        // For category
+        /*
+        Map<String, JobParameter> parmsCategory = new HashMap<>();
+        parmsCategory.put("time", new JobParameter(System.currentTimeMillis()));
+        JobParameters jobParameterCategory = new JobParameters(parmsCategory);
+        JobExecution jobExecutionCategory = jobLauncher.run(jobCategory, jobParameterCategory);
+        while (jobExecutionCategory.isRunning()){
+            System.out.println("...");
+        }
+        */
 
         // return jobExecution.getStatus();
     }

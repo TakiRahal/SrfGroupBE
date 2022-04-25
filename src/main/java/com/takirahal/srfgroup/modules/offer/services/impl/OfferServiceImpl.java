@@ -66,11 +66,9 @@ public class OfferServiceImpl implements OfferService {
 
     @Override
     public void uploadImages(List<MultipartFile> multipartFiles, @RequestParam("offerId") Long offerId) {
-        log.debug("uploadImages : {}", offerId);
+        log.info("Request to upload images for offer id: {}", offerId);
         String pathAddProduct = storageService.getBaseStorageProductImages() + offerId;
         if (storageService.existPath(pathAddProduct)) { // Upload for Update offer
-
-
             storeImages(multipartFiles, pathAddProduct);
         } else { // Upload for new offer
             storageService.init(pathAddProduct);

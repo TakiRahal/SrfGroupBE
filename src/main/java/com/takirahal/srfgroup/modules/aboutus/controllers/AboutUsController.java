@@ -1,5 +1,6 @@
 package com.takirahal.srfgroup.modules.aboutus.controllers;
 
+import com.takirahal.srfgroup.exceptions.ResouorceNotFoundException;
 import com.takirahal.srfgroup.modules.aboutus.dto.AboutUsDTO;
 import com.takirahal.srfgroup.modules.aboutus.dto.filter.AboutUsFilter;
 import com.takirahal.srfgroup.modules.aboutus.services.AboutUsService;
@@ -75,6 +76,9 @@ public class AboutUsController {
     public ResponseEntity<AboutUsDTO> getLastAboutUs() {
         log.debug("REST request to get AboutUs : {}");
         Optional<AboutUsDTO> aboutUsDTO = aboutUsService.findLastOne();
+        if(!aboutUsDTO.isPresent()){
+            throw new ResouorceNotFoundException("Not inseret yet from BO");
+        }
         return new ResponseEntity<>(aboutUsDTO.get(), HttpStatus.OK);
     }
 }

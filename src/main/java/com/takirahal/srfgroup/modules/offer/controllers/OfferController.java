@@ -131,9 +131,17 @@ public class OfferController {
     @ResponseBody
     public ResponseEntity<Resource> getFile(@PathVariable Long offerId, @PathVariable String filename) {
         Resource file = offerService.loadFile(offerId, filename);
-        return ResponseEntity
-                .ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
-                .body(file);
+        if(file!=null){
+            return ResponseEntity
+                    .ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
+                    .body(file);
+        }
+        else{
+            return ResponseEntity
+                    .ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=")
+                    .body(null);
+        }
     }
 }

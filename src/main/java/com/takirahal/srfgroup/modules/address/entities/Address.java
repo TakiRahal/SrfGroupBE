@@ -17,7 +17,6 @@ import java.util.Set;
 @Entity
 @Table(name = "sg_address")
 public class Address  implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
     @Id

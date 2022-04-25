@@ -24,7 +24,7 @@ https://data.heroku.com/datastores/99847b29-d576-4442-bd3c-b1d7223dce79#administ
 
 run : mvn clean install -Pprod -DskipTests
 
-heroku deploy:jar target/srfgroup-0.0.1-SNAPSHOT.jar --app srf-group-be
+run : heroku deploy:jar target/srfgroup-0.0.1-SNAPSHOT.jar --app srf-group-be
 
 heroku open --app srf-group-be
 

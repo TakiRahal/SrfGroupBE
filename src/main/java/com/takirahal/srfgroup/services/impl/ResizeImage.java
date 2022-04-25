@@ -37,13 +37,14 @@ public class ResizeImage {
             File output = new File(path);
             ImageIO.write(resized, "png", output);
         } catch (Exception e) {
-            log.debug("Resize image exception '{}'", e.getMessage());
+            log.error("Exception for resize image: {}", e.getMessage());
         }
     }
 
     @Async
     public void resizeImageOffer(String path) {
         try {
+            log.info("Resize image for path: {}", path);
             File input = new File(path);
             BufferedImage image = ImageIO.read(input);
             int newWidthResize = image.getWidth();
@@ -63,13 +64,18 @@ public class ResizeImage {
                 BufferedImage resized = resize(image, newHightResize, newWidthResize);
                 File output = new File(path);
                 ImageIO.write(resized, "png", output);
+
+                // Add text for every image after resize
+                addTextToImage(resized, path);
+            }
+            else{
+                // Add text for every image without resize
+                addTextToImage(image, path);
             }
 
-            // Add text for every image
-            addTextToImage(image, path);
 
         } catch (Exception e) {
-            log.debug("Resize image exception '{}'", e.getMessage());
+            log.error("Exception for resize image: {}", e.getMessage());
         }
     }
 
@@ -82,7 +88,7 @@ public class ResizeImage {
             g2d.dispose();
             return resized;
         } catch (Exception e) {
-            log.debug("Resize image exception '{}'", e.getMessage());
+            log.error("Exception for resize image: {}", e.getMessage());
             return null;
         }
     }
@@ -94,7 +100,7 @@ public class ResizeImage {
      */
     private void addTextToImage(BufferedImage image, String path){
         try {
-            log.error("Add text to image : {}", path);
+            log.info("Add text to image : {}", path);
             // BufferedImage image = ImageIO.read(new File(path));
             Font font = new Font("Arial", Font.BOLD, 16);
             Graphics graphics = image.getGraphics();

@@ -1,6 +1,7 @@
 package com.takirahal.srfgroup.modules.offer.controllers;
 
 import com.takirahal.srfgroup.exceptions.BadRequestAlertException;
+import com.takirahal.srfgroup.exceptions.ResouorceNotFoundException;
 import com.takirahal.srfgroup.modules.offer.dto.DescriptionAddOfferDTO;
 import com.takirahal.srfgroup.modules.offer.services.DescriptionAddOfferService;
 import com.takirahal.srfgroup.utils.HeaderUtil;
@@ -102,6 +103,9 @@ public class DescriptionAddOfferController {
     public ResponseEntity<DescriptionAddOfferDTO> getLastPublicDescriptionAddOffer() {
         log.debug("REST request to get last public DescriptionAddOffer : {}", "getLastPublicDescriptionAddOffer");
         Optional<DescriptionAddOfferDTO> descriptionAddOfferDTO = descriptionAddOfferService.findLastPublic();
+        if(!descriptionAddOfferDTO.isPresent()){
+            throw new ResouorceNotFoundException("Not inseret yet from BO");
+        }
         return new ResponseEntity<>(descriptionAddOfferDTO.get(), HttpStatus.OK);
     }
 

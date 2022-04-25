@@ -75,7 +75,7 @@ public class UserController {
         String jwt = userService.signinClient(loginDTO);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtAuthenticationFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
-        httpHeaders.add("X-app-alert", "Welcome");
+        httpHeaders.add("X-app-alert", "signin.message_welcome");
         return new ResponseEntity<>(new JWTToken(jwt), httpHeaders, HttpStatus.OK);
     }
 
@@ -166,9 +166,8 @@ public class UserController {
      * @throws RuntimeException {@code 500 (Internal Server Error)} if the user couldn't be returned.
      */
     @GetMapping("current-user")
-    public ResponseEntity<UserDTO> getAccountUser(HttpServletRequest request) {
+    public ResponseEntity<UserDTO> getAccountUser() {
         log.debug("REST request to get Current User : {}");
-        // request.getHeader("localTest")
         return new ResponseEntity<>(userService.getCurrentUser(), HttpStatus.OK);
     }
 
