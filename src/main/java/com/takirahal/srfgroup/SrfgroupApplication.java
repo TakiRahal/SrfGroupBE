@@ -19,24 +19,24 @@ import java.util.Map;
 @EnableAsync
 public class SrfgroupApplication implements CommandLineRunner {
 
-    @Autowired
-    private JobLauncher jobLauncher;
-
-    @Autowired
-    @Qualifier("addressBeanJob")
-    private Job jobAddress;
-
-    @Autowired
-    @Qualifier("authorityBeanJob")
-    private Job jobAuthority;
-
-    @Autowired
-    @Qualifier("userBeanJob")
-    private Job jobUser;
-
-    @Autowired
-    @Qualifier("categoryBeanJob")
-    private Job jobCategory;
+//    @Autowired
+//    private JobLauncher jobLauncher;
+//
+//    @Autowired
+//    @Qualifier("addressBeanJob")
+//    private Job jobAddress;
+//
+//    @Autowired
+//    @Qualifier("authorityBeanJob")
+//    private Job jobAuthority;
+//
+//    @Autowired
+//    @Qualifier("userBeanJob")
+//    private Job jobUser;
+//
+//    @Autowired
+//    @Qualifier("categoryBeanJob")
+//    private Job jobCategory;
 
     public static void main(String[] args) {
         SpringApplication.run(SrfgroupApplication.class, args);
@@ -45,43 +45,41 @@ public class SrfgroupApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        // For addresses
-        Map<String, JobParameter> parms = new HashMap<>();
-        parms.put("time", new JobParameter(System.currentTimeMillis()));
-        JobParameters jobParameter = new JobParameters(parms);
-        JobExecution jobExecution = jobLauncher.run(jobAddress, jobParameter);
-        while (jobExecution.isRunning()){
-            System.out.println("...");
-        }
-
-        // For authority
-        Map<String, JobParameter> parmsAuthority = new HashMap<>();
-        parmsAuthority.put("time", new JobParameter(System.currentTimeMillis()));
-        JobParameters jobParameterAuthority = new JobParameters(parmsAuthority);
-        JobExecution jobExecutionAuthority = jobLauncher.run(jobAuthority, jobParameterAuthority);
-        while (jobExecutionAuthority.isRunning()){
-            System.out.println("...");
-        }
-
-        // For user
-        Map<String, JobParameter> parmsUser = new HashMap<>();
-        parmsUser.put("time", new JobParameter(System.currentTimeMillis()));
-        JobParameters jobParameterUser = new JobParameters(parmsUser);
-        JobExecution jobExecutionUser = jobLauncher.run(jobUser, jobParameterUser);
-        while (jobExecutionUser.isRunning()){
-            System.out.println("...");
-        }
-
-        // For category
-        /*
-        Map<String, JobParameter> parmsCategory = new HashMap<>();
-        parmsCategory.put("time", new JobParameter(System.currentTimeMillis()));
-        JobParameters jobParameterCategory = new JobParameters(parmsCategory);
-        JobExecution jobExecutionCategory = jobLauncher.run(jobCategory, jobParameterCategory);
-        while (jobExecutionCategory.isRunning()){
-            System.out.println("...");
-        }
-        */
+//        // For addresses
+//        Map<String, JobParameter> parms = new HashMap<>();
+//        parms.put("time", new JobParameter(System.currentTimeMillis()));
+//        JobParameters jobParameter = new JobParameters(parms);
+//        JobExecution jobExecution = jobLauncher.run(jobAddress, jobParameter);
+//        while (jobExecution.isRunning()){
+//            System.out.println("...");
+//        }
+//
+//        // For authority
+//        Map<String, JobParameter> parmsAuthority = new HashMap<>();
+//        parmsAuthority.put("time", new JobParameter(System.currentTimeMillis()));
+//        JobParameters jobParameterAuthority = new JobParameters(parmsAuthority);
+//        JobExecution jobExecutionAuthority = jobLauncher.run(jobAuthority, jobParameterAuthority);
+//        while (jobExecutionAuthority.isRunning()){
+//            System.out.println("...");
+//        }
+//
+//        // For user
+//        Map<String, JobParameter> parmsUser = new HashMap<>();
+//        parmsUser.put("time", new JobParameter(System.currentTimeMillis()));
+//        JobParameters jobParameterUser = new JobParameters(parmsUser);
+//        JobExecution jobExecutionUser = jobLauncher.run(jobUser, jobParameterUser);
+//        while (jobExecutionUser.isRunning()){
+//            System.out.println("...");
+//        }
+//
+//        // For category
+//        Map<String, JobParameter> parmsCategory = new HashMap<>();
+//        parmsCategory.put("time", new JobParameter(System.currentTimeMillis()));
+//        JobParameters jobParameterCategory = new JobParameters(parmsCategory);
+//        JobExecution jobExecutionCategory = jobLauncher.run(jobCategory, jobParameterCategory);
+//        while (jobExecutionCategory.isRunning()){
+//            System.out.println("...");
+//        }
 
         // return jobExecution.getStatus();
     }

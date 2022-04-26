@@ -109,6 +109,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/description-add-offers/public/**").permitAll()
                 .antMatchers("/api/faq/admin/**").hasAnyAuthority(AuthoritiesConstants.SUPER_ADMIN, AuthoritiesConstants.ADMIN)
                 .antMatchers("/api/aboutus/admin/**").hasAnyAuthority(AuthoritiesConstants.SUPER_ADMIN, AuthoritiesConstants.ADMIN)
+                .antMatchers("/api/addres/admin/**").hasAnyAuthority(AuthoritiesConstants.SUPER_ADMIN, AuthoritiesConstants.ADMIN)
+                .antMatchers("/api/category/admin/**").hasAnyAuthority(AuthoritiesConstants.SUPER_ADMIN, AuthoritiesConstants.ADMIN)
                 .antMatchers("/api/aboutus/public/**").permitAll()
                 .antMatchers("/api/contactus/public/**").permitAll()
                 .antMatchers("/api/post-home-feature/public/**").permitAll()

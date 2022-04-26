@@ -85,7 +85,7 @@ public class SpringBatchConfigCategory {
         return new ItemProcessor<Category, Category>() {
             @Override
             public Category process(Category category) throws Exception {
-                return null;
+                return category;
             }
         };
     }

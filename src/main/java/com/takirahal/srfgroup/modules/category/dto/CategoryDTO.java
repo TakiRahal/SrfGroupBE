@@ -20,5 +20,5 @@ public class CategoryDTO implements Serializable {
 
     private String titleEn;
 
-    private Set<SubCategoryDTO> subCategories = new HashSet<>();
+    // private Set<SubCategoryDTO> subCategories = new HashSet<>();
 }

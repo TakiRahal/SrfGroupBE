@@ -21,8 +21,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 
-@Configuration
-@EnableBatchProcessing
+//@Configuration
+//@EnableBatchProcessing
 public class SpringBatchConfigUser {
 
     @Autowired
@@ -83,7 +83,6 @@ public class SpringBatchConfigUser {
         return new ItemProcessor<User, User>() {
             @Override
             public User process(User address) throws Exception {
-
                 return null;
             }
         };

@@ -50,8 +50,4 @@ public class Address  implements Serializable {
 
     @Column(name = "population_proper")
     private String population_proper;
-
-//    @OneToMany(mappedBy = "address")
-//    @JsonIgnoreProperties(value = { "user", "offerImages", "address", "category" }, allowSetters = true)
-//    private Set<Offer> offers = new HashSet<>();
 }

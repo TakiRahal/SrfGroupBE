@@ -34,10 +34,10 @@ public class RentOfferController {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("create")
-    public ResponseEntity<RentOfferDTO> createRentOffer(@RequestBody RentOfferDTO rentOfferDTO) throws URISyntaxException {
+    public ResponseEntity<RentOfferDTO> createRentOffer(@RequestBody RentOfferDTO rentOfferDTO) {
         log.debug("REST request to save RentOffer : {}", rentOfferDTO);
         RentOfferDTO result = rentOfferService.save(rentOfferDTO);
-        return new ResponseEntity<>(result, HeaderUtil.createAlert("Offer created successfully", ""), HttpStatus.CREATED);
+        return new ResponseEntity<>(result, HeaderUtil.createAlert("add_offer.message_create_offer_succefull", ""), HttpStatus.CREATED);
     }
 
 

@@ -6,6 +6,7 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -16,6 +17,12 @@ public class CategoryWriter implements ItemWriter<Category> {
 
     @Override
     public void write(List<? extends Category> list){
-        categoryRepository.saveAll(list);
+
+        list.stream().forEach(category -> {
+            categoryRepository.save(category);
+        });
+
+
+        // categoryRepository.saveAll(c);
     }
 }

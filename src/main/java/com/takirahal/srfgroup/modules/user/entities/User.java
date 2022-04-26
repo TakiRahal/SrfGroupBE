@@ -24,7 +24,8 @@ import java.util.Set;
 @Table(name = "sg_user")
 public class User implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
+    @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
     @Size(max = 50)
@@ -64,6 +65,7 @@ public class User implements Serializable {
     private String resetKey;
 
     @Size(min = 2, max = 10)
+    @Column(name = "lang_key", length = 20)
     private String langKey;
 
     @Size(max = 20)

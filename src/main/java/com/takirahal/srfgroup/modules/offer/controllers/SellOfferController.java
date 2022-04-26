@@ -40,7 +40,7 @@ public class SellOfferController {
     public ResponseEntity<SellOfferDTO> createSellOffer(@RequestBody SellOfferDTO sellOfferDTO){
         log.debug("REST request to save SellOffer : {}", sellOfferDTO);
         SellOfferDTO result = sellOfferService.save(sellOfferDTO);
-        return new ResponseEntity<>(result, HeaderUtil.createAlert("Offer created successfully", ""), HttpStatus.CREATED);
+        return new ResponseEntity<>(result, HeaderUtil.createAlert("add_offer.message_create_offer_succefull", ""), HttpStatus.CREATED);
     }
 
     /**

@@ -37,7 +37,7 @@ public class FindOfferController {
     public ResponseEntity<FindOfferDTO> createFindOffer(@RequestBody FindOfferDTO findOfferDTO) throws URISyntaxException {
         log.debug("REST request to save FindOffer : {}", findOfferDTO);
         FindOfferDTO result = findOfferService.save(findOfferDTO);
-        return new ResponseEntity<>(result, HeaderUtil.createAlert("Offer created successfully", ""), HttpStatus.CREATED);
+        return new ResponseEntity<>(result, HeaderUtil.createAlert("add_offer.message_create_offer_succefull", ""), HttpStatus.CREATED);
     }
 
 

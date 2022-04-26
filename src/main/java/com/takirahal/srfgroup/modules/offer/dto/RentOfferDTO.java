@@ -1,7 +1,5 @@
 package com.takirahal.srfgroup.modules.offer.dto;
 
-import com.takirahal.srfgroup.modules.offer.dto.OfferDTO;
-import com.takirahal.srfgroup.modules.offer.enums.TypePeriodRent;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,5 +13,5 @@ public class RentOfferDTO extends OfferDTO {
     private Double amount;
     private Instant startDate;
     private Instant endDate;
-    private TypePeriodRent typePeriodRent;
+    private String typePeriodRent;
 }

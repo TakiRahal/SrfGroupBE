@@ -15,7 +15,7 @@ public class AddressTransactionItemWriter  implements ItemWriter<Address> {
     AddressRepository addressRepository;
 
     @Override
-    public void write(List<? extends Address> list) throws Exception {
+    public void write(List<? extends Address> list){
         addressRepository.saveAll(list);
     }
 }

@@ -26,7 +26,7 @@ run : mvn clean install -Pprod -DskipTests
 
 run : heroku deploy:jar target/srfgroup-0.0.1-SNAPSHOT.jar --app srf-group-be
 
-heroku open --app srf-group-be
+run: heroku open --app srf-group-be
 
 heroku buildpacks:clear --app srf-group-be
 

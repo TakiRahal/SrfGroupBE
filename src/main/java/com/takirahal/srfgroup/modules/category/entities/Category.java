@@ -31,8 +31,4 @@ public class Category implements Serializable {
 
     @Column(name = "title_en")
     private String titleEn;
-
-//    @OneToMany(mappedBy = "category")
-//    @JsonIgnoreProperties(value = { "category" }, allowSetters = true)
-//    private Set<SubCategory> subCategories = new HashSet<>();
 }

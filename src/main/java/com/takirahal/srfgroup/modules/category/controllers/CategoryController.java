@@ -7,7 +7,10 @@ import com.takirahal.srfgroup.modules.faq.dto.FaqDTO;
 import com.takirahal.srfgroup.utils.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.*;
+import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -15,6 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -25,6 +30,14 @@ public class CategoryController {
 
     @Autowired
     CategoryService categoryService;
+
+    @Autowired
+    private JobLauncher jobLauncher;
+
+
+    @Autowired
+    @Qualifier("categoryBeanJob")
+    private Job jobCategory;
 
     /**
      * {@code GET  /categories} : get all the categories.
@@ -76,5 +89,27 @@ public class CategoryController {
         log.debug("REST request to uodate Category : {}", categoryDTO);
         CategoryDTO result = categoryService.save(categoryDTO);
         return new ResponseEntity<>(result, HeaderUtil.createAlert("Category update succefully", result.getId().toString()), HttpStatus.OK);
+    }
+
+
+    /**
+     *
+     * @return
+     */
+    @GetMapping("admin/import")
+    public ResponseEntity<BatchStatus> importCategories() {
+        try{
+            log.debug("REST request to import Categories by data.sql");
+            Map<String, JobParameter> parms = new HashMap<>();
+            parms.put("time", new JobParameter(System.currentTimeMillis()));
+            JobParameters jobParameter = new JobParameters(parms);
+            JobExecution jobExecution = jobLauncher.run(jobCategory, jobParameter);
+            while (jobExecution.isRunning()){
+                System.out.println("...");
+            }
+            return new ResponseEntity<>(jobExecution.getStatus(), HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(BatchStatus.FAILED, HttpStatus.OK);
+        }
     }
 }

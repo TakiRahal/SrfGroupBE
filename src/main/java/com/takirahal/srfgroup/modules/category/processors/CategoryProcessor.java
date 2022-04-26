@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class CategoryProcessor implements ItemProcessor<Category, Category> {
     // private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy-HH:mm");
     @Override
-    public Category process(Category category) throws Exception {
+    public Category process(Category category) {
         // bankTransaction.setTransactionDate(simpleDateFormat.parse(bankTransaction.getStrTransactionDate()));
         return category;
     }
