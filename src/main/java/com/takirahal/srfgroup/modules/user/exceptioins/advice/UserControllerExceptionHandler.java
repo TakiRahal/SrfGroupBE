@@ -19,7 +19,7 @@ public class UserControllerExceptionHandler {
 
     @ExceptionHandler(InvalidPasswordException.class)
     public ResponseEntity<ErrorMessage> handeleInvalidPasswordException(InvalidPasswordException ex, WebRequest request) {
-        log.error("An exception have been occurred please see logging error", ex.getMessage());
+        log.error("InvalidPasswordException = An exception have been occurred please see logging error:  {}", ex.getMessage());
         ErrorMessage message = new ErrorMessage(
                 HttpStatus.BAD_REQUEST.value(),
                 new Date(),
@@ -32,7 +32,7 @@ public class UserControllerExceptionHandler {
 
     @ExceptionHandler(EmailAlreadyUsedException.class)
     public ResponseEntity<ErrorMessage> handeleEmailAlreadyUsedException(EmailAlreadyUsedException ex, WebRequest request) {
-        log.error("An exception have been occurred please see logging error", ex.getMessage());
+        log.error("EmailAlreadyUsedException = An exception have been occurred please see logging error:  {}", ex.getMessage());
         ErrorMessage message = new ErrorMessage(
                 HttpStatus.BAD_REQUEST.value(),
                 new Date(),
@@ -44,7 +44,7 @@ public class UserControllerExceptionHandler {
 
     @ExceptionHandler(AccountResourceException.class)
     public ResponseEntity<ErrorMessage> handeleAccountResourceException(AccountResourceException ex, WebRequest request) {
-        log.error("An exception have been occurred please see logging error", ex.getMessage());
+        log.error("AccountResourceException = An exception have been occurred please see logging error:  {}", ex.getMessage());
         ErrorMessage message = new ErrorMessage(
                 HttpStatus.NOT_FOUND.value(),
                 new Date(),
@@ -56,7 +56,7 @@ public class UserControllerExceptionHandler {
 
     @ExceptionHandler(UserNotActivatedException.class)
     public ResponseEntity<ErrorMessage> handeleUserNotActivatedException(UserNotActivatedException ex, WebRequest request) {
-        log.error("An exception have been occurred please see logging error", ex.getMessage());
+        log.error("UserNotActivatedException = An exception have been occurred please see logging error:  {}", ex.getMessage());
         ErrorMessage message = new ErrorMessage(
                 HttpStatus.BAD_REQUEST.value(),
                 new Date(),
@@ -69,7 +69,7 @@ public class UserControllerExceptionHandler {
 
     @ExceptionHandler(UserBlockedException.class)
     public ResponseEntity<ErrorMessage> handeleUserBlockedException(UserBlockedException ex, WebRequest request) {
-        log.error("Exception to user blocked", ex.getMessage());
+        log.error("UserBlockedException = Exception to user blocked:  {}", ex.getMessage());
         ErrorMessage message = new ErrorMessage(
                 HttpStatus.UNAUTHORIZED.value(),
                 new Date(),

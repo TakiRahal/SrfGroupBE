@@ -42,7 +42,7 @@ public class FavoriteUserController {
     public ResponseEntity<FavoriteUserDTO> createFavorite(@RequestBody FavoriteUserDTO favoriteDTO){
         log.debug("REST request to save Favorite : {}", favoriteDTO);
         FavoriteUserDTO result = favoriteUserService.save(favoriteDTO);
-        return new ResponseEntity<>(result, HttpStatus.CREATED);
+        return new ResponseEntity<>(result, HeaderUtil.createAlert("favorite.user.message_add_favorite_user_succefully", result.getId().toString()), HttpStatus.CREATED);
     }
 
 
@@ -70,6 +70,6 @@ public class FavoriteUserController {
     public ResponseEntity<Boolean> deleteFavorite(@PathVariable Long id) {
         log.debug("REST request to delete Favorite : {}", id);
         favoriteUserService.delete(id);
-        return new ResponseEntity<>(true, HeaderUtil.createAlert("deleted comment", id.toString()), HttpStatus.OK);
+        return new ResponseEntity<>(true, HeaderUtil.createAlert("favorite.user.message_remove_favorite_user", id.toString()), HttpStatus.OK);
     }
 }

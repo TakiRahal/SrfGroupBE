@@ -36,14 +36,20 @@ heroku buildpacks:clear --app srf-group-be
 1) Run Spring boot (add logging.file.name)
     
 2) Run Elasticsearch 
-    + Version: elasticsearch-6.2.3
+    + Version: elasticsearch-7.1.0
     + Under folder bin command: elasticsearch.bat
     + All the indexes that have ever been created inside elasticsearch: http://localhost:9200/_cat/indices
     + ElasticSearch actually received the data: curl 'http://localhost:9200/_search?pretty'
     
 3) Run Kibana
-    + Version: kibana-6.0.0
+    + Version: kibana-7.1.0
     + Under folder bin command: kibana.bat
+    + Show data in Kibana:
+        - Go to Management → Kibana Index Patterns → Create index Pattern
+        - Enter “logstash-*” as the index pattern
+        - Time filter : @timestamp
+        - Go to the Discover tab in Kibana
+        - Select logstash-* (Dropdown)
     
 4) Run Logstash: 
     + Version: logstash-7.6.1

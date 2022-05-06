@@ -19,7 +19,7 @@ public class OfferControllerExceptionHandler {
 
     @ExceptionHandler(BadRequestAlertException.class)
     public ResponseEntity<ErrorMessage> handeleInvalidPasswordException(BadRequestAlertException ex, WebRequest request) {
-        log.error("An exception have been occurred please see logging error", ex.getMessage());
+        log.error("BadRequestAlertException = An exception have been occurred please see logging error:  {}", ex.getMessage());
         ErrorMessage message = new ErrorMessage(
                 HttpStatus.BAD_REQUEST.value(),
                 new Date(),

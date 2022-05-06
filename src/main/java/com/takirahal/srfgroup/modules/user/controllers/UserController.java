@@ -186,7 +186,7 @@ public class UserController {
      */
     @GetMapping("current-user")
     public ResponseEntity<UserDTO> getAccountUser() {
-        log.debug("REST request to get Current User : {}");
+        log.info("REST request to get Current User");
         return new ResponseEntity<>(userService.getCurrentUser(), HttpStatus.OK);
     }
 
@@ -198,7 +198,7 @@ public class UserController {
      */
     @PutMapping("update-current-user")
     public ResponseEntity<UserDTO> updateCurrentUser(@RequestBody UserDTO user) {
-        log.debug("REST request to update Current User : {}");
+        log.info("REST request to update Current User : {}");
         UserDTO userDTO = userService.updateCurrentUser(user);
         return new ResponseEntity<>(userDTO, HeaderUtil.createAlert("Update infos succefully", user.getId().toString()), HttpStatus.OK);
     }
@@ -210,7 +210,7 @@ public class UserController {
      */
     @PutMapping("update-password-current-user")
     public ResponseEntity<Boolean> updatePasswordCurrentUser(@RequestBody UpdatePasswordDTO updatePasswordDTO) {
-        log.debug("REST request to update Current User : {}");
+        log.info("REST request to update Current User : {}");
         Boolean result = userService.updatePasswordCurrentUser(updatePasswordDTO);
         return new ResponseEntity<>(result, HeaderUtil.createAlert("Update password succefully", ""), HttpStatus.OK);
     }
@@ -222,7 +222,7 @@ public class UserController {
      */
     @GetMapping("count-not-see-notifications")
     public ResponseEntity<Long> getNumberNotSeeMessageForUserId() {
-        log.debug("REST request to get number of notification by user: {}");
+        log.info("REST request to get number of notification by user");
 
         Long userId = SecurityUtils.getIdByCurrentUser()
                 .orElseThrow(() -> new AccountResourceException("Current user login not found"));
@@ -235,11 +235,12 @@ public class UserController {
     /**
      * {@code POST   /account/reset-password/init} : Send an email to reset the password of the user.
      *
-     * @param mail the mail of the user.
+     * @param email the mail of the user.
      */
     @PostMapping(path = "public/forgot-password/init")
-    public ResponseEntity<Boolean> requestPasswordReset(@RequestBody String mail) {
-        Boolean result = userService.requestPasswordReset(mail);
+    public ResponseEntity<Boolean> requestPasswordReset(@RequestBody String email) {
+        log.info("REST request to reset password : {}", email);
+        Boolean result = userService.requestPasswordReset(email);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
