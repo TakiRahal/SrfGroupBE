@@ -47,8 +47,12 @@ public class User implements Serializable {
     private String email;
 
     @NotNull
-    @Column(nullable = false)
-    private boolean activated = false;
+    @Column(name = "activated_account", nullable = false)
+    private boolean activatedAccount = false;
+
+    @NotNull
+    @Column(name = "blocked_by_admin", nullable = false)
+    private boolean blockedByAdmin = false;
 
     @Size(max = 256)
     @Column(name = "image_url", length = 256)

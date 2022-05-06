@@ -38,6 +38,8 @@ heroku buildpacks:clear --app srf-group-be
 2) Run Elasticsearch 
     + Version: elasticsearch-6.2.3
     + Under folder bin command: elasticsearch.bat
+    + All the indexes that have ever been created inside elasticsearch: http://localhost:9200/_cat/indices
+    + ElasticSearch actually received the data: curl 'http://localhost:9200/_search?pretty'
     
 3) Run Kibana
     + Version: kibana-6.0.0

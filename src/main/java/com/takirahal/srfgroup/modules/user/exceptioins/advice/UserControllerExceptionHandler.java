@@ -2,10 +2,7 @@ package com.takirahal.srfgroup.modules.user.exceptioins.advice;
 
 import com.takirahal.srfgroup.exceptions.advice.ControllerExceptionHandler;
 import com.takirahal.srfgroup.exceptions.ErrorMessage;
-import com.takirahal.srfgroup.modules.user.exceptioins.AccountResourceException;
-import com.takirahal.srfgroup.modules.user.exceptioins.EmailAlreadyUsedException;
-import com.takirahal.srfgroup.modules.user.exceptioins.InvalidPasswordException;
-import com.takirahal.srfgroup.modules.user.exceptioins.UserNotActivatedException;
+import com.takirahal.srfgroup.modules.user.exceptioins.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -62,6 +59,19 @@ public class UserControllerExceptionHandler {
         log.error("An exception have been occurred please see logging error", ex.getMessage());
         ErrorMessage message = new ErrorMessage(
                 HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false));
+
+        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+    }
+
+
+    @ExceptionHandler(UserBlockedException.class)
+    public ResponseEntity<ErrorMessage> handeleUserBlockedException(UserBlockedException ex, WebRequest request) {
+        log.error("Exception to user blocked", ex.getMessage());
+        ErrorMessage message = new ErrorMessage(
+                HttpStatus.UNAUTHORIZED.value(),
                 new Date(),
                 ex.getMessage(),
                 request.getDescription(false));

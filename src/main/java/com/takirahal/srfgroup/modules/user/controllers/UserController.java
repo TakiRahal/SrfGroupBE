@@ -1,12 +1,14 @@
 package com.takirahal.srfgroup.modules.user.controllers;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.takirahal.srfgroup.constants.AuthoritiesConstants;
 import com.takirahal.srfgroup.modules.notification.repositories.NotificationRepository;
 import com.takirahal.srfgroup.modules.user.dto.*;
 import com.takirahal.srfgroup.modules.user.dto.filter.UserFilter;
 import com.takirahal.srfgroup.modules.user.entities.User;
 import com.takirahal.srfgroup.modules.user.exceptioins.AccountResourceException;
 import com.takirahal.srfgroup.modules.user.exceptioins.InvalidPasswordException;
+import com.takirahal.srfgroup.modules.user.exceptioins.UserBlockedException;
 import com.takirahal.srfgroup.modules.user.mapper.UserMapper;
 import com.takirahal.srfgroup.modules.user.repositories.UserRepository;
 import com.takirahal.srfgroup.security.JwtAuthenticationFilter;
@@ -23,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -80,10 +83,15 @@ public class UserController {
     }
 
 
+    /**
+     *
+     * @param googlePlusVM
+     * @return
+     */
     @PostMapping("public/signin-google-plus")
     public ResponseEntity<JWTToken> signinGooglePlus(@Valid @RequestBody GooglePlusVM googlePlusVM) {
-        log.debug("REST request to signin Google Plus: {} ", googlePlusVM);
         try {
+            log.info("REST request to signin Google Plus: {} ", googlePlusVM);
             String jwt = userService.signinGooglePlus(googlePlusVM);
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.add(JwtAuthenticationFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
@@ -91,15 +99,23 @@ public class UserController {
             return new ResponseEntity<>(new JWTToken(jwt), httpHeaders, HttpStatus.OK);
         }
         catch(Exception e){
+            if(e instanceof UserBlockedException){
+                throw new UserBlockedException("signin.blocked_by_admin");
+            }
             throw new InvalidPasswordException("Bad Credentials");
         }
     }
 
 
+    /**
+     *
+     * @param facebookVM
+     * @return
+     */
     @PostMapping("public/signin-facebook")
     public ResponseEntity<JWTToken> signinFacebook(@Valid @RequestBody FacebookVM facebookVM) {
-        log.debug("REST request to signin Google Plus: {} ", facebookVM);
         try {
+            log.info("REST request to signin Google Plus: {} ", facebookVM);
             String jwt = userService.signinFacebook(facebookVM);
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.add(JwtAuthenticationFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
@@ -107,6 +123,9 @@ public class UserController {
             return new ResponseEntity<>(new JWTToken(jwt), httpHeaders, HttpStatus.OK);
         }
         catch(Exception e){
+            if(e instanceof UserBlockedException){
+                throw new UserBlockedException("signin.blocked_by_admin");
+            }
             throw new InvalidPasswordException("Bad Credentials");
         }
     }
@@ -117,7 +136,7 @@ public class UserController {
      */
     @PostMapping("public/signup")
     public ResponseEntity<String> signup(@RequestBody RegisterDTO registerDTO) {
-        log.debug("REST request to signup : {} ", registerDTO);
+        log.info("REST request to signup : {} ", registerDTO);
         userService.registerUser(registerDTO);
         return new ResponseEntity<>("true", HttpStatus.CREATED);
     }
@@ -246,8 +265,8 @@ public class UserController {
      * @param userFilter the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of aboutuses in body.
      */
-    @GetMapping("/admin")
-    public ResponseEntity<Page<UserDTO>> getAllAboutuses(UserFilter userFilter, Pageable pageable) {
+    @GetMapping("/admin/list-users")
+    public ResponseEntity<Page<UserDTO>> getAllUsers(UserFilter userFilter, Pageable pageable) {
         log.debug("REST request to get users by criteria: {}", userFilter);
         Page<UserDTO> page = userService.findByCriteria(userFilter, pageable);
         return new ResponseEntity<>(page, HttpStatus.OK);
@@ -263,6 +282,33 @@ public class UserController {
     public ResponseEntity<UserDTO> updateAvatar(@RequestParam("avatar") MultipartFile file) {
         log.debug("REST request to update Avatar : {}", file.getOriginalFilename());
         return new ResponseEntity<>(userService.updateAvatar(file), HttpStatus.OK);
+    }
+
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    @PostMapping("admin/blocked-user/{id}")
+    public ResponseEntity<String> blockedUserByAdmin(@PathVariable Long id, @RequestBody String blockUnblock) {
+        log.info("REST request to blocked user by admin : {} - {}", id, blockUnblock);
+        userService.blockedUserByAdmin(id, blockUnblock);
+        return new ResponseEntity<>("true", HttpStatus.CREATED);
+    }
+
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    @PostMapping("super-admin/add-remove-admin/{id}")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.SUPER_ADMIN + "\")")
+    public ResponseEntity<String> addRemoveAdmin(@PathVariable Long id, @RequestBody String addRemove) {
+        log.info("REST request to add/remove admin : {} - {}", id, addRemove);
+        userService.addRemoveAdmin(id, addRemove);
+        return new ResponseEntity<>("true", HttpStatus.CREATED);
     }
 
     /**

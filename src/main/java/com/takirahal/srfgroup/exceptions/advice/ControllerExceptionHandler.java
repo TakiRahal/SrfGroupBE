@@ -20,7 +20,7 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(ResouorceNotFoundException.class)
     public ResponseEntity<ErrorMessage> handeleResouorceNotFoundException(ResouorceNotFoundException ex, WebRequest request) {
-        log.error("An exception have been occurred please see logging error", ex.getMessage());
+        log.error("ResouorceNotFoundException = An exception have been occurred please see logging error:  {}", ex.getMessage());
         ErrorMessage message = new ErrorMessage(
                 HttpStatus.NOT_FOUND.value(),
                 new Date(),
@@ -32,7 +32,7 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ErrorMessage> handeleUnauthorizedException(UnauthorizedException ex, WebRequest request) {
-        log.error("An exception have been occurred please see logging error", ex.getMessage());
+        log.error("UnauthorizedException = An exception have been occurred please see logging error: {}", ex.getMessage());
         ErrorMessage message = new ErrorMessage(
                 HttpStatus.UNAUTHORIZED.value(),
                 new Date(),

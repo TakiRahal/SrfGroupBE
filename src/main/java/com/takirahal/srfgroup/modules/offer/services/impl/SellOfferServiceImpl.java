@@ -85,7 +85,7 @@ public class SellOfferServiceImpl implements SellOfferService {
 
     @Override
     public SellOfferDTO save(SellOfferDTO sellOfferDTO) {
-        log.debug("Request to save SellOffer : {}", sellOfferDTO);
+        log.info("Request to save SellOffer : {}", sellOfferDTO);
 
         if (sellOfferDTO.getId() != null) {
             throw new BadRequestAlertException("A new sellOffer cannot already have an ID idexists");

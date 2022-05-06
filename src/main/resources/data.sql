@@ -26,8 +26,8 @@ WHERE NOT EXISTS
 
 -- Add super admin user
 
-INSERT INTO sg_user (id,first_name,last_name,username,email,activated,image_url,activation_key,reset_key,phone,source_register,password,lang_key,link_profile_facebook)
-SELECT '1','Srf','Group','srfgroup.contact@gmail.com','srfgroup.contact@gmail.com','true','image','123456789','123456789','0021624158860','WebBrowser','$2a$10$4Ba5qhmFQ14vhIwrYXNDA.Wvs/3zAkwt.u19Ceqg9hHyTn/1SOBri','en','https://www.facebook.com/profile.php?id=100054409273167'
+INSERT INTO sg_user (id,first_name,last_name,username,email,activated_account,image_url,activation_key,reset_key,phone,source_register,password,lang_key,link_profile_facebook,blocked_by_admin)
+SELECT '1','Srf','Group','srfgroup.contact@gmail.com','srfgroup.contact@gmail.com','true','image','123456789','123456789','0021624158860','WebBrowser','$2a$10$4Ba5qhmFQ14vhIwrYXNDA.Wvs/3zAkwt.u19Ceqg9hHyTn/1SOBri','en','https://www.facebook.com/profile.php?id=100054409273167', 'false'
 WHERE NOT EXISTS
     (SELECT email
      FROM sg_user

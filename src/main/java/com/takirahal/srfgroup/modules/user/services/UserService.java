@@ -42,4 +42,8 @@ public interface UserService {
     void completePasswordReset(String password, String key);
 
     Page<UserDTO> findByCriteria(UserFilter userFilter, Pageable pageable);
+
+    void blockedUserByAdmin(Long id, String blockUnblock);
+
+    void addRemoveAdmin(Long id, String addRemove);
 }

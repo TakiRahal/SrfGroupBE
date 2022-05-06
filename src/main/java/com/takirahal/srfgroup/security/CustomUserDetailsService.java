@@ -1,6 +1,7 @@
 package com.takirahal.srfgroup.security;
 
 import com.takirahal.srfgroup.modules.user.entities.User;
+import com.takirahal.srfgroup.modules.user.exceptioins.UserBlockedException;
 import com.takirahal.srfgroup.modules.user.exceptioins.UserNotActivatedException;
 import com.takirahal.srfgroup.modules.user.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +38,14 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     private UserPrincipal createSpringSecurityUser(String lowercaseLogin, User user) {
-        if (!user.isActivated()) {
+        if (!user.isActivatedAccount()) {
             throw new UserNotActivatedException("User " + lowercaseLogin + " was not activated");
         }
+
+        if(user.isBlockedByAdmin()){
+            throw new UserBlockedException("signin.blocked_by_admin");
+        }
+
         return UserPrincipal.create(user);
     }
 

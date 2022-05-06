@@ -5,6 +5,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.takirahal.srfgroup.constants.AuthoritiesConstants;
+import com.takirahal.srfgroup.exceptions.UnauthorizedException;
 import com.takirahal.srfgroup.modules.address.mapper.AddressMapper;
 import com.takirahal.srfgroup.modules.notification.dto.NotificationDTO;
 import com.takirahal.srfgroup.modules.notification.entities.Notification;
@@ -140,7 +141,7 @@ public class UserServiceImpl implements UserService {
         newUser.setFirstName("");
         newUser.setLastName("");
         newUser.setUsername(registerDTO.getEmail());
-        newUser.setActivated(false);
+        newUser.setActivatedAccount(false);
         newUser.setActivationKey(RandomUtil.generateActivationKey(20));
         newUser.setSourceRegister(registerDTO.getSourceRegister());
         newUser.setRegisterDate(Instant.now());
@@ -176,7 +177,7 @@ public class UserServiceImpl implements UserService {
                 .map(
                         user -> {
                             // activate given user for the registration key.
-                            user.setActivated(true);
+                            user.setActivatedAccount(true);
                             user.setActivationKey(null);
                             log.debug("Activated user: {}", user);
                             return user;
@@ -351,7 +352,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String signinGooglePlus(GooglePlusVM googlePlusVM) throws IOException{
-        log.debug("Request to Signin GooglePlus: {}", googlePlusVM);
+        log.info("Request to Signin GooglePlus: {}", googlePlusVM);
         final NetHttpTransport transport = new NetHttpTransport();
         final JacksonFactory jacksonFactory = JacksonFactory.getDefaultInstance();
         GoogleIdTokenVerifier.Builder verifier = new GoogleIdTokenVerifier.Builder(transport, jacksonFactory)
@@ -376,12 +377,13 @@ public class UserServiceImpl implements UserService {
         if (userExist.isPresent()) {
             // Update user
             userDTO.setId(userExist.get().getId());
+            userDTO.setBlockedByAdmin(userExist.get().isBlockedByAdmin());
         }
 
         // Save new User
         User user = userMapper.toEntity(userDTO);
         user.setPassword(RandomUtil.generateActivationKey(20));
-        user.setActivated(true);
+        user.setActivatedAccount(true);
         user.setRegisterDate(Instant.now());
         user.setLangKey(googlePlusVM.getLangKey());
         User newUser = userRepository.save(user);
@@ -413,7 +415,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String signinFacebook(FacebookVM facebookVM) {
-        log.debug("Request to Signin Facebook: {}", facebookVM);
+        log.info("Request to Signin Facebook: {}", facebookVM);
         Facebook facebook = new FacebookTemplate(facebookVM.getAccessToken());
         final String[] fields = { "email", "picture" };
         FacebookVM userFacebook = facebook.fetchObject("me", FacebookVM.class, fields);
@@ -435,12 +437,13 @@ public class UserServiceImpl implements UserService {
         if (userExist.isPresent()) {
             // Update user
             userDTO.setId(userExist.get().getId());
+            userDTO.setBlockedByAdmin(userExist.get().isBlockedByAdmin());
         }
 
         // Save new User
         User user = userMapper.toEntity(userDTO);
         user.setPassword(RandomUtil.generateActivationKey(20));
-        user.setActivated(true);
+        user.setActivatedAccount(true);
         user.setRegisterDate(Instant.now());
         user.setLangKey(facebookVM.getLangKey());
         User newUser = userRepository.save(user);
@@ -473,7 +476,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findOneByEmailIgnoreCase(mail)
                 .orElseThrow(() -> new ResouorceNotFoundException("User not found with this email"));
 
-        if(!user.isActivated()){
+        if(!user.isActivatedAccount()){
             throw new UserNotActivatedException("User not active yet");
         }
 
@@ -509,11 +512,69 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll(createSpecification(userFilter), pageable).map(userMapper::toDtoListAdmin);
     }
 
+    @Override
+    public void blockedUserByAdmin(Long id, String blockUnblock) {
+        log.info("Request to blocked user by admin : {} - {}", id, blockUnblock);
+        Optional<User> user = userRepository.findById(id);
+        if(!user.isPresent()){
+            log.error("Exception to block user: {}");
+            throw new ResouorceNotFoundException("User not found");
+        }
+
+        // Protected Super Admin
+        checkSuperAdmin(user.get());
+
+        if(blockUnblock.equals("true")){
+            user.get().setBlockedByAdmin(true);
+        }
+        else{
+            user.get().setBlockedByAdmin(false);
+        }
+        userRepository.save(user.get());
+    }
+
+    @Override
+    public void addRemoveAdmin(Long id, String addRemove) {
+        log.info("Request to add/remove admin : {} - {}", id, addRemove);
+        Optional<User> user = userRepository.findById(id);
+        if(!user.isPresent()){
+            log.error("Exception to block user: {}");
+            throw new ResouorceNotFoundException("User not found");
+        }
+
+        // Protected Super Admin
+        checkSuperAdmin(user.get());
+
+        if(addRemove.equals("true")){
+            Set<Authority> authorities = user.get().getAuthorities();
+
+            Authority authority = new Authority();
+            authority.setName(AuthoritiesConstants.ADMIN);
+            authorities.add(authority);
+
+            user.get().setAuthorities(authorities);
+
+            createAddRemoveAdminNotification(user.get(), true);
+        }
+        else{
+
+            Set<Authority> authorities = new HashSet<>();
+            Authority authority = new Authority();
+            authority.setName(AuthoritiesConstants.USER);
+            authorities.add(authority);
+
+            user.get().setAuthorities(authorities);
+
+            createAddRemoveAdminNotification(user.get(), false);
+        }
+        userRepository.save(user.get());
+    }
+
     private Specification<User> createSpecification(UserFilter userFilter) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            query.orderBy(criteriaBuilder.desc(root.get("id")));
+            query.orderBy(criteriaBuilder.asc(root.get("id")));
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }
@@ -566,5 +627,33 @@ public class UserServiceImpl implements UserService {
                         password.length() < RegisterDTO.PASSWORD_MIN_LENGTH ||
                         password.length() > RegisterDTO.PASSWORD_MAX_LENGTH
         );
+    }
+
+    private void checkSuperAdmin(User user){
+        user.getAuthorities().stream().forEach(authority -> {
+            Authority authorityUser = new Authority();
+            authorityUser.setName(AuthoritiesConstants.SUPER_ADMIN);
+
+            if(authority.equals(authorityUser)){
+                throw new UnauthorizedException("User super admin");
+            }
+        });
+    }
+
+
+    /**
+     *
+     * @param user
+     */
+    private void createAddRemoveAdminNotification(User user, boolean addRemove){
+        Locale locale = Locale.forLanguageTag(!user.getLangKey().equals("") ? user.getLangKey() : "fr");
+        String message = messageSource.getMessage(addRemove ? "user.message_add_admin" : "user.message_remove_admin", null, locale);
+
+        Notification notification = new Notification();
+        notification.setDateCreated(Instant.now());
+        notification.setContent(message);
+        notification.setModule(ModuleNotification.AdminNotification.name());
+        notification.setUser(user);
+        notificationRepository.save(notification);
     }
 }
