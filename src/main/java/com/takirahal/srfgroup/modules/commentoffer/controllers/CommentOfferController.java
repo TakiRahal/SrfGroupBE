@@ -51,7 +51,7 @@ public class CommentOfferController {
      */
     @PostMapping("create")
     public ResponseEntity<CommentOfferDTO> createCommentOfferByCurrentUser(@RequestBody CommentOfferDTO commentOfferDTO) {
-        log.debug("REST request to save CommentOffer : {}", commentOfferDTO);
+        log.info("REST request to save CommentOffer : {}", commentOfferDTO);
         CommentOfferDTO result = commentOfferService.save(commentOfferDTO);
         return new ResponseEntity<>(result, HeaderUtil.createAlert("comment_offer.comment_offer_added_succefully", result.getId().toString()), HttpStatus.CREATED);
     }
@@ -70,9 +70,9 @@ public class CommentOfferController {
             @PathVariable(value = "id", required = false) final Long id,
             @RequestBody CommentOfferDTO commentOfferDTO
     ) {
-        log.debug("REST request to update CommentOffer : {}, {}", id, commentOfferDTO);
+        log.info("REST request to update CommentOffer : {}, {}", id, commentOfferDTO);
         CommentOfferDTO result = commentOfferService.updateCommentOffer(commentOfferDTO, id);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(result, HeaderUtil.createAlert("comment_offer.comment_offer_update_succefully", result.getId().toString()), HttpStatus.OK);
     }
 
 
@@ -86,7 +86,7 @@ public class CommentOfferController {
     public ResponseEntity<Boolean> deleteCommentOffer(@PathVariable Long id) {
         log.debug("REST request to delete CommentOffer : {}", id);
         commentOfferService.delete(id);
-        return new ResponseEntity<>(true, HttpStatus.OK);
+        return new ResponseEntity<>(true, HeaderUtil.createAlert("comment_offer.comment_offer_delete_succefully", id.toString()), HttpStatus.OK);
     }
 
 }

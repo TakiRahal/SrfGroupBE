@@ -55,3 +55,8 @@ heroku buildpacks:clear --app srf-group-be
     + Version: logstash-7.6.1
     + Add file config: logstash-7.6.1\bin\logstash.conf
     + Under folder bin command:  ./logstash -f logstash.conf
+    
+    
+## SonarQube
+
+mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=admin -Dsonar.password=sonar
