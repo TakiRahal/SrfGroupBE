@@ -19,6 +19,7 @@ import com.takirahal.srfgroup.modules.user.entities.UserOneSignal;
 import com.takirahal.srfgroup.modules.user.exceptioins.InvalidPasswordException;
 import com.takirahal.srfgroup.modules.user.exceptioins.UserNotActivatedException;
 import com.takirahal.srfgroup.modules.user.services.UserOneSignalService;
+import com.takirahal.srfgroup.modules.websocket.models.ConnectedUser;
 import com.takirahal.srfgroup.security.CustomUserDetailsService;
 import com.takirahal.srfgroup.security.JwtTokenProvider;
 import com.takirahal.srfgroup.security.UserPrincipal;
@@ -45,6 +46,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.messaging.simp.user.SimpUser;
+import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -64,6 +67,7 @@ import javax.persistence.criteria.Predicate;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.Principal;
 import java.time.Instant;
 import java.util.*;
 
@@ -568,6 +572,62 @@ public class UserServiceImpl implements UserService {
             createAddRemoveAdminNotification(user.get(), false);
         }
         userRepository.save(user.get());
+    }
+
+    @Override
+    public String signinGooglePlusOneTap(GooglePlusOneTapVM googlePlusOneTapVM) {
+        log.info("Request to Signin GooglePlus OneTap: {}", googlePlusOneTapVM);
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUsername(googlePlusOneTapVM.getEmail());
+        userDTO.setEmail(googlePlusOneTapVM.getEmail());
+        userDTO.setFirstName(googlePlusOneTapVM.getFamily_name());
+        userDTO.setLastName(googlePlusOneTapVM.getGiven_name());
+        userDTO.setImageUrl(googlePlusOneTapVM.getPicture());
+        userDTO.setSourceRegister(googlePlusOneTapVM.getSourceProvider());
+        Set<Authority> authorities = new HashSet<>();
+        Authority authority = new Authority();
+        authority.setName(AuthoritiesConstants.USER);
+        authorities.add(authority);
+        userDTO.setAuthorities(authorities);
+
+        Optional<User> userExist = userRepository.findOneByEmailIgnoreCase(googlePlusOneTapVM.getEmail());
+        if (userExist.isPresent()) {
+            // Update user
+            userDTO.setId(userExist.get().getId());
+            userDTO.setBlockedByAdmin(userExist.get().isBlockedByAdmin());
+        }
+
+        // Save new User
+        User user = userMapper.toEntity(userDTO);
+        user.setPassword(RandomUtil.generateActivationKey(20));
+        user.setActivatedAccount(true);
+        user.setRegisterDate(Instant.now());
+        user.setLangKey(googlePlusOneTapVM.getLangKey());
+        User newUser = userRepository.save(user);
+
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(userMapper.toDto(newUser).getEmail());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                userDetails,
+                "",
+                userDetails.getAuthorities()
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        String jwt = tokenProvider.createToken(authenticationToken, true);
+
+
+        // Register one signal id if not exist already
+        saveOneSignal(googlePlusOneTapVM.getIdOneSignal());
+
+
+        // Add Welcome notification first time
+        if (!userExist.isPresent()) {
+
+            // Add all notifications
+            addAllNotification(user);
+        }
+
+        return jwt;
     }
 
     private Specification<User> createSpecification(UserFilter userFilter) {

@@ -37,6 +37,7 @@ public class CommentOfferController {
             Pageable pageable,
             @PathVariable("commentOfferId") Long offerId
     ) {
+        log.info("REST request to get comments by offer : {}", offerId);
         Page<CommentOfferDTO> page = commentOfferService.findByCriteria(criteria, pageable, offerId);
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
@@ -84,7 +85,7 @@ public class CommentOfferController {
      */
     @DeleteMapping("{id}")
     public ResponseEntity<Boolean> deleteCommentOffer(@PathVariable Long id) {
-        log.debug("REST request to delete CommentOffer : {}", id);
+        log.info("REST request to delete CommentOffer : {}", id);
         commentOfferService.delete(id);
         return new ResponseEntity<>(true, HeaderUtil.createAlert("comment_offer.comment_offer_delete_succefully", id.toString()), HttpStatus.OK);
     }

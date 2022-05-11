@@ -11,6 +11,7 @@ import com.takirahal.srfgroup.modules.user.exceptioins.InvalidPasswordException;
 import com.takirahal.srfgroup.modules.user.exceptioins.UserBlockedException;
 import com.takirahal.srfgroup.modules.user.mapper.UserMapper;
 import com.takirahal.srfgroup.modules.user.repositories.UserRepository;
+import com.takirahal.srfgroup.modules.websocket.models.ConnectedUser;
 import com.takirahal.srfgroup.security.JwtAuthenticationFilter;
 import com.takirahal.srfgroup.security.JwtTokenProvider;
 import com.takirahal.srfgroup.modules.user.services.UserService;
@@ -25,6 +26,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.user.SimpUser;
+import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -38,7 +41,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/user/")
@@ -63,9 +69,6 @@ public class UserController {
 
     @Autowired
     NotificationRepository notificationRepository;
-
-//    @Autowired
-//    SimpUserRegistry userRegistry;
 
     /**
      * SignIn from WebFront
@@ -95,7 +98,7 @@ public class UserController {
             String jwt = userService.signinGooglePlus(googlePlusVM);
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.add(JwtAuthenticationFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
-            httpHeaders.add("X-app-alert", "Welcome");
+            httpHeaders.add("X-app-alert", "signin.message_welcome");
             return new ResponseEntity<>(new JWTToken(jwt), httpHeaders, HttpStatus.OK);
         }
         catch(Exception e){
@@ -109,6 +112,29 @@ public class UserController {
 
     /**
      *
+     * @param googlePlusOneTapVM
+     * @return
+     */
+    @PostMapping("public/signin-google-plus-one-tap")
+    public ResponseEntity<JWTToken> signinGooglePlusOneTap(@Valid @RequestBody GooglePlusOneTapVM googlePlusOneTapVM) {
+        try {
+            log.info("REST request to signin Google Plus OneTap: {} ", googlePlusOneTapVM);
+            String jwt = userService.signinGooglePlusOneTap(googlePlusOneTapVM);
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.add(JwtAuthenticationFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
+            httpHeaders.add("X-app-alert", "signin.message_welcome");
+            return new ResponseEntity<>(new JWTToken(jwt), httpHeaders, HttpStatus.OK);
+        }
+        catch(Exception e){
+            if(e instanceof UserBlockedException){
+                throw new UserBlockedException("signin.blocked_by_admin");
+            }
+            throw new InvalidPasswordException("Bad Credentials");
+        }
+    }
+
+    /**
+     *
      * @param facebookVM
      * @return
      */
@@ -119,7 +145,7 @@ public class UserController {
             String jwt = userService.signinFacebook(facebookVM);
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.add(JwtAuthenticationFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
-            httpHeaders.add("X-app-alert", "Welcome");
+            httpHeaders.add("X-app-alert", "signin.message_welcome");
             return new ResponseEntity<>(new JWTToken(jwt), httpHeaders, HttpStatus.OK);
         }
         catch(Exception e){
@@ -200,7 +226,7 @@ public class UserController {
     public ResponseEntity<UserDTO> updateCurrentUser(@RequestBody UserDTO user) {
         log.info("REST request to update Current User : {}");
         UserDTO userDTO = userService.updateCurrentUser(user);
-        return new ResponseEntity<>(userDTO, HeaderUtil.createAlert("Update infos succefully", user.getId().toString()), HttpStatus.OK);
+        return new ResponseEntity<>(userDTO, HeaderUtil.createAlert("account.message_update_infos_succefully", user.getId().toString()), HttpStatus.OK);
     }
 
     /**
@@ -212,7 +238,7 @@ public class UserController {
     public ResponseEntity<Boolean> updatePasswordCurrentUser(@RequestBody UpdatePasswordDTO updatePasswordDTO) {
         log.info("REST request to update Current User : {}");
         Boolean result = userService.updatePasswordCurrentUser(updatePasswordDTO);
-        return new ResponseEntity<>(result, HeaderUtil.createAlert("Update password succefully", ""), HttpStatus.OK);
+        return new ResponseEntity<>(result, HeaderUtil.createAlert("account.message_update_password_succefully", ""), HttpStatus.OK);
     }
 
 
@@ -324,14 +350,6 @@ public class UserController {
         Resource file = userService.getAvatar(id, filename);
         return new ResponseEntity<>(file, HttpStatus.OK);
     }
-
-//    @GetMapping("/websocket/users")
-//    public ResponseEntity<Boolean> getAllUsers() {
-//        log.debug("REST request to getAllUsers: {}");
-//
-//        this.userRegistry.getUsers();
-//        return ResponseEntity.ok().body(true);
-//    }
 
     /**
      * Object to return as body in JWT Authentication.

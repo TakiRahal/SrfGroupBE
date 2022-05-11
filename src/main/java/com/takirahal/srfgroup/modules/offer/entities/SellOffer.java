@@ -22,4 +22,7 @@ public class SellOffer extends Offer {
 
     @Column(name = "sell_date")
     private Instant sellDate;
+
+    @Column(name = "type_contact_client")
+    private String typeContactClient;
 }

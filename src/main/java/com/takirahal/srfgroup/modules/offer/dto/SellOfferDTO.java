@@ -13,4 +13,5 @@ import java.time.Instant;
 public class SellOfferDTO extends OfferDTO {
     private Double amount;
     private Instant sellDate;
+    private String typeContactClient;
 }
