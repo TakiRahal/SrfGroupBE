@@ -30,17 +30,17 @@ public class WebSocketEventListener {
 
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 
-        String username = (String) headerAccessor.getSessionAttributes().get("username");
-        logger.info("User Status : " + username);
-        if(username != null) {
-            logger.info("User Disconnected : " + username);
+        String email = (String) headerAccessor.getSessionAttributes().get("emailConnectedUser");
+        logger.info("User Status : " + email);
+        if(email != null) {
+            logger.info("User Disconnected : " + email);
 
             ActivityDTO activityDTO = new ActivityDTO();
             activityDTO.setSessionId(event.getSessionId());
-            activityDTO.setPage("leave");
-            activityDTO.setUserLogin(username);
+            activityDTO.setNameModule("DisconnectedUser");
+            activityDTO.setUserEmail(email);
 
-            messagingTemplate.convertAndSend("/topic/public", activityDTO);
+            messagingTemplate.convertAndSend("/topic/disconnected-user", activityDTO);
         }
     }
 }

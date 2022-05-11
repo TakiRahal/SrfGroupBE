@@ -12,11 +12,11 @@ import java.time.Instant;
 public class ActivityDTO {
     private String sessionId;
 
-    private String userLogin;
+    private String userEmail;
 
     private String ipAddress;
 
-    private String page;
+    private String nameModule;
 
     private Instant time;
 }
