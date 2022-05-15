@@ -42,7 +42,7 @@ public class OfferController {
      */
     @GetMapping("public")
     public ResponseEntity<Page<OfferDTO>> getAllOffers(OfferFilter offerFilter, Pageable pageable) {
-        log.debug("REST request to get Offers by criteria: {}", pageable);
+        log.info("REST request to get Offers by criteria: {}", pageable);
         Page<OfferDTO> page = offerService.getPublicOffers(offerFilter, pageable);
         return new ResponseEntity<>(page, HttpStatus.OK);
     }

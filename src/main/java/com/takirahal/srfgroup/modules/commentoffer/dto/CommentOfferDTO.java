@@ -21,7 +21,7 @@ public class CommentOfferDTO implements Serializable {
     @Lob
     private String content;
 
-    private Boolean blockedByReported;
+    private boolean blockedByReported;
 
     private OfferDTO offer;
 

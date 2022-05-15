@@ -115,10 +115,11 @@ public class CommentOfferServiceImpl implements CommentOfferService {
 
     @Override
     public Page<CommentOfferDTO> findByCriteria(CommentOfferFilter criteria, Pageable pageable, Long offerId) {
-        log.debug("find offers by criteria : {}, page: {}", pageable, offerId);
+        log.info("find comments offer by criteria : {}, page: {}", pageable, offerId);
         OfferDTO offerDTO = new OfferDTO();
         offerDTO.setId(offerId);
         criteria.setOffer(offerDTO);
+        criteria.setBlockedByReported(Boolean.FALSE);
         return commentOfferRepository.findAll(createSpecification(criteria), pageable).map(commentOfferMapper::toDto);
     }
 
@@ -171,6 +172,11 @@ public class CommentOfferServiceImpl implements CommentOfferService {
             if ( criteria.getOffer() != null && criteria.getOffer().getId() != null ) {
                 predicates.add(criteriaBuilder.equal(root.get("offer").get("id"), criteria.getOffer().getId()));
             }
+
+            if (criteria.getBlockedByReported() != null ) {
+                predicates.add(criteriaBuilder.equal(root.get("blockedByReported"), criteria.getBlockedByReported()));
+            }
+
             query.orderBy(criteriaBuilder.desc(root.get("id")));
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };

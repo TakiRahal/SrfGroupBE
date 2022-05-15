@@ -17,6 +17,7 @@ import com.takirahal.srfgroup.utils.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,6 +39,9 @@ public class ReportCommentOfferServiceImpl implements ReportCommentOfferService 
 
     @Autowired
     CommentOfferRepository commentOfferRepository;
+
+    @Value("${comment_offer.nbe-report}")
+    private int maxNbeReportComment;
 
     @Override
     public ReportCommentOfferDTO save(ReportCommentOfferDTO reportCommentOfferDTO) {
@@ -66,7 +70,7 @@ public class ReportCommentOfferServiceImpl implements ReportCommentOfferService 
         reportCommentOffer = reportCommentOfferRepository.save(reportCommentOffer);
 
         // Update status report comment offer
-        if(reportCommentOfferRepository.nbeReportedByCommentOfferId(reportCommentOfferDTO.getCommentOffer().getId()) >=2){
+        if( reportCommentOfferRepository.nbeReportedByCommentOfferId(reportCommentOfferDTO.getCommentOffer().getId()) >= maxNbeReportComment ){
             CommentOffer commentOfferUpdate = commentOfferRepository.findById(reportCommentOfferDTO.getCommentOffer().getId())
                     .orElseThrow(() -> new ResouorceNotFoundException("Comment Offer not found"));
             commentOfferUpdate.setBlockedByReported(true);

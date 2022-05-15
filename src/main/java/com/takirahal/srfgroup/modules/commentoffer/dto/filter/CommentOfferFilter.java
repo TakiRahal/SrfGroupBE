@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class CommentOfferFilter {
     private Long id;
     private OfferDTO offer;
+    private Boolean blockedByReported;
 }

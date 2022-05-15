@@ -170,7 +170,7 @@ public class UserServiceImpl implements UserService {
         // Send Activation Email
         mailService.sendActivationEmail(user);
 
-        return user;
+        return newUser;
     }
 
     @Override
