@@ -119,7 +119,7 @@ public class FindOfferServiceImpl implements FindOfferService {
 
     @Override
     public FindOfferDTO updateFindOffer(FindOfferDTO findOfferDTO, Long id) {
-        log.debug("Request to update RentOffer : {}", findOfferDTO);
+        log.info("Request to update RentOffer : {}", findOfferDTO);
         if (findOfferDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id idnull");
         }

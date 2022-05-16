@@ -42,4 +42,6 @@ public class UserDTO  implements Serializable {
     private Set<Authority> authorities;
 
     private AddressDTO address;
+
+    private boolean activatedAccount;
 }

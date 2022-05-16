@@ -38,7 +38,7 @@ public class ConversationController {
      */
     @PostMapping("create/message")
     public ResponseEntity<Boolean> createConversationMessage(@RequestBody ConversationVM conversationVM) throws URISyntaxException {
-        log.debug("REST request to save Conversation : {}", conversationVM);
+        log.info("REST request to save Conversation : {}", conversationVM);
         if (conversationVM.getConversation().getId() != null) {
             throw new BadRequestAlertException("A new conversation cannot already have an ID idexists");
         }
@@ -57,7 +57,7 @@ public class ConversationController {
             ConversationFilter conversationFilter,
             Pageable pageable
     ) {
-        log.debug("REST request to get Conversations by criteria: {}", conversationFilter);
+        log.info("REST request to get Conversations by criteria: {}", conversationFilter);
         Page<ConversationWithLastMessageDTO> page = conversationService.getOffersByCurrentUser(conversationFilter, pageable);
         return new ResponseEntity<>(page, HttpStatus.OK);
     }

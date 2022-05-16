@@ -39,7 +39,14 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public Page<MessageDTO> findByCriteria(Pageable pageable, Long conversationId) {
         log.debug("find message by criteria : {}, page: {}", pageable);
-        return messageRepository.findAll(createSpecification(conversationId), pageable).map(messageMapper::toDto);
+        Page<MessageDTO> messageDTOS = messageRepository.findAll(createSpecification(conversationId), pageable).map(messageMapper::toDto);
+        messageDTOS.stream().forEach(msg -> {
+            if(msg.getIsRead().equals(Boolean.FALSE)){
+                msg.setIsRead(Boolean.TRUE);
+                save(msg);
+            }
+        });
+        return messageDTOS;
     }
 
     private Specification<Message> createSpecification(Long conversationId) {

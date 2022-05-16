@@ -63,7 +63,7 @@ public class ConversationServiceImpl implements ConversationService {
 
     @Override
     public boolean createConversationMessage(ConversationVM conversationVM) {
-        log.debug("Request to save Conversation : {}", conversationVM);
+        log.info("Request to save Conversation : {}", conversationVM);
 
         UserDTO senderUserDTO = SecurityUtils.getCurrentUser()
                 .map(userMapper::toCurrentUserPrincipal)
@@ -98,6 +98,7 @@ public class ConversationServiceImpl implements ConversationService {
             messageDTO.setSenderUser(senderUserDTO);
             messageDTO.setReceiverUser(conversationVM.getConversation().getReceiverUser());
             messageDTO.setConversation(conversationMapper.toDto(conversationReceiverSender.get()));
+            messageService.save(messageDTO);
 
         // Create new conversation
         } else {

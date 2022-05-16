@@ -71,9 +71,9 @@ public class SellOfferController {
             @PathVariable(value = "id", required = false) final Long id,
             @RequestBody SellOfferDTO sellOfferDTO
     ) {
-        log.debug("REST request to update SellOffer : {}, {}", id, sellOfferDTO);
+        log.info("REST request to update SellOffer : {}, {}", id, sellOfferDTO);
         SellOfferDTO result = sellOfferService.updateSellOffer(sellOfferDTO, id);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(result, HeaderUtil.createAlert("add_offer.message_update_offer_succefull", ""), HttpStatus.OK);
     }
 
 }

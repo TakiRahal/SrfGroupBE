@@ -55,6 +55,7 @@ public interface UserMapper extends EntityMapper<UserDTO, User> {
     @Mapping(target = "address", source = "address")
     @Mapping(target = "registerDate", source = "registerDate")
     @Mapping(target = "blockedByAdmin", source = "blockedByAdmin")
+    @Mapping(target = "activatedAccount", source = "activatedAccount")
     UserDTO toDtoListAdmin(User user);
 
     @Named("email")

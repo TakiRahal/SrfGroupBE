@@ -70,8 +70,8 @@ public class RentOfferController {
             @PathVariable(value = "id", required = false) final Long id,
             @RequestBody RentOfferDTO rentOfferDTO
     ) {
-        log.debug("REST request to update RentOffer : {}, {}", id, rentOfferDTO);
+        log.info("REST request to update RentOffer : {}, {}", id, rentOfferDTO);
         RentOfferDTO result = rentOfferService.updateRentOffer(rentOfferDTO, id);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(result, HeaderUtil.createAlert("add_offer.message_update_offer_succefull", ""), HttpStatus.OK);
     }
 }

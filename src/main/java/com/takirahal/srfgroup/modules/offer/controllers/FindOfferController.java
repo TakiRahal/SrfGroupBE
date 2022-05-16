@@ -69,8 +69,8 @@ public class FindOfferController {
             @PathVariable(value = "id", required = false) final Long id,
             @RequestBody FindOfferDTO findOfferDTO
     ) {
-        log.debug("REST request to update FindOffer : {}, {}", id, findOfferDTO);
+        log.info("REST request to update FindOffer : {}, {}", id, findOfferDTO);
         FindOfferDTO result = findOfferService.updateFindOffer(findOfferDTO, id);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(result, HeaderUtil.createAlert("add_offer.message_update_offer_succefull", ""), HttpStatus.OK);
     }
 }

@@ -6,6 +6,8 @@ import com.takirahal.srfgroup.modules.chat.dto.MessageDTO;
 import com.takirahal.srfgroup.modules.chat.services.MessageService;
 import com.takirahal.srfgroup.modules.commentoffer.dto.CommentOfferDTO;
 import com.takirahal.srfgroup.modules.commentoffer.dto.filter.CommentOfferFilter;
+import com.takirahal.srfgroup.security.ConnectedProfile;
+import com.takirahal.srfgroup.security.UserPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +37,7 @@ public class MessageController {
      */
     @PostMapping("create")
     public ResponseEntity<MessageDTO> addMessage(@RequestBody MessageDTO messageDTO)  {
-        log.debug("REST request to save mMessage : {}", messageDTO);
+        log.info("REST request to save mMessage : {}", messageDTO);
         if (messageDTO.getId() != null) {
             throw new BadRequestAlertException("A new message cannot already have an ID idexists");
         }
@@ -53,8 +55,10 @@ public class MessageController {
     @GetMapping("by-conversation/{conversationId}")
     public ResponseEntity<Page<MessageDTO>> getMessagesByConversation(
             Pageable pageable,
-            @PathVariable("conversationId") Long conversationId
+            @PathVariable("conversationId") Long conversationId,
+            @ConnectedProfile UserPrincipal userPrincipal
     ) {
+        log.info("REST request to get message by converstioin id : {}", conversationId);
         Page<MessageDTO> page = messageService.findByCriteria(pageable, conversationId);
         return new ResponseEntity<>(page, HttpStatus.OK);
     }

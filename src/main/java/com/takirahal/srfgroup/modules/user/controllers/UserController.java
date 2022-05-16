@@ -2,6 +2,7 @@ package com.takirahal.srfgroup.modules.user.controllers;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.takirahal.srfgroup.constants.AuthoritiesConstants;
+import com.takirahal.srfgroup.modules.chat.repositories.MessageRepository;
 import com.takirahal.srfgroup.modules.notification.repositories.NotificationRepository;
 import com.takirahal.srfgroup.modules.user.dto.*;
 import com.takirahal.srfgroup.modules.user.dto.filter.UserFilter;
@@ -69,6 +70,9 @@ public class UserController {
 
     @Autowired
     NotificationRepository notificationRepository;
+
+    @Autowired
+    MessageRepository messageRepository;
 
     /**
      * SignIn from WebFront
@@ -247,7 +251,7 @@ public class UserController {
      * @return
      */
     @GetMapping("count-not-see-notifications")
-    public ResponseEntity<Long> getNumberNotSeeMessageForUserId() {
+    public ResponseEntity<Long> getNumberNotSeeNotificationsForUserId() {
         log.info("REST request to get number of notification by user");
 
         Long userId = SecurityUtils.getIdByCurrentUser()
@@ -257,6 +261,21 @@ public class UserController {
         return new ResponseEntity<>(nbeNotSee, HttpStatus.OK);
     }
 
+
+    /**
+     *
+     * @return
+     */
+    @GetMapping("count-not-see-messages")
+    public ResponseEntity<Long> getNumberNotSeeMessagesForUserId() {
+        log.info("REST request to get number of message not see by user");
+
+        Long userId = SecurityUtils.getIdByCurrentUser()
+                .orElseThrow(() -> new AccountResourceException("Current user login not found"));
+
+        Long nbeNotSee = messageRepository.getNumberNotSeeMessagesForUserId(userId);
+        return new ResponseEntity<>(nbeNotSee, HttpStatus.OK);
+    }
 
     /**
      * {@code POST   /account/reset-password/init} : Send an email to reset the password of the user.
@@ -294,7 +313,7 @@ public class UserController {
      */
     @GetMapping("/admin/list-users")
     public ResponseEntity<Page<UserDTO>> getAllUsers(UserFilter userFilter, Pageable pageable) {
-        log.debug("REST request to get users by criteria: {}", userFilter);
+        log.info("REST request to get users by admin with criteria: {}", userFilter);
         Page<UserDTO> page = userService.findByCriteria(userFilter, pageable);
         return new ResponseEntity<>(page, HttpStatus.OK);
     }

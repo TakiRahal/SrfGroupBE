@@ -377,12 +377,8 @@ public class UserServiceImpl implements UserService {
         authorities.add(authority);
         userDTO.setAuthorities(authorities);
 
-        Optional<User> userExist = userRepository.findOneByEmailIgnoreCase(payload.getEmail());
-        if (userExist.isPresent()) {
-            // Update user
-            userDTO.setId(userExist.get().getId());
-            userDTO.setBlockedByAdmin(userExist.get().isBlockedByAdmin());
-        }
+        // Update user
+        Optional<User> userExist = updateUserSocialMedia(userDTO, payload.getEmail());
 
         // Save new User
         User user = userMapper.toEntity(userDTO);
@@ -437,12 +433,8 @@ public class UserServiceImpl implements UserService {
         authorities.add(authority);
         userDTO.setAuthorities(authorities);
 
-        Optional<User> userExist = userRepository.findOneByEmailIgnoreCase(userFacebook.getEmail());
-        if (userExist.isPresent()) {
-            // Update user
-            userDTO.setId(userExist.get().getId());
-            userDTO.setBlockedByAdmin(userExist.get().isBlockedByAdmin());
-        }
+        // Update user
+        Optional<User> userExist = updateUserSocialMedia(userDTO, userFacebook.getEmail());
 
         // Save new User
         User user = userMapper.toEntity(userDTO);
@@ -590,12 +582,8 @@ public class UserServiceImpl implements UserService {
         authorities.add(authority);
         userDTO.setAuthorities(authorities);
 
-        Optional<User> userExist = userRepository.findOneByEmailIgnoreCase(googlePlusOneTapVM.getEmail());
-        if (userExist.isPresent()) {
-            // Update user
-            userDTO.setId(userExist.get().getId());
-            userDTO.setBlockedByAdmin(userExist.get().isBlockedByAdmin());
-        }
+        // Update user
+        Optional<User> userExist = updateUserSocialMedia(userDTO, googlePlusOneTapVM.getEmail());
 
         // Save new User
         User user = userMapper.toEntity(userDTO);
@@ -628,6 +616,19 @@ public class UserServiceImpl implements UserService {
         }
 
         return jwt;
+    }
+
+    private Optional<User> updateUserSocialMedia(UserDTO userDTO, String email){
+        Optional<User> userExist = userRepository.findOneByEmailIgnoreCase(email);
+        if (userExist.isPresent()) {
+            // Update user
+            userDTO.setId(userExist.get().getId());
+            userDTO.setBlockedByAdmin(userExist.get().isBlockedByAdmin());
+            userDTO.setAddress(addressMapper.toDto(userExist.get().getAddress()));
+            userDTO.setPhone(userExist.get().getPhone());
+            userDTO.setLinkProfileFacebook(userExist.get().getLinkProfileFacebook());
+        }
+        return userExist;
     }
 
     private Specification<User> createSpecification(UserFilter userFilter) {
