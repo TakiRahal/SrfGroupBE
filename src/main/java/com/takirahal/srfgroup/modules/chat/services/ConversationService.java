@@ -26,4 +26,6 @@ public interface ConversationService {
     boolean createConversationMessage(ConversationVM conversationDTO);
 
     Page<ConversationWithLastMessageDTO> getOffersByCurrentUser(ConversationFilter conversationFilter, Pageable pageable);
+
+    void delete(Long id);
 }

@@ -151,7 +151,7 @@ public class CommentOfferServiceImpl implements CommentOfferService {
 
     @Override
     public void delete(Long id) {
-        log.debug("Request to delete CommentOffer : {}", id);
+        log.info("Request to delete CommentOffer : {}", id);
 
         CommentOffer commentOffer = commentOfferRepository.findById(id)
                 .orElseThrow(() -> new ResouorceNotFoundException("Entity not found with id"));

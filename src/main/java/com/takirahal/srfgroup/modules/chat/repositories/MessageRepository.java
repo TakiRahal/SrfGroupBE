@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.Modifying;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,4 +27,9 @@ public interface MessageRepository extends JpaRepository<Message, Long>, JpaSpec
             "SELECT COUNT(message) FROM Message message WHERE message.receiverUser.id = :userId  AND message.isRead=false"
     )
     long getNumberNotSeeMessagesForUserId(@Param("userId") Long userId);
+
+
+    @Modifying
+    @Query("DELETE from Message m where m.conversation.id=:id")
+    void deleteMessagesByConversationId(@Param("id") Long id);
 }

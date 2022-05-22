@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class FaqServiceImpl implements FaqService {
 
     @Override
     public FaqDTO save(FaqDTO faqDTO) {
-        log.debug("Request to save Faq : {}", faqDTO);
+        log.info("Request to save Faq : {}", faqDTO);
         Faq faq = faqMapper.toEntity(faqDTO);
         faq = faqRepository.save(faq);
         return faqMapper.toDto(faq);
@@ -39,15 +40,23 @@ public class FaqServiceImpl implements FaqService {
 
     @Override
     public Page<FaqDTO> findByCriteria(FaqFilter criteria, Pageable pageable) {
+        log.info("Request to get Faq by : {}, : {}", criteria, pageable);
         return faqRepository.findAll(createSpecification(criteria), pageable).map(faqMapper::toDto);
+    }
+
+    @Override
+    public Page<Faq> findByCriteriaEntity(FaqFilter criteria, Pageable pageable) {
+        return faqRepository.findAll(createSpecification(criteria), pageable);
+    }
+
+    @Override
+    public List<Faq> findAll() {
+        return faqRepository.findAll();
     }
 
     protected Specification<Faq> createSpecification(FaqFilter faqFilter) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
-//            if (offerFilter.getTitle() != null && !offerFilter.getTitle().isEmpty()) {
-//                predicates.add(criteriaBuilder.like(root.get("title"), "%" + offerFilter.getTitle() + "%"));
-//            }
             query.orderBy(criteriaBuilder.desc(root.get("id")));
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };

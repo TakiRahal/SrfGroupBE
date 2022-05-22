@@ -62,4 +62,18 @@ public class ConversationController {
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
 
+
+    /**
+     * {@code DELETE  /comment-offers/:id} : delete the "id" commentOffer.
+     *
+     * @param id the id of the commentOfferDTO to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+     */
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity<Boolean> deleteConversation(@PathVariable Long id) {
+        log.info("REST request to delete conversation : {}", id);
+        conversationService.delete(id);
+        return new ResponseEntity<>(true, HeaderUtil.createAlert("chat.conversation_delete_succefully", id.toString()), HttpStatus.OK);
+    }
+
 }

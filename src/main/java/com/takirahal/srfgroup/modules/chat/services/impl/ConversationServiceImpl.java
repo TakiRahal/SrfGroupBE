@@ -1,5 +1,7 @@
 package com.takirahal.srfgroup.modules.chat.services.impl;
 
+import com.takirahal.srfgroup.exceptions.ResouorceNotFoundException;
+import com.takirahal.srfgroup.exceptions.UnauthorizedException;
 import com.takirahal.srfgroup.modules.chat.dto.ConversationDTO;
 import com.takirahal.srfgroup.modules.chat.dto.ConversationVM;
 import com.takirahal.srfgroup.modules.chat.dto.ConversationWithLastMessageDTO;
@@ -24,13 +26,16 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class ConversationServiceImpl implements ConversationService {
 
     private final Logger log = LoggerFactory.getLogger(ConversationServiceImpl.class);
@@ -119,8 +124,13 @@ public class ConversationServiceImpl implements ConversationService {
 
     @Override
     public Page<ConversationWithLastMessageDTO> getOffersByCurrentUser(ConversationFilter conversationFilter, Pageable pageable) {
-        log.debug("find offers by criteria : {}, page: {}", pageable);
-        Page<ConversationDTO> conversationDTOPage = conversationRepository.findAll(createSpecification(conversationFilter), pageable).map(conversationMapper::toDto);
+        log.info("find conversations by criteria : {}, page: {}", pageable);
+
+        Long useId = SecurityUtils
+                .getIdByCurrentUser()
+                .orElseThrow(() -> new AccountResourceException("Current user not found"));
+
+        Page<ConversationDTO> conversationDTOPage = conversationRepository.findAll(createSpecification(useId, conversationFilter), pageable).map(conversationMapper::toDto);
 
         List<ConversationWithLastMessageDTO> listConversationWithLastMessage = new ArrayList<>();
         conversationDTOPage.forEach(
@@ -143,11 +153,35 @@ public class ConversationServiceImpl implements ConversationService {
         return conversationWithLastMessageDTOS;
     }
 
-    private Specification<Conversation> createSpecification(ConversationFilter conversationFilter) {
+    @Override
+    public void delete(Long id) {
+        log.info("Request to delete conversation : {}", id);
+
+        Conversation conversation = conversationRepository.findById(id)
+                .orElseThrow(() -> new ResouorceNotFoundException("Entity not found with id"));
+
+        Long useId = SecurityUtils
+                .getIdByCurrentUser()
+                .orElseThrow(() -> new AccountResourceException("Current user not found"));
+
+        if (!Objects.equals(useId, conversation.getReceiverUser().getId()) && !Objects.equals(useId, conversation.getSenderUser().getId()) ) {
+            throw new UnauthorizedException("Unauthorized action");
+        }
+
+        messageRepository.deleteMessagesByConversationId(id);
+        conversationRepository.deleteById(id);
+    }
+
+    private Specification<Conversation> createSpecification(Long userId, ConversationFilter conversationFilter) {
         return (root, query, criteriaBuilder) -> {
-            List<Predicate> predicates = new ArrayList<>();
+
+            Predicate and1 = criteriaBuilder.equal(root.get("senderUser").get("id"), userId);
+            Predicate and2 = criteriaBuilder.equal(root.get("receiverUser").get("id"), userId);
+
+            Predicate or = criteriaBuilder.or(and1, and2);
+
             query.orderBy(criteriaBuilder.desc(root.get("id")));
-            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+            return criteriaBuilder.and(or);
         };
 
     }

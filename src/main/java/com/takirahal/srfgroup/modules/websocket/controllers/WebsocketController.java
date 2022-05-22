@@ -74,8 +74,10 @@ public class WebsocketController implements ApplicationListener<SessionDisconnec
 //        log.info("Sending user tracking data {}", activityDTO);
 //        return activityDTO;
         // log.info("/topic/chat-message {}", ((UserPrincipal) principal).getId());
-        UserPrincipal userPrincipal = (UserPrincipal)(((UsernamePasswordAuthenticationToken) principal).getPrincipal());
-        messagingTemplate.convertAndSend("/topic/chat-message/"+userPrincipal.getId()+"/"+messageDTO.getReceiverUser().getId(), messageDTO);
+//        UserPrincipal userPrincipal = (UserPrincipal)(((UsernamePasswordAuthenticationToken) principal).getPrincipal());
+//        Long receiverId = messageDTO.getReceiverUser().getId().equals(userPrincipal.getId()) ? messageDTO.getSenderUser().getId() : messageDTO.getReceiverUser().getId();
+//        Long senderId = messageDTO.getSenderUser().getId().equals(userPrincipal.getId()) ? messageDTO.getReceiverUser().getId() : messageDTO.getSenderUser().getId();
+        messagingTemplate.convertAndSend("/topic/chat-message/"+messageDTO.getReceiverUser().getId()+"/"+messageDTO.getSenderUser().getId(), messageDTO);
     }
 
 
