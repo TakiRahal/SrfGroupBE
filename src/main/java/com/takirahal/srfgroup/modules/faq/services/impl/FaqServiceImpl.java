@@ -41,7 +41,7 @@ public class FaqServiceImpl implements FaqService {
     @Override
     public Page<FaqDTO> findByCriteria(FaqFilter criteria, Pageable pageable) {
         log.info("Request to get Faq by : {}, : {}", criteria, pageable);
-        return faqRepository.findAll(createSpecification(criteria), pageable).map(faqMapper::toDto);
+        return faqRepository.findAll(createSpecification(criteria), pageable).map(item-> faqMapper.toDto(item));
     }
 
     @Override

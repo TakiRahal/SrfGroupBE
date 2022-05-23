@@ -9,4 +9,6 @@ import org.mapstruct.Mapper;
  * Mapper for the entity {@link Faq} and its DTO {@link FaqDTO}.
  */
 @Mapper(componentModel = "spring", uses = {})
-public interface FaqMapper extends EntityMapper<FaqDTO, Faq> {}
+public interface FaqMapper extends EntityMapper<FaqDTO, Faq> {
+    FaqDTO toDto (Faq f);
+}

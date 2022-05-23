@@ -5,26 +5,23 @@ import com.takirahal.srfgroup.modules.faq.dto.filter.FaqFilter;
 import com.takirahal.srfgroup.modules.faq.entities.Faq;
 import com.takirahal.srfgroup.modules.faq.mapper.FaqMapper;
 import com.takirahal.srfgroup.modules.faq.repositories.FaqRepository;
-import com.takirahal.srfgroup.modules.faq.services.FaqService;
+import org.junit.Before;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.persistence.criteria.Predicate;
 import java.util.*;
 import java.util.function.Function;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,17 +36,21 @@ class FaqServiceImplTest {
     @Spy
     private FaqMapper faqMapper = Mappers.getMapper(FaqMapper.class);
 
-    private AutoCloseable autoCloseable;
+    // private AutoCloseable autoCloseable;
 
+    @Before
+    public void init() {
+        ReflectionTestUtils.setField(faqMapper , "faqServiceImpl", faqServiceImpl);
+    }
 
     @BeforeEach
     void setUp() {
-          autoCloseable = MockitoAnnotations.openMocks(this); // this is needed for inititalizytion of mocks, if you use @Mock
+        // autoCloseable = MockitoAnnotations.openMocks(this); // this is needed for inititalizytion of mocks, if you use @Mock
     }
 
     @AfterEach
     void tearDown() throws Exception {
-         autoCloseable.close();
+        // autoCloseable.close();
     }
 
     @Test
@@ -77,7 +78,7 @@ class FaqServiceImplTest {
     }
 
     @Test
-    @Disabled
+    @DisplayName("when list Faq by criteria, then Faqs are retrieved")
     void findByCriteria() {
 
         // Given
@@ -89,95 +90,35 @@ class FaqServiceImplTest {
         faq.setResponseFr("Rfr");
         faq.setQuestionEn("Qen");
         faq.setResponseEn("Ren");
-        FaqFilter criteria = new FaqFilter();
+        List<Faq> faqs = new ArrayList<>();
+        faqs.add(faq);
         Pageable pageable = PageRequest.of(0, 1);
-        doReturn(new Page<Faq>() {
-            @Override
-            public int getTotalPages() {
-                return 1;
-            }
+        FaqFilter criteria = new FaqFilter();
+        Page<Faq> faqPage = new PageImpl<>(faqs, pageable, faqs.size());
 
-            @Override
-            public long getTotalElements() {
-                return 1;
-            }
+        FaqDTO faqDTO = new FaqDTO();
+        faqDTO.setId(1L);
+        faqDTO.setQuestionAr("Qar");
+        faqDTO.setResponseAr("Rar");
+        faqDTO.setQuestionFr("Qfr");
+        faqDTO.setResponseFr("Rfr");
+        faqDTO.setQuestionEn("Qen");
+        faqDTO.setResponseEn("Ren");
+        List<FaqDTO> faqDtoList = new ArrayList<>();
+        faqDtoList.add(faqDTO);
+        Page<FaqDTO> faqDtoPage = new PageImpl<>(faqDtoList, pageable, faqDtoList.size());
+        Mockito.when(faqMapper.toDto(faq)).thenReturn(faqDTO);
 
-            @Override
-            public <U> Page<U> map(Function<? super Faq, ? extends U> function) {
-                return null;
-            }
 
-            @Override
-            public int getNumber() {
-                return 1;
-            }
-
-            @Override
-            public int getSize() {
-                return 1;
-            }
-
-            @Override
-            public int getNumberOfElements() {
-                return 1;
-            }
-
-            @Override
-            public List<Faq> getContent() {
-                return Arrays.asList(faq);
-            }
-
-            @Override
-            public boolean hasContent() {
-                return true;
-            }
-
-            @Override
-            public Sort getSort() {
-                return null;
-            }
-
-            @Override
-            public boolean isFirst() {
-                return false;
-            }
-
-            @Override
-            public boolean isLast() {
-                return false;
-            }
-
-            @Override
-            public boolean hasNext() {
-                return false;
-            }
-
-            @Override
-            public boolean hasPrevious() {
-                return false;
-            }
-
-            @Override
-            public Pageable nextPageable() {
-                return null;
-            }
-
-            @Override
-            public Pageable previousPageable() {
-                return null;
-            }
-
-            @Override
-            public Iterator<Faq> iterator() {
-                return null;
-            }
-        }).when(faqRepositoryMock).findAll(createSpecification(criteria), pageable);
+        Mockito.when(faqRepositoryMock.findAll(any(Specification.class), any(Pageable.class))).thenReturn(faqPage);
 
         // When
-        Page<Faq> faqDTOS = faqServiceImpl.findByCriteriaEntity(criteria, pageable);
+        Page<FaqDTO> faqDTOS = faqServiceImpl.findByCriteria(criteria, pageable);
 
         // Then
         assertNotNull(faqDTOS);
+        assertFalse(faqDTOS.getContent().isEmpty());
+        assertThat(faqDTOS).isEqualTo(faqDtoPage);
     }
 
     @Test
