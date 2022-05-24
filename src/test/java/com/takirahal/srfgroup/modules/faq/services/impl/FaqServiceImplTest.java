@@ -15,9 +15,7 @@ import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import javax.persistence.criteria.Predicate;
 import java.util.*;
-import java.util.function.Function;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -62,19 +60,11 @@ class FaqServiceImplTest {
 
         //When
         when(faqRepositoryMock.save(any(Faq.class))).thenReturn(faq);
-        FaqDTO faqDTO1 = faqServiceImpl.save(faqDTO);
+        FaqDTO faqDTOSave = faqServiceImpl.save(faqDTO);
 
         //Then
-        assertNotNull(faqDTO1);
-        assertEquals(faqDTO1.getId(), faqDTO.getId());
-    }
-
-    protected Specification<Faq> createSpecification(FaqFilter faqFilter) {
-        return (root, query, criteriaBuilder) -> {
-            List<Predicate> predicates = new ArrayList<>();
-            query.orderBy(criteriaBuilder.desc(root.get("id")));
-            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-        };
+        assertNotNull(faqDTOSave);
+        assertEquals(faqDTOSave.getId(), faqDTO.getId());
     }
 
     @Test

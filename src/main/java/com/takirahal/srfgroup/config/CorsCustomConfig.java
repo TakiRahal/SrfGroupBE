@@ -37,6 +37,7 @@ public class CorsCustomConfig /*implements WebMvcConfigurer*/ {
         UrlBasedCorsConfigurationSource corsConfigurationSource =
                 new UrlBasedCorsConfigurationSource();
         corsConfigurationSource.registerCorsConfiguration("/api/**", config);
+        corsConfigurationSource.registerCorsConfiguration("/swagger-ui/**", config);
         return new CorsFilter(corsConfigurationSource);
     }
 }

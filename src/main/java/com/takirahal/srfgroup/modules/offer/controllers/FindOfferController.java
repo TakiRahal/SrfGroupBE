@@ -1,7 +1,6 @@
 package com.takirahal.srfgroup.modules.offer.controllers;
 
 import com.takirahal.srfgroup.modules.offer.dto.FindOfferDTO;
-import com.takirahal.srfgroup.exceptions.BadRequestAlertException;
 import com.takirahal.srfgroup.modules.offer.dto.filter.FindOfferFilter;
 import com.takirahal.srfgroup.modules.offer.services.FindOfferService;
 import com.takirahal.srfgroup.utils.HeaderUtil;
@@ -14,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 
 @RestController
@@ -34,7 +32,7 @@ public class FindOfferController {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("create")
-    public ResponseEntity<FindOfferDTO> createFindOffer(@RequestBody FindOfferDTO findOfferDTO) throws URISyntaxException {
+    public ResponseEntity<FindOfferDTO> createFindOffer(@RequestBody FindOfferDTO findOfferDTO) {
         log.debug("REST request to save FindOffer : {}", findOfferDTO);
         FindOfferDTO result = findOfferService.save(findOfferDTO);
         return new ResponseEntity<>(result, HeaderUtil.createAlert("add_offer.message_create_offer_succefull", ""), HttpStatus.CREATED);
