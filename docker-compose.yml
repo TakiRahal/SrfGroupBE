@@ -9,4 +9,4 @@ services:
     volumes:
       - /data/springboot-docker-compose-app
     ports:
-      - "8081:8081"
+      - 8080:8080
