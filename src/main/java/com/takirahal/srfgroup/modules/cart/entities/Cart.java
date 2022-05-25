@@ -23,7 +23,11 @@ public class Cart implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
+    @Column(name = "quantity")
     private int quantity;
+
+    @Column(name = "total")
+    private Double total;
 
     @ManyToOne
     private SellOffer sellOffer;

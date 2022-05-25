@@ -7,6 +7,8 @@ import com.takirahal.srfgroup.modules.cart.entities.Cart;
 import com.takirahal.srfgroup.modules.cart.mapper.CartMapper;
 import com.takirahal.srfgroup.modules.cart.repositories.CartRepository;
 import com.takirahal.srfgroup.modules.cart.services.CartService;
+import com.takirahal.srfgroup.modules.offer.entities.SellOffer;
+import com.takirahal.srfgroup.modules.offer.repositories.SellOfferRepository;
 import com.takirahal.srfgroup.modules.user.dto.filter.UserOfferFilter;
 import com.takirahal.srfgroup.modules.user.exceptioins.AccountResourceException;
 import com.takirahal.srfgroup.modules.user.mapper.UserMapper;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CartServiceImpl implements CartService {
@@ -38,6 +41,9 @@ public class CartServiceImpl implements CartService {
     @Autowired
     UserMapper userMapper;
 
+    @Autowired
+    SellOfferRepository sellOfferRepository;
+
     @Override
     public CartDTO save(CartDTO cartDTO) {
         log.info("Request to save SellOffer : {}", cartDTO);
@@ -46,11 +52,37 @@ public class CartServiceImpl implements CartService {
             throw new BadRequestAlertException("A new Cart cannot already have an ID idexists");
         }
 
+        long nbeCart = cartRepository.getCountCartBySellOfferAndUser(cartDTO.getSellOffer().getId());
+
         UserPrincipal currentUser = SecurityUtils.getCurrentUser().orElseThrow(() -> new AccountResourceException("Current user login not found"));
         cartDTO.setUser(userMapper.toCurrentUserPrincipal(currentUser));
 
         Cart cart = cartMapper.toEntity(cartDTO);
-        cart = cartRepository.save(cart);
+
+        Optional<SellOffer> sellOfferOption = sellOfferRepository.findById(cartDTO.getSellOffer().getId());
+
+        // Update
+        if( nbeCart > 0 ){
+            Optional<Cart> cartExist = cartRepository.findBySellOfferAndUser(cart.getSellOffer(), userMapper.currentUserToEntity(currentUser));
+            if(cartExist.isPresent()){
+                int quantity = cartExist.get().getQuantity() + cartDTO.getQuantity();
+                cart.setId(cartExist.get().getId());
+                cart.setQuantity(quantity);
+
+                // Set new total
+                Double newTotal = cartExist.get().getTotal() + (sellOfferOption.get().getAmount()*cartDTO.getQuantity());
+                cart.setTotal(newTotal);
+
+                cart = cartRepository.save(cart);
+            }
+        }
+        else{
+            if( sellOfferOption.isPresent() && !sellOfferOption.get().getAmount().equals(null)){
+                cart.setTotal(sellOfferOption.get().getAmount());
+            }
+            cart = cartRepository.save(cart);
+        }
+
         return cartMapper.toDto(cart);
     }
 

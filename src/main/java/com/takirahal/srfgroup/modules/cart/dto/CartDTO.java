@@ -15,6 +15,7 @@ public class CartDTO  implements Serializable {
 
     private Long id;
     private int quantity;
+    private Double total;
     private SellOfferDTO sellOffer;
     private UserDTO user;
 }
