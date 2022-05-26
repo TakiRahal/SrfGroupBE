@@ -23,7 +23,7 @@ public class CartController {
     CartService cartService;
 
     @PostMapping("create")
-    public ResponseEntity<CartDTO> createFindOffer(@RequestBody CartDTO cartDTO) {
+    public ResponseEntity<CartDTO> createCart(@RequestBody CartDTO cartDTO) {
         log.debug("REST request to save Cart : {}", cartDTO);
         CartDTO result = cartService.save(cartDTO);
         return new ResponseEntity<>(result, HeaderUtil.createAlert("add_offer.message_create_offer_succefull", ""), HttpStatus.CREATED);
@@ -35,5 +35,31 @@ public class CartController {
         log.debug("REST request to get Carts by criteria: {}", cartFilter);
         Page<CartDTO> page = cartService.getOffersByCurrentUser(cartFilter, pageable);
         return new ResponseEntity<>(page, HttpStatus.OK);
+    }
+
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    @DeleteMapping("{id}")
+    public ResponseEntity<Boolean> deleteCommentOffer(@PathVariable Long id) {
+        log.info("REST request to delete Cart : {}", id);
+        cartService.delete(id);
+        return new ResponseEntity<>(true, HeaderUtil.createAlert("cart.cart_delete_succefully", id.toString()), HttpStatus.OK);
+    }
+
+
+    /**
+     *
+     * @param cartDTO
+     * @return
+     */
+    @PutMapping("update-quantity")
+    public ResponseEntity<CartDTO> updateQuantityCart(@RequestBody CartDTO cartDTO) {
+        log.debug("REST request to update Cart by quantity : {}", cartDTO);
+        CartDTO result = cartService.updateQuantityCart(cartDTO);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

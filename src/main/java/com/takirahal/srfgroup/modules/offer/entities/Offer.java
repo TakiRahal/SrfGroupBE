@@ -45,6 +45,9 @@ public class Offer implements Serializable {
     @Column(name = "type_offer", insertable = false, updatable = false)
     private String typeOffer;
 
+    @Column(name = "blocked_by_reported")
+    private Boolean blockedByReported = false;
+
     @ManyToOne
     private User user;
 
@@ -59,6 +62,4 @@ public class Offer implements Serializable {
     @JsonIgnoreProperties(value = { "subCategories" }, allowSetters = true)
     private Category category;
 
-    @Column(name = "blocked_by_reported")
-    private Boolean blockedByReported = false;
 }

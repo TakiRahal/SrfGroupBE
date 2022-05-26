@@ -1,12 +1,15 @@
 package com.takirahal.srfgroup.modules.cart.services.impl;
 
 import com.takirahal.srfgroup.exceptions.BadRequestAlertException;
+import com.takirahal.srfgroup.exceptions.ResouorceNotFoundException;
+import com.takirahal.srfgroup.exceptions.UnauthorizedException;
 import com.takirahal.srfgroup.modules.cart.dto.CartDTO;
 import com.takirahal.srfgroup.modules.cart.dto.filter.CartFilter;
 import com.takirahal.srfgroup.modules.cart.entities.Cart;
 import com.takirahal.srfgroup.modules.cart.mapper.CartMapper;
 import com.takirahal.srfgroup.modules.cart.repositories.CartRepository;
 import com.takirahal.srfgroup.modules.cart.services.CartService;
+import com.takirahal.srfgroup.modules.commentoffer.entities.CommentOffer;
 import com.takirahal.srfgroup.modules.offer.entities.SellOffer;
 import com.takirahal.srfgroup.modules.offer.repositories.SellOfferRepository;
 import com.takirahal.srfgroup.modules.user.dto.filter.UserOfferFilter;
@@ -104,6 +107,45 @@ public class CartServiceImpl implements CartService {
         userOfferFilter.setId(useId);
         cartFilter.setUser(userOfferFilter);
         return findByCriteria(cartFilter, pageable);
+    }
+
+    @Override
+    public void delete(Long id) {
+        log.info("Request to delete Cart : {}", id);
+
+        Cart cart = cartRepository.findById(id)
+                .orElseThrow(() -> new ResouorceNotFoundException("Entity not found with id"));
+
+        Long useId = SecurityUtils
+                .getIdByCurrentUser()
+                .orElseThrow(() -> new AccountResourceException("Current user not found"));
+        if (!Objects.equals(useId, cart.getUser().getId())) {
+            throw new UnauthorizedException("Unauthorized action");
+        }
+
+        cartRepository.deleteById(id);
+    }
+
+    @Override
+    public CartDTO updateQuantityCart(CartDTO cartDTO) {
+
+        log.info("Request to update quantity to Cart : {}", cartDTO.getId());
+
+        Cart cart = cartRepository.findById(cartDTO.getId())
+                .orElseThrow(() -> new ResouorceNotFoundException("Entity not found with id"));
+
+        Long useId = SecurityUtils
+                .getIdByCurrentUser()
+                .orElseThrow(() -> new AccountResourceException("Current user not found"));
+        if (!Objects.equals(useId, cart.getUser().getId())) {
+            throw new UnauthorizedException("Unauthorized action");
+        }
+
+        Cart cartUpdate = cartMapper.toEntity(cartDTO);
+        cartUpdate.setQuantity(cartDTO.getQuantity());
+        cart = cartRepository.save(cartUpdate);
+
+        return cartMapper.toDto(cart);
     }
 
     private Page<CartDTO> findByCriteria(CartFilter cartFilter, Pageable page) {

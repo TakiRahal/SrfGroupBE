@@ -21,4 +21,17 @@ public interface CartService {
      * @return
      */
     Page<CartDTO> getOffersByCurrentUser(CartFilter cartFilter, Pageable pageable);
+
+    /**
+     *
+     * @param id
+     */
+    void delete(Long id);
+
+    /**
+     *
+     * @param cartDTO
+     * @return
+     */
+    CartDTO updateQuantityCart(CartDTO cartDTO);
 }
