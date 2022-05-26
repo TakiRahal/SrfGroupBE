@@ -20,7 +20,7 @@ https://data.heroku.com/datastores/99847b29-d576-4442-bd3c-b1d7223dce79#administ
 
 
 
-## Deploy jar app
+## Deploy jar app heroku
 
 run : mvn clean install -Pprod -DskipTests
 
@@ -31,6 +31,10 @@ run: heroku open --app srf-group-be
 heroku buildpacks:clear --app srf-group-be
 
 log Heroku: heroku logs --app srf-group-be -t
+
+## Custom command
+
+change cmd: heroku config:set MAVEN_CUSTOM_GOALS="mvn clean install -Pprod -DskipTests" --app srf-group-be
 
 
 ## ELK + Spring Boot
