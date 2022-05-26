@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -83,7 +84,7 @@ public class CartServiceImpl implements CartService {
             }
         }
         else{
-            if( sellOfferOption.isPresent() && !sellOfferOption.get().getAmount().equals(null)){
+            if( sellOfferOption.isPresent() && !Objects.isNull(sellOfferOption.get().getAmount())){
                 cart.setTotal(sellOfferOption.get().getAmount());
             }
             cart = cartRepository.save(cart);
