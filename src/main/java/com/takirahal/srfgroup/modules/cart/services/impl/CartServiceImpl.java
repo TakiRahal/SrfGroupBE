@@ -80,8 +80,10 @@ public class CartServiceImpl implements CartService {
                 cart.setQuantity(quantity);
 
                 // Set new total
-                Double newTotal = cartExist.get().getTotal() + (sellOfferOption.get().getAmount()*cartDTO.getQuantity());
-                cart.setTotal(newTotal);
+                if( sellOfferOption.isPresent() && !Objects.isNull(sellOfferOption.get().getAmount())){
+                    Double newTotal = cartExist.get().getTotal() + (sellOfferOption.get().getAmount()*cartDTO.getQuantity());
+                    cart.setTotal(newTotal);
+                }
 
                 cart = cartRepository.save(cart);
             }
