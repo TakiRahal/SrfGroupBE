@@ -34,7 +34,7 @@ log Heroku: heroku logs --app srf-group-be -t
 
 ## Custom command
 
-change cmd: heroku config:set MAVEN_CUSTOM_GOALS="mvn clean install -Pprod -DskipTests" --app srf-group-be
+change cmd: heroku config:set MAVEN_CUSTOM_GOALS="clean install -Pprod -DskipTests" --app srf-group-be
 
 
 ## ELK + Spring Boot
@@ -66,6 +66,14 @@ change cmd: heroku config:set MAVEN_CUSTOM_GOALS="mvn clean install -Pprod -Dski
 ## SonarQube
 
 mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=admin -Dsonar.password=sonar
+
+
+## Docker
+Run: mvn clean install -Pprod -DskipTests
+run in the root project: 
+    - Start: docker-compose -f docker/api.yml up
+    - Down: docker-compose -f docker/api.yml down -v --remove-orphans
+
 
 
 # Prespective
