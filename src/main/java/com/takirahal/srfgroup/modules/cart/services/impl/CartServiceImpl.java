@@ -7,6 +7,7 @@ import com.takirahal.srfgroup.modules.cart.dto.CartDTO;
 import com.takirahal.srfgroup.modules.cart.dto.filter.CartFilter;
 import com.takirahal.srfgroup.modules.cart.entities.Cart;
 import com.takirahal.srfgroup.modules.cart.mapper.CartMapper;
+import com.takirahal.srfgroup.modules.cart.models.DetailsCarts;
 import com.takirahal.srfgroup.modules.cart.repositories.CartRepository;
 import com.takirahal.srfgroup.modules.cart.services.CartService;
 import com.takirahal.srfgroup.modules.commentoffer.entities.CommentOffer;
@@ -20,7 +21,9 @@ import com.takirahal.srfgroup.utils.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -48,6 +51,9 @@ public class CartServiceImpl implements CartService {
     @Autowired
     SellOfferRepository sellOfferRepository;
 
+
+    @Value("${cart.tax-delivery}")
+    private Double taxDelivery;
 
     /**
      *
@@ -148,6 +154,26 @@ public class CartServiceImpl implements CartService {
         cart = cartRepository.save(cartUpdate);
 
         return cartMapper.toDto(cart);
+    }
+
+    @Override
+    public DetailsCarts getDetailsCarts() {
+        log.info("Request to get details Cart ");
+
+
+        DetailsCarts detailsCarts = new DetailsCarts();
+        detailsCarts.setTaxDelivery(taxDelivery);
+        detailsCarts.setTotalCarts(0D);
+        Pageable pageable = PageRequest.of(0, 100);
+        CartFilter cartFilter = new CartFilter();
+        Page<CartDTO> page = getOffersByCurrentUser(cartFilter, pageable);
+        List<CartDTO> cartDTOList = page.getContent();
+        cartDTOList.stream().forEach(item -> {
+            if( !Objects.isNull(item.getTotal()) ){
+                detailsCarts.setTotalCarts(detailsCarts.getTotalCarts()+item.getTotal());
+            }
+        });
+        return detailsCarts;
     }
 
     private Page<CartDTO> findByCriteria(CartFilter cartFilter, Pageable page) {

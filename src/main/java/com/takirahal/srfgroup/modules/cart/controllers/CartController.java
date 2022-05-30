@@ -2,6 +2,7 @@ package com.takirahal.srfgroup.modules.cart.controllers;
 
 import com.takirahal.srfgroup.modules.cart.dto.CartDTO;
 import com.takirahal.srfgroup.modules.cart.dto.filter.CartFilter;
+import com.takirahal.srfgroup.modules.cart.models.DetailsCarts;
 import com.takirahal.srfgroup.modules.cart.services.CartService;
 import com.takirahal.srfgroup.utils.HeaderUtil;
 import org.slf4j.Logger;
@@ -57,9 +58,23 @@ public class CartController {
      * @return
      */
     @PutMapping("update-quantity")
-    public ResponseEntity<CartDTO> updateQuantityCart(@RequestBody CartDTO cartDTO) {
+    public ResponseEntity<DetailsCarts> updateQuantityCart(@RequestBody CartDTO cartDTO) {
         log.debug("REST request to update Cart by quantity : {}", cartDTO);
-        CartDTO result = cartService.updateQuantityCart(cartDTO);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        cartService.updateQuantityCart(cartDTO);
+
+        DetailsCarts detailsCarts = cartService.getDetailsCarts();
+        return new ResponseEntity<>(detailsCarts, HttpStatus.OK);
+    }
+
+
+    /**
+     *
+     * @return
+     */
+    @GetMapping("details-cart")
+    public ResponseEntity<DetailsCarts> getDetailsCarts() {
+        log.debug("REST request to get details Carts ");
+        DetailsCarts detailsCarts = cartService.getDetailsCarts();
+        return new ResponseEntity<>(detailsCarts, HttpStatus.OK);
     }
 }
