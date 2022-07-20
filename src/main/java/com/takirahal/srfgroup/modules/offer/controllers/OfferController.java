@@ -115,7 +115,7 @@ public class OfferController {
      */
     @PostMapping("upload-images")
     public ResponseEntity<Boolean> uploadFiles(@RequestParam("files")List<MultipartFile> multipartFiles, @RequestParam("offerId") Long offerId) {
-        log.debug("REST request to upload images offer : {}");
+        log.info("REST request to upload images offer : {}", offerId);
         offerService.uploadImages(multipartFiles, offerId);
         return ResponseEntity.ok().body(true);
     }

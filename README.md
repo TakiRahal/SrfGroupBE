@@ -68,11 +68,13 @@ change cmd: heroku config:set MAVEN_CUSTOM_GOALS="clean install -Pprod -DskipTes
 mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=admin -Dsonar.password=sonar
 
 
-## Docker
+## Docker all parts Back: Spring boot + ELK
 Run: mvn clean install -Pprod -DskipTests
 run in the root project: 
     - Start: docker-compose -f docker/api.yml up
     - Down: docker-compose -f docker/api.yml down -v --remove-orphans
+
+
 
 
 

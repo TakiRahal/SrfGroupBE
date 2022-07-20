@@ -35,10 +35,10 @@ class FaqRepositoryTest {
         faqRepository.save(faq);
 
         // When
-        Optional<Faq> expected = faqRepository.findByResponseAr(response);
+        Optional<Faq> result = faqRepository.findByResponseAr(response);
 
         // Then
-        assertTrue(expected.isPresent());
+        assertTrue(result.isPresent());
     }
 
     // Delete all data table after each test (clean state)

@@ -27,7 +27,7 @@ public class CartController {
     public ResponseEntity<CartDTO> createCart(@RequestBody CartDTO cartDTO) {
         log.debug("REST request to save Cart : {}", cartDTO);
         CartDTO result = cartService.save(cartDTO);
-        return new ResponseEntity<>(result, HeaderUtil.createAlert("add_offer.message_create_offer_succefull", ""), HttpStatus.CREATED);
+        return new ResponseEntity<>(result, HeaderUtil.createAlert("cart.message_cart_added_successfully", ""), HttpStatus.CREATED);
     }
 
 

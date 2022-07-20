@@ -1,5 +1,6 @@
 package com.takirahal.srfgroup.modules.category.services.impl;
 
+import com.takirahal.srfgroup.exceptions.ResouorceNotFoundException;
 import com.takirahal.srfgroup.modules.category.dto.CategoryDTO;
 import com.takirahal.srfgroup.modules.category.dto.filter.CategoryFilter;
 import com.takirahal.srfgroup.modules.category.entities.Category;
@@ -47,7 +48,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Optional<CategoryDTO> findOne(Long id) {
         log.debug("Request to get Category : {}", id);
-        return categoryRepository.findById(id).map(categoryMapper::toDto);
+        Optional<Category> category = categoryRepository.findById(id);
+        return category.map(categoryMapper::toDto);
     }
 
     private Specification<Category> createSpecification(CategoryFilter criteria) {

@@ -1,6 +1,6 @@
 package com.takirahal.srfgroup.modules.offer.mapper;
 
-import com.takirahal.srfgroup.mapper.EntityMapper;;
+import com.takirahal.srfgroup.mapper.EntityMapper;
 import com.takirahal.srfgroup.modules.offer.dto.ReportOfferDTO;
 import com.takirahal.srfgroup.modules.offer.entities.ReportOffer;
 import com.takirahal.srfgroup.modules.user.mapper.UserMapper;

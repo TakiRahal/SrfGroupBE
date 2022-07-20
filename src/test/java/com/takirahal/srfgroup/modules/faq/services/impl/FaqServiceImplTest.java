@@ -34,8 +34,6 @@ class FaqServiceImplTest {
     @Spy
     private FaqMapper faqMapper = Mappers.getMapper(FaqMapper.class);
 
-    // private AutoCloseable autoCloseable;
-
     @Before
     public void init() {
         ReflectionTestUtils.setField(faqMapper , "faqServiceImpl", faqServiceImpl);
@@ -98,8 +96,6 @@ class FaqServiceImplTest {
         faqDtoList.add(faqDTO);
         Page<FaqDTO> faqDtoPage = new PageImpl<>(faqDtoList, pageable, faqDtoList.size());
         Mockito.when(faqMapper.toDto(faq)).thenReturn(faqDTO);
-
-
         Mockito.when(faqRepositoryMock.findAll(any(Specification.class), any(Pageable.class))).thenReturn(faqPage);
 
         // When

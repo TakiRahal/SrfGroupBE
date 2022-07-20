@@ -51,7 +51,7 @@ public class NotificationController {
      */
     @PostMapping("set-is-read")
     public ResponseEntity<String> setIsReadNotifications(@RequestBody List<NotificationDTO> notificationDTOS) {
-        log.debug("REST request to set is read for list of notifications : {} ", notificationDTOS);
+        log.info("REST request to set is read for list of notifications : {} ", notificationDTOS);
         notificationService.setIsReadNotifications(notificationDTOS);
         return new ResponseEntity<String>("true", HttpStatus.OK);
     }

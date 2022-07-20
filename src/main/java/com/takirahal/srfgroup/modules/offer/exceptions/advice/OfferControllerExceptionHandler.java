@@ -9,16 +9,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.Date;
 
 @ControllerAdvice
-public class OfferControllerExceptionHandler {
+public class OfferControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(OfferControllerExceptionHandler.class);
 
     @ExceptionHandler(BadRequestAlertException.class)
-    public ResponseEntity<ErrorMessage> handeleInvalidPasswordException(BadRequestAlertException ex, WebRequest request) {
+    public ResponseEntity<ErrorMessage> handleInvalidPasswordException(BadRequestAlertException ex, WebRequest request) {
         log.error("BadRequestAlertException = An exception have been occurred please see logging error:  {}", ex.getMessage());
         ErrorMessage message = new ErrorMessage(
                 HttpStatus.BAD_REQUEST.value(),

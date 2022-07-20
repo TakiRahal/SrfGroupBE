@@ -87,7 +87,7 @@ public class RentOfferServiceImpl implements RentOfferService {
 
     @Override
     public RentOfferDTO save(RentOfferDTO rentOfferDTO) {
-        log.debug("Request to save RentOffer : {}", rentOfferDTO);
+        log.info("Request to save RentOffer : {}", rentOfferDTO);
 
         if (rentOfferDTO.getId() != null) {
             throw new BadRequestAlertException("A new rentOffer cannot already have an ID idexists");

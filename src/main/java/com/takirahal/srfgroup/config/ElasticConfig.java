@@ -10,31 +10,31 @@ import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
-@Configuration
-@EnableElasticsearchRepositories
+// @Configuration
+// @EnableElasticsearchRepositories
 public class ElasticConfig {
 
-    @Value("${elasticsearch.host}")
-    private String EsHost;
-
-    @Value("${elasticsearch.port}")
-    private int EsPort;
-
-    @Value("${elasticsearch.clustername}")
-    private String EsClusterName;
-
-    @Bean
-    public RestHighLevelClient client() {
-        ClientConfiguration clientConfiguration
-                = ClientConfiguration.builder()
-                .connectedTo(EsHost+":"+EsPort)
-                .build();
-
-        return RestClients.create(clientConfiguration).rest();
-    }
-
-    @Bean
-    public ElasticsearchOperations elasticsearchTemplate() {
-        return new ElasticsearchRestTemplate(client());
-    }
+//    @Value("${elasticsearch.host}")
+//    private String EsHost;
+//
+//    @Value("${elasticsearch.port}")
+//    private int EsPort;
+//
+//    @Value("${elasticsearch.clustername}")
+//    private String EsClusterName;
+//
+//    @Bean
+//    public RestHighLevelClient client() {
+//        ClientConfiguration clientConfiguration
+//                = ClientConfiguration.builder()
+//                .connectedTo(EsHost+":"+EsPort)
+//                .build();
+//
+//        return RestClients.create(clientConfiguration).rest();
+//    }
+//
+//    @Bean
+//    public ElasticsearchOperations elasticsearchTemplate() {
+//        return new ElasticsearchRestTemplate(client());
+//    }
 }

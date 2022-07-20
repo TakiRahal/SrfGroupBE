@@ -8,54 +8,44 @@ import com.takirahal.srfgroup.modules.faq.repositories.FaqRepository;
 import com.takirahal.srfgroup.modules.faq.services.FaqService;
 import com.takirahal.srfgroup.modules.faq.services.impl.FaqServiceImpl;
 import com.takirahal.srfgroup.modules.utils.TestUtil;
+import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
 import org.mockito.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
-import java.util.function.Function;
 
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest // Exist Autowired
 @AutoConfigureMockMvc
 class FaqControllerTest {
 
-    @Mock
-    FaqRepository faqRepository;
-
     private static final String ENTITY_API_URL = "/api/faq/";
 
     @MockBean
     FaqService faqService;
-
-//    @InjectMocks
-//    FaqServiceImpl faqServiceImpl;
-
-    @Mock
-    FaqRepository faqRepositoryMock;
 
     @Spy
     private FaqMapper faqMapper = Mappers.getMapper(FaqMapper.class);
@@ -63,9 +53,20 @@ class FaqControllerTest {
     @Autowired
     private MockMvc restFaqMockMvc;
 
-//    Faq faq0 = Faq.builder().id(0L).questionAr("Qar0").responseAr("Rar0").questionFr("Qfr0").responseFr("Rfr0").questionEn("Qen0").responseEn("Ren0").build();
-//    Faq faq1 = Faq.builder().id(1L).questionAr("Qar1").responseAr("Rar1").questionFr("Qfr1").responseFr("Rfr1").questionEn("Qen1").responseEn("Ren1").build();
-//    Faq faq2 = Faq.builder().id(2L).questionAr("Qar2").responseAr("Rar2").questionFr("Qfr2").responseFr("Rfr2").questionEn("Qen2").responseEn("Ren2").build();
+    @InjectMocks
+    private FaqServiceImpl faqServiceImpl;
+
+    @Before
+    public void init() {
+        ReflectionTestUtils.setField(faqMapper , "faqServiceImpl", faqServiceImpl);
+    }
+
+    final String token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzcmZncm91cC5jb250YWN0QGdtYWlsLmNvbSIsImlhdCI6MTY1NDI4OTI0NCwiZXhwIjoxNjU0ODk0MDQ0fQ.OSDB0jr22qCoFFvuqywHKsQDmmFifACwLd06ZH84w7eWDIwJutiU5_c3_W2qg-eBlxsCM_bBLaEYxlOzYEYCVw";
+
+    FaqDTO faqDTO0 = FaqDTO.builder().id(0L).questionAr("Qar0").responseAr("Rar0").questionFr("Qfr0").responseFr("Rfr0").questionEn("Qen0").responseEn("Ren0").build();
+    FaqDTO faqDTO1 = FaqDTO.builder().id(1L).questionAr("Qar1").responseAr("Rar1").questionFr("Qfr1").responseFr("Rfr1").questionEn("Qen1").responseEn("Ren1").build();
+    FaqDTO faqDTO2 = FaqDTO.builder().id(2L).questionAr("Qar2").responseAr("Rar2").questionFr("Qfr2").responseFr("Rfr2").questionEn("Qen2").responseEn("Ren2").build();
+
 
     @BeforeEach
     void setUp() {
@@ -81,12 +82,15 @@ class FaqControllerTest {
         FaqDTO faqDTO = faqMapper.toDto(faq);
 
         // When
-        restFaqMockMvc
-                .perform(post(ENTITY_API_URL+"admin/create").contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(faqDTO)))
-                .andExpect(status().isCreated());
+        ResultActions mvcResult = restFaqMockMvc
+                .perform(
+                        post(ENTITY_API_URL+"admin/create")
+                        .contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(faqDTO))
+                        .header("Authorization", "Bearer "+token)
+                );
 
         // Then
-
+        mvcResult.andExpect(status().isCreated());
     }
 
     @Test
@@ -94,42 +98,37 @@ class FaqControllerTest {
     void getAllPublicFaqs() throws Exception {
 
         // Given
-        Faq faq = new Faq();
-        faq.setId(1L);
-        faq.setQuestionAr("Qar");
-        faq.setResponseAr("Rar");
-        faq.setQuestionFr("Qfr");
-        faq.setResponseFr("Rfr");
-        faq.setQuestionEn("Qen");
-        faq.setResponseEn("Ren");
-        List<Faq> faqs = new ArrayList<>();
-        faqs.add(faq);
         Pageable pageable = PageRequest.of(0, 1);
-        FaqFilter criteria = new FaqFilter();
-        Page<Faq> faqPage = new PageImpl<>(faqs, pageable, faqs.size());
-
-        FaqDTO faqDTO = new FaqDTO();
-        faqDTO.setId(1L);
-        faqDTO.setQuestionAr("Qar");
-        faqDTO.setResponseAr("Rar");
-        faqDTO.setQuestionFr("Qfr");
-        faqDTO.setResponseFr("Rfr");
-        faqDTO.setQuestionEn("Qen");
-        faqDTO.setResponseEn("Ren");
         List<FaqDTO> faqDtoList = new ArrayList<>();
-        faqDtoList.add(faqDTO);
+        faqDtoList.add(faqDTO0);
+        faqDtoList.add(faqDTO1);
+        faqDtoList.add(faqDTO2);
         Page<FaqDTO> faqDtoPage = new PageImpl<>(faqDtoList, pageable, faqDtoList.size());
-        Mockito.when(faqMapper.toDto(faq)).thenReturn(faqDTO);
 
-
-        Mockito.when(faqRepositoryMock.findAll(any(Specification.class), any(Pageable.class))).thenReturn(faqPage);
+        Mockito.when(faqService.findByCriteria(any(FaqFilter.class), any(Pageable.class))).thenReturn(faqDtoPage);
 
         // When
         // Execute the GET request
-        restFaqMockMvc.perform(get("/api/faq/public"))
+        MvcResult mvcResult = restFaqMockMvc.perform( MockMvcRequestBuilders
+                .get(ENTITY_API_URL+"public")
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String content = mvcResult.getResponse().getContentAsString();
+//                .andExpect(MockMvcResultMatchers.jsonPath("$.employees").exists())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$.employees[*].employeeId").isNotEmpty());
+
+//        MvcResult mvcResult = restFaqMockMvc.perform(MockMvcRequestBuilders.get(ENTITY_API_URL+"public")
+//                .accept(MediaType.APPLICATION_JSON_VALUE))
+//                .andExpect(status().isOk())
+//                .andReturn();
+//
+//        String content = mvcResult.getResponse().getContentAsString();
                 // Validate the response code and content type
-                .andExpect(status().isOk());
-                // .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isOk())
+//                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE));
                 // .andExpect(jsonPath("$.[*].id").value(hasItem(faq.getId().intValue())));
                 // .andExpect(jsonPath("$.[*].questionAr").value(hasItem("Qar")));
 

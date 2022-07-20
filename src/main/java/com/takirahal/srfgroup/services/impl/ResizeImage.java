@@ -102,12 +102,14 @@ public class ResizeImage {
         try {
             log.info("Add text to image : {}", path);
             // BufferedImage image = ImageIO.read(new File(path));
-            Font font = new Font("Arial", Font.BOLD, 16);
+            Font font = new Font("Arial", Font.BOLD, 12);
             Graphics graphics = image.getGraphics();
             graphics.setFont(font);
             graphics.setColor(Color.BLACK);
-            graphics.drawString("SrfGroup", 5, 20);
-            ImageIO.write(image, "jpg", new File(path));
+            graphics.drawString("SrfGroup", 40, 20);
+
+            File output = new File(path);
+            ImageIO.write(image, "png", output);
         }
         catch (Exception e){
             log.error("Exception whene add text to image : {}", e.getMessage());

@@ -1,4 +1,4 @@
-version: '1.0'
+version: '1.1'
 services:
 
   # Backend Source
@@ -41,7 +41,7 @@ services:
     # If you want to expose these ports outside your dev PC,
     # remove the "127.0.0.1:" prefix
     ports:
-      - 127.0.0.1:9200:9200
+      - 9200:9200
     environment:
       - 'xpack.security.enabled=false'
       - 'discovery.type=single-node'
@@ -56,6 +56,8 @@ services:
         hard: 65536
     cap_add:
       - IPC_LOCK
+    networks:
+      - elk
 
   # Kibana
   kibana:
@@ -65,7 +67,9 @@ services:
     # If you want to expose these ports outside your dev PC,
     # remove the "127.0.0.1:" prefix
     ports:
-      - 127.0.0.1:5601:5601
+      - "5601:5601"
+    networks:
+      - elk
     depends_on:
       - elasticsearch
 
@@ -76,7 +80,17 @@ services:
     links:
       - elasticsearch:elasticsearch
     volumes:
-      - ./:/config-dir
-    command: logstash -f /config-dir/logstash.conf
+      - ./logstash/:/etc/logstash/conf.d/
+      - ./logs/SrfGroupElk.log:/tmp/logs/SrfGroupElk.log
+    command: logstash -f /etc/logstash/conf.d/logstash.conf
+    ports:
+      - "5000:5000"
+    networks:
+      - elk
     depends_on:
       - elasticsearch
+
+# Network for app
+networks:
+  elk:
+    driver: bridge
