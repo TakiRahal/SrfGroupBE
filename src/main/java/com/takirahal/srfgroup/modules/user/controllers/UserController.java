@@ -327,7 +327,7 @@ public class UserController {
     @RequestMapping(value = "avatar", method = RequestMethod.POST)
     public ResponseEntity<UserDTO> updateAvatar(@RequestParam("avatar") MultipartFile file) {
         log.debug("REST request to update Avatar : {}", file.getOriginalFilename());
-        return new ResponseEntity<>(userService.updateAvatar(file), HttpStatus.OK);
+        return new ResponseEntity<>(userService.updateAvatar(file), HeaderUtil.createAlert("account.message_update_avatar_succefully", "true"), HttpStatus.OK);
     }
 
 

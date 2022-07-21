@@ -83,6 +83,7 @@ public interface UserMapper extends EntityMapper<UserDTO, User> {
     @Mapping(target = "sourceRegister", source = "sourceRegister")
     @Mapping(target = "authorities", source = "authorities")
     @Mapping(target = "linkProfileFacebook", source = "linkProfileFacebook")
+    @Mapping(target = "address", source = "address")
     UserDTO toDtoPublicUser(User user);
 
     @Named("searchOffers")

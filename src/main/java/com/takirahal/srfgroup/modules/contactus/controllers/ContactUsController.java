@@ -6,6 +6,7 @@ import com.takirahal.srfgroup.modules.contactus.dto.ContactUsDTO;
 import com.takirahal.srfgroup.modules.contactus.services.ContactUsService;
 import com.takirahal.srfgroup.exceptions.BadRequestAlertException;
 import com.takirahal.srfgroup.services.impl.ValidateCaptchaService;
+import com.takirahal.srfgroup.utils.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +55,7 @@ public class ContactUsController {
             throw new BadRequestAlertException("A new contactUs cannot already have an ID idexists");
         }
         ContactUsDTO result = contactUsService.save(contactUsDTO);
-        return new ResponseEntity<>(result, HttpStatus.CREATED);
+        return new ResponseEntity<>(result, HeaderUtil.createAlert("contact_us.message_add_successfully", ""), HttpStatus.CREATED);
     }
 
     /**
